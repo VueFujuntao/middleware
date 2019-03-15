@@ -1,68 +1,149 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 ## Available Scripts
 
 In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+在开发模式下运行应用程序.<br>
+打开 [http://localhost:3000](http://localhost:3000) 在浏览器中查看它
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+将生产应用程序构建到`build`文件夹,它正确地将 React 捆绑在生产模式中并优化构建以获得最佳性能
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+全局安装 以管理者身份打开 CMD 执行 `npm i -g serve`<br>
+在项目路径下 执行 `serve -s build` 即可脱离编译局 查看项目 [http://localhost:5000](http://localhost:5000)
 
 ### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+**注意：这是单向操作。 一旦你'弹出'，你就不能回去了！**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+如果您对构建工具和配置选择不满意，可以随时“弹出”
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 开发说明
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+请使用 less 预处理语言编写 css 样式, 使用嵌套的方式<br>
+数据请求操作在redux里操作<br>
+任何跟数据有关的操作请在`智能组件`写，通过传值方式传递给`木偶组件`<br>
 
-## Learn More
+### 简述依赖
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- React 版本：16.8.4
+- React-dom 版本: 16.8.4
+- React-redux 版本: 6.0.1 状态管理
+- Redux 版本: 4.0.1 状态管理
+- Redux-thunk 版本: 2.3.0 异步状态管理
+- React-router-dom 版本: 4.3.1 路由 [https://github.com/ReactTraining/react-router](https://github.com/ReactTraining/react-router)
+- Axios 版本: 0.18.0 网络请求 [https://www.kancloud.cn/yunye/axios/234845](https://www.kancloud.cn/yunye/axios/234845)
+- Antd 版本: 3.15.0 蚂蚁金服 UI [https://ant.design/index-cn](https://ant.design/index-cn)
+- Immutable 版本: 4.0.0-rc.12 渲染性能 [https://www.npmjs.com/package/immutable](https://www.npmjs.com/package/immutable)
+- Prop-types 版本: 15.7.2 属性检测 [https://www.npmjs.com/package/prop-types](https://www.npmjs.com/package/prop-types)
+- babel-plugin-transform-decorators-legacy 版本: 1.3.5 装饰性插件
+- less less-loader 版本: 3.9.0 CSS 预处理语言 [https://less.bootcss.com/#](https://less.bootcss.com/#)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 项目结构
 
-### Code Splitting
+- config:项目（webpack）配置文件
+- node_modules: 项目依赖库
+- scripts: 项目执行脚本
+- src: 开发源码包
+  - assets:项目静态资源文件
+  - components: 项目组件文件
+  - redux：项目数据池所在
+    - module: 数据文件存放
+    - index.js：数据池对外入口
+  - views：项目页面文件
+  - App.js: 项目入口文件
+  - index.js：项目全局引入文件
+  - router.js: 路由管理
+  - asyncComponent.jsx: 高阶组件 懒加载
+- package.json: 依赖管理 环境配置
+- package-lock.json: 依赖锁
+- gitgnore: 禁止上传 GIT
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+### 项目配置
 
-### Analyzing the Bundle Size
+`./package.json`
+```
+"babel": {
+  "plugins": [
+      // 按需引入UI库
+      [
+      "import",
+        {
+          "libraryName": "antd",
+          "libraryDirectory": "es",
+          "style": "css"
+        }
+      ],
+      // 修饰器 配置
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ]
+  ]
+}
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+`./src/index.js`
+```
+// 热重载
+const rootEl = document.getElementById('root')
 
-### Making a Progressive Web App
+if (module.hot) {
+  module.hot.accept('./App', () => {
+    const NextApp = require('./App').default;
+    ReactDOM.render(
+      <NextApp / > ,
+      rootEl
+    );
+  });
+}
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+ReactDOM.render( < App / > , rootEl);
+```
 
-### Advanced Configuration
+`./config/webpack.config.js`
+```
+// 配置 less语法
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+// 43
+const lessRegex = /\.less$/;
+const lessModuleRegex = /\.module\.less$/;
+// 462
+{
+  test: lessRegex,
+  exclude: lessModuleRegex,
+  use: getStyleLoaders({ importLoaders: 2 }, 'less-loader'), // 注意第二个参数
+},
+{
+  test: lessModuleRegex,
+  use: getStyleLoaders(
+  {
+    importLoaders: 2,
+    modules: true,
+    getLocalIdent: getCSSModuleLocalIdent,
+  },
+  'less-loader' // 注意第二个参数
+  )
+}
+// 110
+if (preProcessor === 'less-loader') {
+  loaders.push({
+    loader: require.resolve(preProcessor),
+    options: {
+      sourceMap: isEnvProduction && shouldUseSourceMap,
+      javascriptEnabled: true // 解决上文报错
+    },
+  });
+} else {
+  loaders.push({
+    loader: require.resolve(preProcessor),
+    options: {
+      sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
+    ,
+  });
+}
+```

@@ -73,6 +73,7 @@ class EntranceGuard extends React.Component {
       </div>
     );
   }
+  
   changeHandle(vlaue) {
     /*
       方法里访问this时 使用箭头函数

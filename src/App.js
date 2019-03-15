@@ -39,7 +39,7 @@ class App extends React.Component {
       <Provider store={store}>
         <HashRouter>
           <Switch>
-            <Route path="/" component={Router.EntranceGuard} />
+            <Route path="/" component={Router.Index} />
           </Switch>
         </HashRouter>
       </Provider>

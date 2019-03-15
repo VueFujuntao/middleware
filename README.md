@@ -43,12 +43,18 @@ In the project directory, you can run:
 
 ### 项目结构
 
-- config:项目（webpack）配置文件
+- config: 项目（webpack）配置文件
 - node_modules: 项目依赖库
 - scripts: 项目执行脚本
+- build: 生产包
+- computerFile: 开发文件
 - src: 开发源码包
-  - assets:项目静态资源文件
+  - static: 项目静态资源文件
+    - image: 图片
+    - css: 样式
   - components: 项目组件文件
+  - config: 配置文件
+    - asyncComponent.jsx: 懒加载
   - redux：项目数据池所在
     - module: 数据文件存放
     - index.js：数据池对外入口
@@ -56,7 +62,6 @@ In the project directory, you can run:
   - App.js: 项目入口文件
   - index.js：项目全局引入文件
   - router.js: 路由管理
-  - asyncComponent.jsx: 高阶组件 懒加载
 - package.json: 依赖管理 环境配置
 - package-lock.json: 依赖锁
 - gitgnore: 禁止上传 GIT
@@ -195,7 +200,9 @@ class EntranceGuard extends React.Component {
   // 组件初始化时不调用，组件接受新的props时调用。
   componentWillReceiveProps(nextProps) {}
   /*
-    react性能优化非常重要的一环。组件接受新的state或者props时调用，我们可以设置在此对比前后两个props和state是否相同，如果相同则返回false阻止更新，因为相同的属性状态一定会生成相同的dom树，这样就不需要创造新的dom树和旧的dom树进行diff算法对比，节省大量性能，尤其是在dom结构复杂的时候
+    react性能优化非常重要的一环。组件接受新的state或者props时调用，我们可以设置在此对比前后两个
+    props和state是否相同，如果相同则返回false阻止更新，因为相同的属性状态一定会生成相同的dom树，
+    这样就不需要创造新的dom树和旧的dom树进行diff算法对比，节省大量性能，尤其是在dom结构复杂的时候
   */
   shouldComponentUpdate(nextProps, nextState) {
     return !(

@@ -2,7 +2,7 @@ import React from 'react';
 // react 虚拟dom
 import ReactDOM from 'react-dom';
 // 自定义样式
-import './index.less';
+import './static/css/index.less';
 import App from './App';
 // 蚂蚁金服 Css样式
 import 'antd/dist/antd.css';

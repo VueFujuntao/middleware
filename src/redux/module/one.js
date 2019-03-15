@@ -3,6 +3,7 @@ import Axios from 'axios';
 const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 const ERROR_MSG = 'ERROR_MSG';
 
+// 默认值
 const initState = {
   isAuth: false,
   msg: '',
@@ -49,10 +50,12 @@ export function register({
   return dispatch => {
     Axios.post('/user/register', {user, pwd, type}).then(response => {
       if (response.status === 200 && response.data.code === 0) {
-        dispatch(registerSuccess({user, pwd, type}))
+        dispatch(registerSuccess({ user, pwd, type }))
       } else {
         dispatch(errorMsg(response.data.msg))
       }
+    }, err => {
+      throw new Error(err)
     })
   }
 }

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
-//  异步组件
+/*
+  异步组件
+  importComponent 组件传入
+*/
 const AsyncComponent = (importComponent) => {
   return class extends Component {
     constructor() {

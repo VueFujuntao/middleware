@@ -19,6 +19,7 @@ import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 // Provider 用来保持与 store 的更新
 import { Provider } from "react-redux";
+// redux 合并后的文件
 import reducer from "./redux/index.js";
 
 // 状态管理

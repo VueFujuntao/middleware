@@ -11,7 +11,64 @@ let io = null;
 const initState = {
   msg: '',
   allDataSources: [],
-  properties: [],
+  properties: [
+    {
+      canshuzhi:
+        "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
+      changePropertyId: "2",
+      changeTime: 5000,
+      dataSourceId: 1,
+      detailsDes: "嗷嗷嗷",
+      id: 4,
+      isChangeStatus: "0",
+      methodId: 1,
+      simpleDes: "无",
+      status: "0",
+      value: "0"
+    },
+    {
+      canshuzhi:
+        "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
+      changePropertyId: "2",
+      changeTime: 5000,
+      dataSourceId: 1,
+      detailsDes: "嗷嗷嗷",
+      id: 3,
+      isChangeStatus: "0",
+      methodId: 1,
+      simpleDes: "无",
+      status: "0",
+      value: "0"
+    },
+    {
+      canshuzhi:
+        "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
+      changePropertyId: "2",
+      changeTime: 5000,
+      dataSourceId: 1,
+      detailsDes: "嗷嗷嗷",
+      id: 2,
+      isChangeStatus: "0",
+      methodId: 1,
+      simpleDes: "无",
+      status: "0",
+      value: "0"
+    },
+    {
+      canshuzhi:
+        "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
+      changePropertyId: "2",
+      changeTime: 5000,
+      dataSourceId: 1,
+      detailsDes: "嗷嗷嗷",
+      id: 1,
+      isChangeStatus: "0",
+      methodId: 1,
+      simpleDes: "无",
+      status: "0",
+      value: "0"
+    }
+  ],
   io: false
 }
 

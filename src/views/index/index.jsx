@@ -4,36 +4,46 @@ import { fromJS } from "immutable";
 import { connect } from "react-redux";
 import "./index.less";
 import { Layout } from "antd";
-import EntranceGuard from "../entranceGuard/entranceGuard.jsx";
+import OuterCover from "../../components/outerCover/outerCover.jsx";
 import {
   getFirstData,
   closeIo,
   deleteSingleData,
-  getDataUp
+  getDataUp,
+  addSingleData
 } from "../../redux/module/one.js";
+
+
 const { Header, Footer, Content } = Layout;
 
 @connect(
   state => state.one,
-  { getFirstData,  closeIo,  getDataUp, deleteSingleData }
+  { getFirstData, closeIo, getDataUp, deleteSingleData, addSingleData }
 )
 class Index extends Component {
   static propTypes = {
+    properties: PropTypes.array,
     getFirstData: PropTypes.func,
     deleteSingleData: PropTypes.func,
     closeIo: PropTypes.func,
-    getDataUp: PropTypes.func
+    getDataUp: PropTypes.func,
+    addSingleData: PropTypes.func
   };
+  // 设置默认 props 值
+  static defaultProps = {
+    properties: [],
+    pageSize: 1
+  }
 
   constructor(props) {
     super(props);
     this.state = {};
   }
 
-  componentWillMount() {}
+  componentWillMount() { }
 
   componentDidMount() {
-    this.props.getFirstData();
+    // this.props.getFirstData();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -57,11 +67,12 @@ class Index extends Component {
   };
 
   // 删除单个数据
-  deleteSingleData = (item, data) => {
-    this.props.deleteSingleData(item, data);
-  };
+  // deleteSingleData = (item, data) => {
+  //   this.props.deleteSingleData(item, data);
+  // };
 
   render() {
+    const { addSingleData, getDataUp, properties, deleteSingleData, pageSize } = this.props;
     return (
       <Layout className="Highly-filled">
         <Header style={{ background: "#fff", padding: 0 }} />
@@ -77,16 +88,20 @@ class Index extends Component {
             style={{ padding: 24, background: "#fff", textAlign: "center" }}
             className="Highly-filled"
           >
-            <EntranceGuard
+            {/* 表单控件 */}
+            <OuterCover
               sendIoItem={this.sendIoItem}
               stopIoItem={this.stopIoItem}
-              deleteSingleData={this.deleteSingleData}
-              getDataUp={this.props.getDataUp}
+              pageSize={pageSize}
+              deleteSingleData={deleteSingleData}
+              getDataUp={getDataUp}
+              addSingleData={addSingleData}
+              properties={properties}
             />
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          Ant Design ©2018 Created by Ant UED
+          Middle Ware  ©2019 Created by TAI YUAN
         </Footer>
       </Layout>
     );

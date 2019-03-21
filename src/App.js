@@ -39,7 +39,8 @@ class App extends React.Component {
       <Provider store={store}>
         <HashRouter>
           <Switch>
-            <Route path="/" component={Router.Index} />
+            {/* extends 在位置完全匹配时才应用激活类 */}
+            <Route path="/" extends component={Router.Index} />
           </Switch>
         </HashRouter>
       </Provider>

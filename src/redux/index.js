@@ -1,6 +1,12 @@
-import { combineReducers } from 'redux';
+import {
+    combineReducers
+} from 'redux';
 // 状态
-import { one } from './module/one.js';
+import {
+    one
+} from './module/one.js';
 
 
-export default combineReducers({one});
+export default combineReducers({
+    one
+});

@@ -7,17 +7,17 @@ import App from './App';
 // 蚂蚁金服 Css样式
 import 'antd/dist/antd.css';
 // 挂载的元素
-const rootEl = document.getElementById('root');
+const RootEl = document.getElementById('root');
 
 if (module.hot) {
   module.hot.accept('./App', () => {
     const NextApp = require('./App').default;
     ReactDOM.render(
       <NextApp / > ,
-      rootEl
+      RootEl
     );
   });
 }
 
 // render 渲染
-ReactDOM.render( < App / > , rootEl);
+ReactDOM.render( < App / > , RootEl);

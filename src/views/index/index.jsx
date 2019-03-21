@@ -7,20 +7,22 @@ import { Layout } from "antd";
 import EntranceGuard from "../entranceGuard/entranceGuard.jsx";
 import {
   getFirstData,
-  startUpIo,
   closeIo,
-  addSingleData,
-  deleteSingleData
+  deleteSingleData,
+  getDataUp
 } from "../../redux/module/one.js";
 const { Header, Footer, Content } = Layout;
 
 @connect(
   state => state.one,
-  { getFirstData, startUpIo, closeIo, addSingleData, deleteSingleData }
+  { getFirstData,  closeIo,  getDataUp, deleteSingleData }
 )
 class Index extends Component {
   static propTypes = {
-    getFirstData: PropTypes.func
+    getFirstData: PropTypes.func,
+    deleteSingleData: PropTypes.func,
+    closeIo: PropTypes.func,
+    getDataUp: PropTypes.func
   };
 
   constructor(props) {
@@ -32,7 +34,6 @@ class Index extends Component {
 
   componentDidMount() {
     this.props.getFirstData();
-    // this.props.startUpIo();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -42,6 +43,9 @@ class Index extends Component {
     );
   }
 
+  /* 
+    Menthods
+  */
   // 启动数据发送
   sendIoItem = item => {
     console.log(item);
@@ -77,6 +81,7 @@ class Index extends Component {
               sendIoItem={this.sendIoItem}
               stopIoItem={this.stopIoItem}
               deleteSingleData={this.deleteSingleData}
+              getDataUp={this.props.getDataUp}
             />
           </div>
         </Content>

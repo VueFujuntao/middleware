@@ -7,7 +7,7 @@ import { Button, Pagination, Popconfirm, message, Select } from "antd";
 import PropTypes from "prop-types";
 // import deepCopy from "../../utils/deepCopy.js";
 import "./index.less";
-import { getDataUp, addSingleData } from "../../redux/module/one";
+import { addSingleData } from "../../redux/module/one";
 
 const Option = Select.Option;
 // @方法 ：装饰器写法
@@ -16,12 +16,11 @@ const Option = Select.Option;
 @connect(
   // 数据挂载在当前组件的 props 上
   state => state.one,
-  { getDataUp, addSingleData }
+  {  addSingleData }
 )
 class EntranceGuard extends React.Component {
   // 以随意为每一个属性指定类型。这对于我们检查和处理属性的意外赋值非常有用。
   static propTypes = {
-    type: PropTypes.string,
     properties: PropTypes.array,
     getDataUp: PropTypes.func,
     stopIoItem: PropTypes.func,
@@ -47,8 +46,7 @@ class EntranceGuard extends React.Component {
   componentWillMount() {}
 
   // 组件渲染之后调用，只调用一次。
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   // 组件初始化时不调用，组件接受新的props时调用。
   componentWillReceiveProps(nextProps) {}
@@ -74,22 +72,26 @@ class EntranceGuard extends React.Component {
   // react最重要的步骤，创建虚拟dom，进行diff算法，更新dom树都在此进行。此时就不能更改state了。
   goee = () => {
     this.setState({
-      number: this.state.number+1
-    })
-    this.props.addSingleData({
-      "canshuzhi":"{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
-      "changePropertyId": "2",
-      "changeTime": 5000,
-      "dataSourceId": 1,
-      "detailsDes": "嗷嗷嗷",
-      "id": this.state.number,
-      "isChangeStatus": "0",
-      "methodId": 1,
-      "simpleDes": "无",
-      "status": "0",
-      "value": "0"
-    } ,this.props.properties)
-  }
+      number: this.state.number + 1
+    });
+    this.props.addSingleData(
+      {
+        canshuzhi:
+          "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
+        changePropertyId: "2",
+        changeTime: 5000,
+        dataSourceId: 1,
+        detailsDes: "嗷嗷嗷",
+        id: this.state.number,
+        isChangeStatus: "0",
+        methodId: 1,
+        simpleDes: "无",
+        status: "0",
+        value: "0"
+      },
+      this.props.properties
+    );
+  };
   render() {
     /*
       最外层需要一个元素包裹
@@ -183,7 +185,7 @@ class EntranceGuard extends React.Component {
         <Pagination
           className="pagination"
           simple
-          onChange={this.onChange}
+          onChange={this.pagination}
           defaultCurrent={1}
           total={pageSize * 10}
         />
@@ -191,25 +193,28 @@ class EntranceGuard extends React.Component {
     );
   }
 
-  confirm = (item) => {
+  confirm = item => {
     this.props.deleteSingleData(item, this.props.properties);
     message.success("删除成功");
-  }
- 
+  };
+
   cancel(e) {
     message.error("取消删除");
   }
+
   handleChangeSelect(e) {
     console.log(e);
   }
-  onChange = (e) => {
+
+  // 切换页码
+  pagination = e => {
     this.props.getDataUp({ id: 1, page: e, size: 10 });
-  }
+  };
 
   HandlerDeleteData() {}
 
   HandleChange(value, id, index) {
-    console.log(12)
+    console.log(12);
     /*
       方法里访问this时 使用箭头函数
       或者 在构造函数里 通过

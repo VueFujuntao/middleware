@@ -126,9 +126,7 @@ export function getDataUp(data = {
       params: data
     }).then(response => {
       if (response.status === 200 && response.data.code === 200) {
-        dispatch(registerSuccess({
-          getDatas: response.data.data
-        }));
+        dispatch(registerSuccess(response.data.data));
       } else {
         dispatch(errorMsg(response.data.msg))
       }

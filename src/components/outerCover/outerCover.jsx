@@ -1,30 +1,47 @@
 import React from "react";
 // 性能提升库
 import { fromJS } from "immutable";
-import { Button, Pagination, Popconfirm, message, Select, Checkbox } from "antd";
+import {
+  Button,
+  Pagination,
+  Popconfirm,
+  message,
+  Select,
+  Empty,
+  Modal,
+  Input,
+  Row,
+  Col
+} from "antd";
 // PropTypes props类型检查
 import PropTypes from "prop-types";
 import "./index.less";
 
 const Option = Select.Option;
+const InputGroup = Input.Group;
 
 class OuterCover extends React.Component {
   // 以随意为每一个属性指定类型。这对于我们检查和处理属性的意外赋值非常有用。
   static propTypes = {
     properties: PropTypes.array,
+    indexList: PropTypes.array,
     pageSize: PropTypes.number,
+    pageNum: PropTypes.number,
     getDataUp: PropTypes.func,
     stopIoItem: PropTypes.func,
     sendIoItem: PropTypes.func,
     deleteSingleData: PropTypes.func,
     addSingleData: PropTypes.func,
+    switchPage: PropTypes.func
   };
 
   // 设置默认 props 值
   static defaultProps = {
     properties: [],
-    pageSize: 1
-  }
+    indexList: [],
+    pageSize: 1,
+    pageNum: 1
+  };
   /*
     构造函数 添加一个类构造函数来初始化状态 this.state
     注意传递 props 到基础构造函数的
@@ -36,19 +53,21 @@ class OuterCover extends React.Component {
     修改数据,例子： this.setstate({date: 1})
     */
     this.state = {
-      number: 110
+      PolylineCycle: false,
+      VolatilityValue: false,
+      RandomValue: false,
+      Sinusoidal: false
     };
   }
 
   // 组件初始化时只调用，以后组件更新不调用，整个生命周期只调用一次，此时可以修改state。
-  componentWillMount() { }
+  componentWillMount() {}
 
   // 组件渲染之后调用，只调用一次。
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   // 组件初始化时不调用，组件接受新的props时调用。
-  componentWillReceiveProps(nextProps) { }
+  componentWillReceiveProps(nextProps) {}
   /*
     react性能优化非常重要的一环。组件接受新的state或者props时调用，我们可以设置在此对比前后两个props和state是否相同，如果相同则返回false阻止更新，因为相同的属性状态一定会生成相同的dom树，这样就不需要创造新的dom树和旧的dom树进行diff算法对比，节省大量性能，尤其是在dom结构复杂的时候
   */
@@ -60,13 +79,13 @@ class OuterCover extends React.Component {
   }
 
   // 组件初始化时不调用，只有在组件将要更新时才调用，此时可以修改state
-  componentWillUpdate(nextProps, nextState) { }
+  componentWillUpdate(nextProps, nextState) {}
 
   // 组件初始化时不调用，组件更新完成后调用，此时可以获取dom节点。
-  componentDidUpdate() { }
+  componentDidUpdate() {}
 
   // 组件将要卸载时调用，一些事件监听和定时器需要在此时清除。
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
   // react最重要的步骤，创建虚拟dom，进行diff算法，更新dom树都在此进行。此时就不能更改state了。
   goee = () => {
@@ -96,64 +115,211 @@ class OuterCover extends React.Component {
       最外层需要一个元素包裹
       写类 需要 className 因为 class 与 es class语法糖 冲突
     */
-    const { properties, pageSize, stopIoItem, sendIoItem, getDataUp } = this.props;
+    const {
+      properties,
+      indexList,
+      pageSize,
+      sendIoItem,
+      getDataUp,
+      pageNum
+    } = this.props;
+
     return (
       <div className="less-context">
-        <button onClick={() => this.goee()}>添加</button>
+        {/* PolylineCycle */}
+        <Modal
+          visible={this.state.PolylineCycle}
+          onOk={() => this.handleOk("PolylineCycle")}
+          onCancel={() => this.handleCancel("PolylineCycle")}
+        >
+          <InputGroup size="small">
+            <Row gutter={4}>
+              <Col span={4}>最大值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={4}>最小值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={4}>预警阈值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={4}>波动差值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+          </InputGroup>
+        </Modal>
+        {/* VolatilityValue */}
+        <Modal
+          visible={this.state.VolatilityValue}
+          onOk={() => this.handleOk("VolatilityValue")}
+          onCancel={() => this.handleCancel("VolatilityValue")}
+        >
+          <InputGroup size="small">
+            <Row gutter={4}>
+              <Col span={5}>最大值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={5}>最小值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={5}>预警阈值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={5}>波动差值范围</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+          </InputGroup>
+        </Modal>
+        {/* RandomValue */}
+        <Modal
+          visible={this.state.RandomValue}
+          onOk={() => this.handleOk("RandomValue")}
+          onCancel={() => this.handleCancel("RandomValue")}
+        >
+          <InputGroup size="small">
+            <Row gutter={4}>
+              <Col span={5}>最大值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={5}>最小值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={5}>预警阈值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+          </InputGroup>
+        </Modal>
+        {/* Sinusoidal */}
+        <Modal
+          visible={this.state.Sinusoidal}
+          onOk={() => this.handleOk("Sinusoidal")}
+          onCancel={() => this.handleCancel("Sinusoidal")}
+        >
+          <InputGroup size="small">
+            <Row gutter={4}>
+              <Col span={4}>最大值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={4}>最小值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={4}>预警阈值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+            <Row gutter={4} style={{ marginTop: "10px" }}>
+              <Col span={4}>波动差值</Col>
+              <Col span={8}>
+                <Input defaultValue="0" />
+              </Col>
+            </Row>
+          </InputGroup>
+        </Modal>
         <table border="1" cellPadding="5" cellSpacing="5" className="table">
           <thead>
             <tr>
-              <th>
-                <Checkbox  indeterminate onChange={this.onChange}>
-                  全选
-                </Checkbox>
-              </th>
-              <th>密钥</th>
-              <th>属性名称</th>
-              <th>设备描述</th>
-              <th>时间间隙</th>
-              <th>状态值</th>
-              <th>状态</th>
-              <th>操作</th>
+              <th style={{ width: "50px" }}>序号</th>
+              <th>KEY</th>
+              <th>VALUE</th>
+              <th style={{ width: "150px" }}>变化函数</th>
+              <th>描述</th>
+              <th style={{ width: "100px" }}>类型</th>
+              <th style={{ width: "120px" }}>变化时间</th>
+              <th style={{ width: "138px" }}>操作</th>
+              <th style={{ width: "100px" }}>关联事件</th>
             </tr>
           </thead>
           <tbody>
-            {properties.map((item, index) => {
+            {indexList.map((item, index) => {
               return (
                 <tr key={item.id} className="table-tr">
-                  <th>
-                  <Checkbox onChange={this.onChange} >选中</Checkbox>
-                  </th>
-                  <td>{item.keyValue}</td>
+                  <th>{index + 1 + (pageNum - 1) * 10}</th>
+                  <td>{item.id}</td>
                   <td>{item.attributeName}</td>
-                  <td>{item.deviceDescription}</td>
                   <td>
                     <Select
                       labelInValue
-                      defaultValue={{ key: "lucy" }}
+                      defaultValue={{ key: "no" }}
+                      style={{ width: 140 }}
+                      onChange={this.handleChangeSelectFunction}
+                    >
+                      <Option value="no">无</Option>
+                      <Option value="PolylineCycle">折线周期函数</Option>
+                      <Option value="VolatilityValue">波动取值函数</Option>
+                      <Option value="RandomValue">随机取值函数</Option>
+                      <Option value="Sinusoidal">类正弦函数</Option>
+                    </Select>
+                  </td>
+                  <td />
+                  <td>
+                    <Select
+                      labelInValue
+                      defaultValue={{ key: "general" }}
                       style={{ width: 120 }}
                       onChange={this.handleChangeSelect}
                     >
-                      <Option value="jack">10S</Option>
-                      <Option value="lucy">30S</Option>
+                      <Option value="general">一般</Option>
+                      <Option value="Subdata">子数据</Option>
                     </Select>
-                    ,
                   </td>
                   <td>
-                    <input
-                      type="text"
-                      className="input-focus"
-                      onChange={e => this.HandleChange(e, item.id, index)}
-                      value={item.statusValue}
-                    />
-                  </td>
-                  <td>
-                    <span
-                      className={[
-                        "animate-span",
-                        index % 2 === 0 ? "animate" : null
-                      ].join(" ")}
-                    />
+                    <Select
+                      labelInValue
+                      defaultValue={{ key: "1" }}
+                      style={{ width: 90 }}
+                      onChange={this.handleChangeSelect}
+                    >
+                      <Option value="1">1秒</Option>
+                      <Option value="5">5秒</Option>
+                      <Option value="10">10秒</Option>
+                      <Option value="30">30秒</Option>
+                      <Option value="60">1分钟</Option>
+                      <Option value="300">5分钟</Option>
+                      <Option value="900">15分钟</Option>
+                      <Option value="1800">30分钟</Option>
+                      <Option value="3600">1小时</Option>
+                      <Option value="10800">3小时</Option>
+                      <Option value="32400">6小时</Option>
+                      <Option value="64800">12小时</Option>
+                      <Option value="129600">24小时</Option>
+                    </Select>
                   </td>
                   <td>
                     <Button
@@ -162,52 +328,58 @@ class OuterCover extends React.Component {
                       size="small"
                       style={{ marginRight: "10px" }}
                     >
-                      发送
-                    </Button>
-                    <Button
-                      size="small"
-                      type="primary"
-                      onClick={() => stopIoItem(item)}
-                      style={{ marginRight: "10px" }}
-                    >
-                      暂停
+                      启动
                     </Button>
                     <Popconfirm
-                      title="您确定要删除此任务吗?"
-                      onConfirm={() => this.confirm(item)}
+                      title="您确定要删除此数据吗?"
+                      onConfirm={() => this.handledeleteSingleData(item)}
                       onCancel={this.cancel}
                       okText="确定"
                       cancelText="取消"
                     >
-                      <Button type="danger" size="small" >
+                      <Button type="danger" size="small">
                         删除
                       </Button>
                     </Popconfirm>
+                  </td>
+                  <td>
+                    <Select
+                      labelInValue
+                      defaultValue={{ key: "wanting" }}
+                      style={{ width: 120 }}
+                      onChange={this.handleChangeSelect}
+                    >
+                      <Option value="wanting">无</Option>
+                      <Option value="Fire">火灾</Option>
+                      <Option value="LeakingWater">漏水</Option>
+                      <Option value="Intrusion">闯入</Option>
+                      <Option value="UPSTemperatureTooHigh">UPS温度过高</Option>
+                    </Select>
                   </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-        {
-          getDataUp !== undefined ?
-            <Pagination
-              className={`pagination`}
-              simple onChange={this.pagination}
-              defaultCurrent={1}
-              hideOnSinglePage
-              total={pageSize * 10}
-            /> : null
-        }
+        {indexList.length === 0 ? <Empty style={{ marginTop: 20 }} /> : null}
+        <Pagination
+          className={`pagination`}
+          simple
+          onChange={this.pagination}
+          defaultCurrent={1}
+          hideOnSinglePage
+          total={(properties.length / 10) * 10}
+        />
       </div>
     );
   }
 
-  confirm = item => {
+  // 删除单条数据
+  handledeleteSingleData = item => {
     let { deleteSingleData, properties } = this.props;
     if (deleteSingleData === undefined) {
-      return
-    };
+      return;
+    }
     deleteSingleData(item, properties);
     message.success("删除成功");
   };
@@ -220,12 +392,97 @@ class OuterCover extends React.Component {
     console.log(e);
   }
 
-  // 切换页码
-  pagination = e => {
-    this.props.getDataUp({ id: 1, page: e, size: 10 });
+  // 函数弹出框
+  handleChangeSelectFunction = e => {
+    switch (e.key) {
+      case "PolylineCycle":
+        this.setState({
+          PolylineCycle: true
+        });
+        break;
+      case "VolatilityValue":
+        this.setState({
+          VolatilityValue: true
+        });
+        break;
+      case "RandomValue":
+        this.setState({
+          RandomValue: true
+        });
+        break;
+      case "Sinusoidal":
+        this.setState({
+          Sinusoidal: true
+        });
+        break;
+      default:
+        return;
+    }
   };
 
-  HandlerDeleteData() { }
+  // 确认 关闭 变化函数弹板
+  handleOk = text => {
+    switch (text) {
+      case "PolylineCycle":
+        this.setState({
+          PolylineCycle: false
+        });
+        break;
+      case "VolatilityValue":
+        this.setState({
+          VolatilityValue: false
+        });
+        break;
+      case "RandomValue":
+        this.setState({
+          RandomValue: false
+        });
+        break;
+      case "Sinusoidal":
+        this.setState({
+          Sinusoidal: false
+        });
+        break;
+      default:
+        return;
+    }
+  };
+
+  // 取消 关闭 变化函数弹板
+  handleCancel = text => {
+    switch (text) {
+      case "PolylineCycle":
+        this.setState({
+          PolylineCycle: false
+        });
+        break;
+      case "VolatilityValue":
+        this.setState({
+          VolatilityValue: false
+        });
+        break;
+      case "RandomValue":
+        this.setState({
+          RandomValue: false
+        });
+        break;
+      case "Sinusoidal":
+        this.setState({
+          Sinusoidal: false
+        });
+        break;
+      default:
+        return;
+    }
+  };
+
+  // 切换 页码
+  pagination = e => {
+    let data = this.props.properties.slice(10 * (e - 1), 10 * (e - 1) + 10);
+    this.props.switchPage(data);
+  };
+
+  HandlerDeleteData() {}
 
   HandleChange(value, id, index) {
     console.log(12);

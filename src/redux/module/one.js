@@ -11,65 +11,9 @@ let io = null;
 const initState = {
   msg: '',
   allDataSources: [],
-  properties: [
-    {
-      canshuzhi:
-        "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
-      changePropertyId: "2",
-      changeTime: 5000,
-      dataSourceId: 1,
-      detailsDes: "嗷嗷嗷",
-      id: 4,
-      isChangeStatus: "0",
-      methodId: 1,
-      simpleDes: "无",
-      status: "0",
-      value: "0"
-    },
-    {
-      canshuzhi:
-        "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
-      changePropertyId: "2",
-      changeTime: 5000,
-      dataSourceId: 1,
-      detailsDes: "嗷嗷嗷",
-      id: 3,
-      isChangeStatus: "0",
-      methodId: 1,
-      simpleDes: "无",
-      status: "0",
-      value: "0"
-    },
-    {
-      canshuzhi:
-        "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
-      changePropertyId: "2",
-      changeTime: 5000,
-      dataSourceId: 1,
-      detailsDes: "嗷嗷嗷",
-      id: 2,
-      isChangeStatus: "0",
-      methodId: 1,
-      simpleDes: "无",
-      status: "0",
-      value: "0"
-    },
-    {
-      canshuzhi:
-        "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
-      changePropertyId: "2",
-      changeTime: 5000,
-      dataSourceId: 1,
-      detailsDes: "嗷嗷嗷",
-      id: 1,
-      isChangeStatus: "0",
-      methodId: 1,
-      simpleDes: "无",
-      status: "0",
-      value: "0"
-    }
-  ],
-  io: false
+  indexList: [],
+  io: false,
+  pageSize: 10
 }
 
 export function one(state = initState, action) {
@@ -172,20 +116,24 @@ export function closeIo() {
   }
 }
 
-// 获取分页数据
+export function indexListPage(data) {
+
+}
+
+// 获取分页数据 和 数据源数据
 export function getDataUp(data = {
-  id: 1,
-  page: 1,
-  size: 10
+  id: 1
 }) {
   return dispatch => {
     Axios.get('/dataSource/getDatas', {
       params: data
     }).then(response => {
       if (response.status === 200 && response.data.code === 200) {
-        dispatch(registerSuccess(response.data.data));
+        let data = response.data.data;
+        data.indexList = response.data.data.properties.slice(0, 10);
+        dispatch(registerSuccess(data));
       } else {
-        dispatch(errorMsg(response.data.msg))
+        dispatch(errorMsg(response.data.msg));
       }
     }, err => {
       throw new Error(err);
@@ -193,7 +141,16 @@ export function getDataUp(data = {
   }
 }
 
-// 单次获取数据 数据列表 首页渲染
+// 切换 页码
+export function switchPage(data) {
+  return dispatch => {
+    dispatch(registerSuccess({
+      indexList: data
+    }));
+  }
+}
+
+// 单次获取数据 数据列表
 export function getFirstData() {
   return dispatch => {
     Axios.get('/dataSource/getAllDataSources').then(response => {
@@ -201,21 +158,6 @@ export function getFirstData() {
         dispatch(registerSuccess({
           allDataSources: response.data.data
         }));
-        Axios.get('/dataSource/getDatas', {
-          params: {
-            id: response.data.data[0].id,
-            page: 1,
-            size: 10
-          }
-        }).then(res => {
-          if (res.data.code === 200) {
-            dispatch(registerSuccess(res.data.data));
-          } else {
-            dispatch(errorMsg(res.data.msg));
-          }
-        }, error => {
-          throw new Error(error);
-        })
       }
     }, err => {
       throw new Error(err);
@@ -223,6 +165,26 @@ export function getFirstData() {
   }
 }
 
+// 启动  关闭 数据源
+export function setSourceData(data) {
+  return dispatch => {
+    console.log(data);
+    // Axios.post('/dataSource/OpenOrCloseDataSource', {
+    //   dataSource: data
+    // }).then(response => {
+    //   console.log(response)
+    // }, error => {
+    //   throw new Error(error);
+    // })
+    // dispatch(registerSuccess(data));
+  }
+}
+
+export function setSourceDataInput(data) {
+  return dispatch => {
+    dispatch(registerSuccess(data));
+  }
+}
 // 添加单个数据
 export function addSingleData(data, properties) {
   return dispatch => {
@@ -230,8 +192,10 @@ export function addSingleData(data, properties) {
       if (response.data.code === 200) {
         if (properties.length < 10) {
           let newProperties = properties.concat([]);
-          newProperties.push(data)
-          dispatch(registerSuccess({properties: newProperties}));
+          newProperties.push(data);
+          dispatch(registerSuccess({
+            properties: newProperties
+          }));
         }
       }
     }, error => {
@@ -243,12 +207,18 @@ export function addSingleData(data, properties) {
 // 删除单个数据
 export function deleteSingleData(dataCue, properties) {
   return dispatch => {
-    Axios.delete('/dataSource/deleteData', {data: {id: dataCue.id}}).then(response => {
+    Axios.delete('/dataSource/deleteData', {
+      data: {
+        id: dataCue.id
+      }
+    }).then(response => {
       if (response.data.code === 200) {
         let Properties = properties.filter(item => {
           return item.id !== dataCue.id;
         })
-        dispatch(registerSuccess({properties: Properties}));
+        dispatch(registerSuccess({
+          properties: Properties
+        }));
       }
     }, error => {
       throw new Error(error);

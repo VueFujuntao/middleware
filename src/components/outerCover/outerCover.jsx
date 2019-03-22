@@ -1,6 +1,7 @@
 import React from "react";
 // 性能提升库
 import { fromJS } from "immutable";
+// 蚂蚁 UI
 import {
   Button,
   Pagination,
@@ -23,23 +24,31 @@ const InputGroup = Input.Group;
 class OuterCover extends React.Component {
   // 以随意为每一个属性指定类型。这对于我们检查和处理属性的意外赋值非常有用。
   static propTypes = {
+    // 总数据
     properties: PropTypes.array,
+    // 当前页的数据
     indexList: PropTypes.array,
+    // 页面数据几条
     pageSize: PropTypes.number,
     pageNum: PropTypes.number,
-    getDataUp: PropTypes.func,
     stopIoItem: PropTypes.func,
+    // 启用数据
     sendIoItem: PropTypes.func,
+    // 删除单个数据
     deleteSingleData: PropTypes.func,
+    // 添加单个数据
     addSingleData: PropTypes.func,
+    // 切换页码
     switchPage: PropTypes.func
   };
 
   // 设置默认 props 值
   static defaultProps = {
+    // 总数据
     properties: [],
+    // 当前页的数据
     indexList: [],
-    pageSize: 1,
+    pageSize: 0,
     pageNum: 1
   };
   /*
@@ -61,13 +70,13 @@ class OuterCover extends React.Component {
   }
 
   // 组件初始化时只调用，以后组件更新不调用，整个生命周期只调用一次，此时可以修改state。
-  componentWillMount() {}
+  componentWillMount() { }
 
   // 组件渲染之后调用，只调用一次。
-  componentDidMount() {}
+  componentDidMount() { }
 
   // 组件初始化时不调用，组件接受新的props时调用。
-  componentWillReceiveProps(nextProps) {}
+  componentWillReceiveProps(nextProps) { }
   /*
     react性能优化非常重要的一环。组件接受新的state或者props时调用，我们可以设置在此对比前后两个props和state是否相同，如果相同则返回false阻止更新，因为相同的属性状态一定会生成相同的dom树，这样就不需要创造新的dom树和旧的dom树进行diff算法对比，节省大量性能，尤其是在dom结构复杂的时候
   */
@@ -79,15 +88,14 @@ class OuterCover extends React.Component {
   }
 
   // 组件初始化时不调用，只有在组件将要更新时才调用，此时可以修改state
-  componentWillUpdate(nextProps, nextState) {}
+  componentWillUpdate(nextProps, nextState) { }
 
   // 组件初始化时不调用，组件更新完成后调用，此时可以获取dom节点。
-  componentDidUpdate() {}
+  componentDidUpdate() { }
 
   // 组件将要卸载时调用，一些事件监听和定时器需要在此时清除。
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
-  // react最重要的步骤，创建虚拟dom，进行diff算法，更新dom树都在此进行。此时就不能更改state了。
   goee = () => {
     this.setState({
       number: this.state.number + 1
@@ -110,18 +118,23 @@ class OuterCover extends React.Component {
       this.props.properties
     );
   };
+
+  // react最重要的步骤，创建虚拟dom，进行diff算法，更新dom树都在此进行。此时就不能更改state了。
   render() {
     /*
       最外层需要一个元素包裹
       写类 需要 className 因为 class 与 es class语法糖 冲突
     */
     const {
+      // 总数据
       properties,
+      // 当前页的数据
       indexList,
-      pageSize,
+      // 启用数据
       sendIoItem,
-      getDataUp,
-      pageNum
+      pageNum,
+      // 一页 几条数据
+      pageSize
     } = this.props;
 
     return (
@@ -267,98 +280,100 @@ class OuterCover extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {indexList.map((item, index) => {
-              return (
-                <tr key={item.id} className="table-tr">
-                  <th>{index + 1 + (pageNum - 1) * 10}</th>
-                  <td>{item.id}</td>
-                  <td>{item.attributeName}</td>
-                  <td>
-                    <Select
-                      labelInValue
-                      defaultValue={{ key: "no" }}
-                      style={{ width: 140 }}
-                      onChange={this.handleChangeSelectFunction}
-                    >
-                      <Option value="no">无</Option>
-                      <Option value="PolylineCycle">折线周期函数</Option>
-                      <Option value="VolatilityValue">波动取值函数</Option>
-                      <Option value="RandomValue">随机取值函数</Option>
-                      <Option value="Sinusoidal">类正弦函数</Option>
-                    </Select>
-                  </td>
-                  <td />
-                  <td>
-                    <Select
-                      labelInValue
-                      defaultValue={{ key: "general" }}
-                      style={{ width: 120 }}
-                      onChange={this.handleChangeSelect}
-                    >
-                      <Option value="general">一般</Option>
-                      <Option value="Subdata">子数据</Option>
-                    </Select>
-                  </td>
-                  <td>
-                    <Select
-                      labelInValue
-                      defaultValue={{ key: "1" }}
-                      style={{ width: 90 }}
-                      onChange={this.handleChangeSelect}
-                    >
-                      <Option value="1">1秒</Option>
-                      <Option value="5">5秒</Option>
-                      <Option value="10">10秒</Option>
-                      <Option value="30">30秒</Option>
-                      <Option value="60">1分钟</Option>
-                      <Option value="300">5分钟</Option>
-                      <Option value="900">15分钟</Option>
-                      <Option value="1800">30分钟</Option>
-                      <Option value="3600">1小时</Option>
-                      <Option value="10800">3小时</Option>
-                      <Option value="32400">6小时</Option>
-                      <Option value="64800">12小时</Option>
-                      <Option value="129600">24小时</Option>
-                    </Select>
-                  </td>
-                  <td>
-                    <Button
-                      type="primary"
-                      onClick={() => sendIoItem(item)}
-                      size="small"
-                      style={{ marginRight: "10px" }}
-                    >
-                      启动
+            {
+              indexList.map((item, index) => {
+                return (
+                  <tr key={item.id} className="table-tr">
+                    <th>{index + 1 + (pageNum - 1) * 10}</th>
+                    <td>{item.id}</td>
+                    <td>{item.attributeName}</td>
+                    <td>
+                      <Select
+                        labelInValue
+                        defaultValue={{ key: "no" }}
+                        style={{ width: 140 }}
+                        onChange={this.handleChangeSelectFunction}
+                      >
+                        <Option value="no">无</Option>
+                        <Option value="PolylineCycle">折线周期函数</Option>
+                        <Option value="VolatilityValue">波动取值函数</Option>
+                        <Option value="RandomValue">随机取值函数</Option>
+                        <Option value="Sinusoidal">类正弦函数</Option>
+                      </Select>
+                    </td>
+                    <td />
+                    <td>
+                      <Select
+                        labelInValue
+                        defaultValue={{ key: "general" }}
+                        style={{ width: 120 }}
+                        onChange={this.handleChangeSelect}
+                      >
+                        <Option value="general">一般</Option>
+                        <Option value="Subdata">子数据</Option>
+                      </Select>
+                    </td>
+                    <td>
+                      <Select
+                        labelInValue
+                        defaultValue={{ key: "1" }}
+                        style={{ width: 90 }}
+                        onChange={this.handleChangeSelect}
+                      >
+                        <Option value="1">1秒</Option>
+                        <Option value="5">5秒</Option>
+                        <Option value="10">10秒</Option>
+                        <Option value="30">30秒</Option>
+                        <Option value="60">1分钟</Option>
+                        <Option value="300">5分钟</Option>
+                        <Option value="900">15分钟</Option>
+                        <Option value="1800">30分钟</Option>
+                        <Option value="3600">1小时</Option>
+                        <Option value="10800">3小时</Option>
+                        <Option value="32400">6小时</Option>
+                        <Option value="64800">12小时</Option>
+                        <Option value="129600">24小时</Option>
+                      </Select>
+                    </td>
+                    <td>
+                      <Button
+                        type="primary"
+                        onClick={() => sendIoItem(item)}
+                        size="small"
+                        style={{ marginRight: "10px" }}
+                      >
+                        启动
                     </Button>
-                    <Popconfirm
-                      title="您确定要删除此数据吗?"
-                      onConfirm={() => this.handledeleteSingleData(item)}
-                      onCancel={this.cancel}
-                      okText="确定"
-                      cancelText="取消"
-                    >
-                      <Button type="danger" size="small">
-                        删除
+                      <Popconfirm
+                        title="您确定要删除此数据吗?"
+                        onConfirm={() => this.handledeleteSingleData(item)}
+                        onCancel={this.cancel}
+                        okText="确定"
+                        cancelText="取消"
+                      >
+                        <Button type="danger" size="small">
+                          删除
                       </Button>
-                    </Popconfirm>
-                  </td>
-                  <td>
-                    <Select
-                      labelInValue
-                      defaultValue={{ key: "wanting" }}
-                      style={{ width: 120 }}
-                      onChange={this.handleChangeSelect}
-                    >
-                      <Option value="wanting">无</Option>
-                      <Option value="Fire">火灾</Option>
-                      <Option value="LeakingWater">漏水</Option>
-                      <Option value="Intrusion">闯入</Option>
-                      <Option value="UPSTemperatureTooHigh">UPS温度过高</Option>
-                    </Select>
-                  </td>
-                </tr>
-              );
-            })}
+                      </Popconfirm>
+                    </td>
+                    <td>
+                      <Select
+                        labelInValue
+                        defaultValue={{ key: "wanting" }}
+                        style={{ width: 120 }}
+                        onChange={this.handleChangeSelect}
+                      >
+                        <Option value="wanting">无</Option>
+                        <Option value="Fire">火灾</Option>
+                        <Option value="LeakingWater">漏水</Option>
+                        <Option value="Intrusion">闯入</Option>
+                        <Option value="UPSTemperatureTooHigh">UPS温度过高</Option>
+                      </Select>
+                    </td>
+                  </tr>
+                );
+              })
+            }
           </tbody>
         </table>
         {indexList.length === 0 ? <Empty style={{ marginTop: 20 }} /> : null}
@@ -368,7 +383,7 @@ class OuterCover extends React.Component {
           onChange={this.pagination}
           defaultCurrent={1}
           hideOnSinglePage
-          total={(properties.length / 10) * 10}
+          total={(properties.length / pageSize) * 10}
         />
       </div>
     );
@@ -377,9 +392,8 @@ class OuterCover extends React.Component {
   // 删除单条数据
   handledeleteSingleData = item => {
     let { deleteSingleData, properties } = this.props;
-    if (deleteSingleData === undefined) {
-      return;
-    }
+    if (deleteSingleData === undefined) return;
+    // 发送Delete请求 删除
     deleteSingleData(item, properties);
     message.success("删除成功");
   };
@@ -476,13 +490,17 @@ class OuterCover extends React.Component {
     }
   };
 
-  // 切换 页码
+  // 切换 页码 
   pagination = e => {
-    let data = this.props.properties.slice(10 * (e - 1), 10 * (e - 1) + 10);
+    // 获取 一页几条数据
+    let { pageSize, switchPage } = this.props;
+    if (switchPage === undefined) return;
+    let data = this.props.properties.slice(pageSize * (e - 1), pageSize * (e - 1) + pageSize);
+    // 改变数据
     this.props.switchPage(data);
   };
 
-  HandlerDeleteData() {}
+  HandlerDeleteData() { }
 
   HandleChange(value, id, index) {
     console.log(12);
@@ -490,7 +508,7 @@ class OuterCover extends React.Component {
   buttonMoth(title) {
     console.log(title);
   }
-  onChange() {}
+  onChange() { }
 }
 
 // es6 模块导出

@@ -176,11 +176,17 @@ class EntranceGuard extends React.Component {
   static propTypes = {
     type: PropTypes.string
   };
+
+  // 设置 props 属性 默认值 就算 外部不传值 也不会报错
+  static defaultProps = {
+    type: 'hello word'
+  }
   /*
     构造函数 添加一个类构造函数来初始化状态 this.state
     注意传递 props 到基础构造函数的
   */
   constructor(props) {
+    // 改变this 指向
     super(props);
     /*
     this.state 定义数据,数据是响应的

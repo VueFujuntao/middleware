@@ -1,35 +1,115 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input, Button, Badge, Modal, Select, message, Icon } from "antd";
+import { Input, Button, Badge, Modal, Select, message, Icon, Tooltip } from "antd";
 import { fromJS } from "immutable";
-import NumericInput from "../numericInput/numericInput.jsx";
+// import NumericInput from "../numericInput/numericInput.jsx";
 import "./index.less";
 
 const Option = Select.Option;
 const confirm = Modal.confirm;
 
+// 输入框 控件
+class NumericInput extends React.Component {
+  onChange = e => {
+    const { value } = e.target;
+    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
+    if (
+      (!Number.isNaN(value) && reg.test(value)) ||
+      value === "" ||
+      value === "-"
+    ) {
+      this.props.onChange(value);
+    }
+  };
+
+  // '.' at the end or only '-' in the input box.
+  onBlur = () => {
+    const { value, onBlur, onChange } = this.props;
+    if (value.toString().charAt(value.toString().length - 1) === "." || value === "-") {
+      onChange(value.toString().slice(0, -1));
+    }
+    if (onBlur) {
+      onBlur();
+    }
+  };
+
+  formatNumber(value) {
+    value += "";
+    const list = value.split(".");
+    const prefix = list[0].charAt(0) === "-" ? "-" : "";
+    let num = prefix ? list[0].slice(1) : list[0];
+    let result = "";
+    while (num.length > 3) {
+      result = `,${num.slice(-3)}${result}`;
+      num = num.slice(0, num.length - 3);
+    }
+    if (num) {
+      result = num + result;
+    }
+    return `${prefix}${result}${list[1] ? `.${list[1]}` : ""}`;
+  }
+
+  render() {
+    const { value } = this.props;
+    const title = value ? (
+      <span className="numeric-input-title">
+        {value !== "-" ? this.formatNumber(value) : "-"}
+      </span>
+    ) : (
+        "Input a number"
+      );
+    return (
+      <Tooltip
+        trigger={["focus"]}
+        title={title}
+        placement="topLeft"
+        overlayClassName="numeric-input"
+      >
+        <Input
+          {...this.props}
+          onChange={this.onChange}
+          onBlur={this.onBlur}
+          placeholder="Input a number"
+          maxLength={25}
+        />
+      </Tooltip>
+    );
+  }
+}
+
+// 头部控件
 class Control extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: "",
+      // 数据源 ID
       sourceId: -1
     };
   }
 
   static propTypes = {
+    // 数据源数据列表
     allDataSources: PropTypes.array,
+    // 发送 关闭状态码
     status: PropTypes.number,
+    // 发送时间
     sendTime: PropTypes.number,
+    // 一页显示几条
+    pageSize: PropTypes.number,
     getDataUp: PropTypes.func,
+    // 修改发送时间 方法
     setSourceDataInput: PropTypes.func,
     setSourceData: PropTypes.func
   };
 
   static defaultProps = {
+    // 数据源数据列表
     allDataSources: [],
+    // 发送 关闭状态码
     status: 1,
-    sendTime: 0
+    // 发送时间
+    sendTime: 0,
+    pageSize: 0
   };
 
   componentDidMount() {
@@ -43,7 +123,6 @@ class Control extends React.Component {
 
   onChange = value => {
     this.props.setSourceDataInput({ sendTime: Number(value) });
-    // this.setState({ value });
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -86,8 +165,8 @@ class Control extends React.Component {
           {status === 1 ? (
             <Badge status="default" text="未启动" className="processing" />
           ) : (
-            <Badge status="processing" text="正在发送" className="processing" />
-          )}
+              <Badge status="processing" text="正在发送" className="processing" />
+            )}
         </div>
         <div>
           <Input
@@ -139,7 +218,7 @@ class Control extends React.Component {
       sourceId: e
     });
     // 获取数据源数据
-    this.props.getDataUp({ id: e });
+    this.props.getDataUp({ id: e }, this.props.pageSize);
   };
 
   // 删除数据源

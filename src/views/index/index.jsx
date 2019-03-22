@@ -1,13 +1,17 @@
 import React, { Component } from "react";
+// 类型检测
 import PropTypes from "prop-types";
 import { fromJS } from "immutable";
 import { connect } from "react-redux";
 import { Layout } from "antd";
+// 表单组件
 import OuterCover from "../../components/outerCover/outerCover.jsx";
+// 头部组件
 import Control from "../../components/control/control.jsx";
+// 蚂蚁 UI
 import {
   getFirstData,
-  closeIo,
+  // closeIo,
   deleteSingleData,
   getDataUp,
   addSingleData,
@@ -24,7 +28,7 @@ const { Header, Footer, Content } = Layout;
   state => state.one,
   {
     getFirstData,
-    closeIo,
+    // closeIo,
     getDataUp,
     deleteSingleData,
     addSingleData,
@@ -37,14 +41,19 @@ const { Header, Footer, Content } = Layout;
 class Index extends Component {
   static propTypes = {
     allDataSources: PropTypes.array,
+    // 数据源数据总数
     properties: PropTypes.array,
     indexList: PropTypes.array,
     pageNum: PropTypes.number,
+    // 发送 关闭状态码
     status: PropTypes.number,
+    // 发送时间
     sendTime: PropTypes.number,
+    // 页面展示多少条数据
+    pageSize: PropTypes.number,
     getFirstData: PropTypes.func,
     deleteSingleData: PropTypes.func,
-    closeIo: PropTypes.func,
+    // closeIo: PropTypes.func,
     getDataUp: PropTypes.func,
     addSingleData: PropTypes.func,
     setSourceDataInput: PropTypes.func,
@@ -53,13 +62,18 @@ class Index extends Component {
   };
   // 设置默认 props 值
   static defaultProps = {
+    // 数据源数据总数
     properties: [],
-    pageSize: 1,
+    indexList: [],
+    // 页面展示多少条数据
+    pageSize: 0,
+    // 数据源数据列表
     allDataSources: [],
     pageNum: 1,
+    // 发送 关闭状态码
     status: 1,
-    sendTime: 0,
-    indexList: []
+    // 发送时间
+    sendTime: 0
   };
 
   constructor(props) {
@@ -67,7 +81,7 @@ class Index extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
+  componentWillMount() { }
 
   componentDidMount() {
     this.props.getFirstData();
@@ -114,6 +128,7 @@ class Index extends Component {
       indexList,
       switchPage
     } = this.props;
+
     return (
       <Layout className="Highly-filled">
         <Header style={{ background: "#fff", padding: 0 }}>
@@ -131,30 +146,38 @@ class Index extends Component {
             style={{ padding: 24, background: "#fff", textAlign: "center" }}
             className="Highly-filled"
           >
+            {/* 头部组件 */}
             <Control
+              // 数据列表
               allDataSources={allDataSources}
+              // 切换 数据源
               getDataUp={getDataUp}
+              // 是否开启 状态值
               status={status}
+              // 数据源发送时间
               sendTime={sendTime}
               setSourceDataInput={setSourceDataInput}
               setSourceData={setSourceData}
+              // 页面几条数据
+              pageSize={pageSize}
             />
-            {/* 表单控件 */}
+            {/* 表单组件 */}
             <OuterCover
               sendIoItem={this.sendIoItem}
               stopIoItem={this.stopIoItem}
+              // 页面几条数据
               pageSize={pageSize}
               deleteSingleData={deleteSingleData}
-              getDataUp={getDataUp}
               addSingleData={addSingleData}
               properties={properties}
               pageNum={pageNum}
               indexList={indexList}
+              // 切换页面 改变数据
               switchPage={switchPage}
             />
           </div>
         </Content>
-        <Footer style={{ textAlign: "center" }}>
+        <Footer className="textAlign">
           Middle Ware ©2019 Created by TAI YUAN
         </Footer>
       </Layout>

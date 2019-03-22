@@ -24,9 +24,12 @@ import reducer from "./redux/index.js";
 
 // 状态管理
 const store = createStore(
+  // redux 状态池
   reducer,
   compose(
+    // 导入中间件 解决异步事件
     applyMiddleware(thunk),
+    // react 谷歌浏览器控件 用来调试用的 需要自己安装 不然是不启动的
     window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f
   )
 );

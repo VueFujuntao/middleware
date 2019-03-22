@@ -2,11 +2,11 @@ import Axios from '../../axios/index.js';
 const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 
 const ERROR_MSG = 'ERROR_MSG';
-const IO_OPEN = 'IO_OPEN';
-const IO_CLOSE = 'IO_CLOSE';
+// const IO_OPEN = 'IO_OPEN';
+// const IO_CLOSE = 'IO_CLOSE';
 const ADD_SINGLE_DATA = 'ADD_SINGLE_DATA';
 
-let io = null;
+// let io = null;
 // 默认值
 const initState = {
   msg: '',
@@ -27,16 +27,16 @@ export function one(state = initState, action) {
         ...state,
         ...action.payload
       }
-    case IO_OPEN:
-      return {
-        ...state,
-        ...action.payload
-      }
-    case IO_CLOSE:
-      return {
-        ...state,
-        ...action.payload
-      }
+    // case IO_OPEN:
+    //   return {
+    //     ...state,
+    //     ...action.payload
+    //   }
+    // case IO_CLOSE:
+    //   return {
+    //     ...state,
+    //     ...action.payload
+    //   }
     case ADD_SINGLE_DATA:
       return {
         ...state,
@@ -61,76 +61,74 @@ function errorMsg(msg) {
   }
 }
 
-// webSocket启动失败
-function IoOpen(data) {
-  return {
-    type: IO_OPEN,
-    payload: data
-  }
-}
+// // webSocket启动失败
+// function IoOpen(data) {
+//   return {
+//     type: IO_OPEN,
+//     payload: data
+//   }
+// }
 
-// webSocket启动成功
-function IoClose(data) {
-  return {
-    type: IO_CLOSE,
-    payload: data
-  }
-}
+// // webSocket启动成功
+// function IoClose(data) {
+//   return {
+//     type: IO_CLOSE,
+//     payload: data
+//   }
+// }
 
-// 启动webSocket
-export function startUpIo(obj) {
-  if (initState.io) {
-    io.send(obj);
-  } else {
-    return dispatch => {
-      io = new WebSocket('ws://localhost:12460/webs');
-      io.onopen = function () {
-        // Web Socket 已连接上，使用 send() 方法发送数据
-        io.send('打开');
-        dispatch(IoOpen({
-          io: true
-        }))
-      };
+// // 启动webSocket
+// export function startUpIo(obj) {
+//   if (initState.io) {
+//     io.send(obj);
+//   } else {
+//     return dispatch => {
+//       io = new WebSocket('ws://localhost:12460/webs');
+//       io.onopen = function () {
+//         // Web Socket 已连接上，使用 send() 方法发送数据
+//         io.send('打开');
+//         dispatch(IoOpen({
+//           io: true
+//         }))
+//       };
 
-      io.onmessage = function (evt) {
-        let received_msg = evt.data;
-        console.log(evt);
-        console.log(received_msg);
-      };
+//       io.onmessage = function (evt) {
+//         let received_msg = evt.data;
+//         console.log(evt);
+//         console.log(received_msg);
+//       };
 
-      io.onclose = function () {
-        // 关闭 websocket
-        console.log('关闭');
-      };
-    }
-  }
-}
+//       io.onclose = function () {
+//         // 关闭 websocket
+//         console.log('关闭');
+//       };
+//     }
+//   }
+// }
 
-// 关闭webSocket
-export function closeIo() {
-  return dispatch => {
-    io.close();
-    dispatch(IoClose({
-      io: false
-    }))
-  }
-}
+// // 关闭webSocket
+// export function closeIo() {
+//   return dispatch => {
+//     io.close();
+//     dispatch(IoClose({
+//       io: false
+//     }))
+//   }
+// }
 
 export function indexListPage(data) {
 
 }
 
 // 获取分页数据 和 数据源数据
-export function getDataUp(data = {
-  id: 1
-}) {
+export function getDataUp(data = {id: 1}, pageSize = 0) {
   return dispatch => {
     Axios.get('/dataSource/getDatas', {
       params: data
     }).then(response => {
       if (response.status === 200 && response.data.code === 200) {
         let data = response.data.data;
-        data.indexList = response.data.data.properties.slice(0, 10);
+        data.indexList = response.data.data.properties.slice(0, pageSize);
         dispatch(registerSuccess(data));
       } else {
         dispatch(errorMsg(response.data.msg));

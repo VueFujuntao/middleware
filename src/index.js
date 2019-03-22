@@ -11,6 +11,7 @@ const RootEl = document.getElementById('root');
 
 if (module.hot) {
   module.hot.accept('./App', () => {
+    // 按需加载 更改后的代码 实现 热重载功能
     const NextApp = require('./App').default;
     ReactDOM.render(
       <NextApp / > ,

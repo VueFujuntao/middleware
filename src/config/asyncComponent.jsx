@@ -22,7 +22,7 @@ const AsyncComponent = importComponent => {
     }
     render() {
       const C = this.state.component;
-      // 导入 属性
+      // 导入 属性 ...this.props
       return C ? <C {...this.props} /> : null;
     }
   };

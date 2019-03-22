@@ -505,9 +505,11 @@ class OuterCover extends React.Component {
   HandleChange(value, id, index) {
     console.log(12);
   }
+
   buttonMoth(title) {
     console.log(title);
   }
+  
   onChange() { }
 }
 

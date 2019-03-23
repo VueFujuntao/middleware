@@ -11,9 +11,39 @@ const ADD_SINGLE_DATA = 'ADD_SINGLE_DATA';
 const initState = {
   msg: '',
   allDataSources: [],
-  indexList: [],
+  indexList: [{
+    canshuzhi: "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
+    changePropertyId: "2",
+    changeTime: 5000,
+    dataSourceId: 1,
+    detailsDes: "嗷嗷嗷",
+    id: 1,
+    isChangeStatus: "0",
+    methodId: 1,
+    simpleDes: "无",
+    status: "0",
+    value: "0"
+  }, {
+    canshuzhi: "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
+    changePropertyId: "2",
+    changeTime: 5000,
+    dataSourceId: 1,
+    detailsDes: "嗷嗷嗷",
+    id: 2,
+    isChangeStatus: "0",
+    methodId: 1,
+    simpleDes: "无",
+    status: "0",
+    value: "0"
+  }],
   io: false,
-  pageSize: 10
+  pageSize: 10,
+  data: [ {
+    key: '8',
+    name: 'Jim Red',
+    age: 32,
+  }]
+
 }
 
 export function one(state = initState, action) {
@@ -27,16 +57,16 @@ export function one(state = initState, action) {
         ...state,
         ...action.payload
       }
-    // case IO_OPEN:
-    //   return {
-    //     ...state,
-    //     ...action.payload
-    //   }
-    // case IO_CLOSE:
-    //   return {
-    //     ...state,
-    //     ...action.payload
-    //   }
+      // case IO_OPEN:
+      //   return {
+      //     ...state,
+      //     ...action.payload
+      //   }
+      // case IO_CLOSE:
+      //   return {
+      //     ...state,
+      //     ...action.payload
+      //   }
     case ADD_SINGLE_DATA:
       return {
         ...state,
@@ -121,7 +151,9 @@ export function indexListPage(data) {
 }
 
 // 获取分页数据 和 数据源数据
-export function getDataUp(data = {id: 1}, pageSize = 0) {
+export function getDataUp(data = {
+  id: 1
+}, pageSize = 0) {
   return dispatch => {
     Axios.get('/dataSource/getDatas', {
       params: data

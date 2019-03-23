@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Input, Button, Badge, Modal, Select, message, Icon, Tooltip } from "antd";
 import { fromJS } from "immutable";
-// import NumericInput from "../numericInput/numericInput.jsx";
+import NumberSourcesMoth from '../NumberSourcesMoth/numberSourcesMoth.jsx';
 import "./index.less";
 
 const Option = Select.Option;
@@ -83,7 +83,9 @@ class Control extends React.Component {
     super(props);
     this.state = {
       // 数据源 ID
-      sourceId: -1
+      sourceId: -1,
+      startStop: '开始',
+      modalVisible: false
     };
   }
 
@@ -96,6 +98,7 @@ class Control extends React.Component {
     sendTime: PropTypes.number,
     // 一页显示几条
     pageSize: PropTypes.number,
+    data: PropTypes.array,
     getDataUp: PropTypes.func,
     // 修改发送时间 方法
     setSourceDataInput: PropTypes.func,
@@ -113,17 +116,7 @@ class Control extends React.Component {
   };
 
   componentDidMount() {
-    if (this.props.allDataSources.length > 0) {
-      this.setState({
-        sourcesName: this.props.allDataSources[0].name
-      });
-      // this.updata()
-    }
   }
-
-  onChange = value => {
-    this.props.setSourceDataInput({ sendTime: Number(value) });
-  };
 
   shouldComponentUpdate(nextProps, nextState) {
     return !(
@@ -132,20 +125,12 @@ class Control extends React.Component {
     );
   }
 
-  updata = () => {
-    this.setState({
-      sourcesName: this.props.allDataSources[0].name
-    });
-  };
-  OpenOrCloseDataSource = () => {
-    console.log("开启");
-    this.props.setSourceData(this.state.sourceId);
-  };
   render() {
-    let { allDataSources, status, sendTime, setSourceData } = this.props;
+    let { allDataSources, status, sendTime } = this.props;
 
     return (
       <div className="control-context">
+        <NumberSourcesMoth data={this.props.data} setModalVisible={this.setModalVisible} modalVisible={this.state.modalVisible} />
         <div>
           <Select
             style={{ width: 100 }}
@@ -169,12 +154,7 @@ class Control extends React.Component {
             )}
         </div>
         <div>
-          <Input
-            placeholder="Basic usage"
-            value="发送间隔:"
-            disabled
-            style={{ width: 80 }}
-          />
+          发送间隔:&nbsp;
           <NumericInput
             style={{ width: 120 }}
             value={sendTime}
@@ -182,11 +162,11 @@ class Control extends React.Component {
           />
         </div>
         <div>
-          <Button type="primary">输出数据查看</Button>
+          <Button type="primary" onClick={() => this.setModalVisible(true)}>输出数据查看</Button>
         </div>
         <div>
           <Button type="primary" onClick={this.OpenOrCloseDataSource}>
-            开始
+            {this.state.startStop}
           </Button>
         </div>
         <div>
@@ -209,6 +189,11 @@ class Control extends React.Component {
         </div>
       </div>
     );
+  }
+
+  // 關閉 輸出數據源 彈框
+  setModalVisible = (modalVisible) => {
+    this.setState({ modalVisible });
   }
 
   // 选中数据源
@@ -238,6 +223,30 @@ class Control extends React.Component {
         console.log("Cancel");
       }
     });
+  };
+
+  onChange = value => {
+    this.props.setSourceDataInput({ sendTime: Number(value) });
+  };
+
+  updata = () => {
+    this.setState({
+      sourcesName: this.props.allDataSources[0].name
+    });
+  };
+
+  // 打开 或 关闭 数据源
+  OpenOrCloseDataSource = () => {
+    if (this.state.startStop === '开始') {
+      this.setState({
+        startStop: '暂停'
+      })
+    } else if (this.state.startStop === '暂停') {
+      this.setState({
+        startStop: '开始'
+      })
+    }
+    this.props.setSourceData(this.state.sourceId);
   };
 }
 

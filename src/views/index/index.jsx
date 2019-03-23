@@ -84,7 +84,7 @@ class Index extends Component {
   componentWillMount() { }
 
   componentDidMount() {
-    this.props.getFirstData();
+    // this.props.getFirstData();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -126,7 +126,8 @@ class Index extends Component {
       status,
       sendTime,
       indexList,
-      switchPage
+      switchPage,
+      data
     } = this.props;
 
     return (
@@ -160,6 +161,7 @@ class Index extends Component {
               setSourceData={setSourceData}
               // 页面几条数据
               pageSize={pageSize}
+              data={data}
             />
             {/* 表单组件 */}
             <OuterCover

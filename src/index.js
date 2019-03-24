@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 // 自定义样式
 import './static/css/index.less';
+// 組件
 import App from './App';
 // 蚂蚁金服 Css样式
 import 'antd/dist/antd.css';

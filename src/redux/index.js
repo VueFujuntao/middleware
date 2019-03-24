@@ -1,3 +1,4 @@
+// 合併狀態
 import {
     combineReducers
 } from 'redux';

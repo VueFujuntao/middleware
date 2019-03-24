@@ -1,13 +1,18 @@
 import React from 'react';
+// 螞蟻 UI
 import { Modal, Table, Icon, Input, Button } from 'antd';
+// 字體高亮插件
 import Highlighter from 'react-highlight-words';
+// props 屬性檢測
 import PropTypes from "prop-types";
+// 性能保障
 import { fromJS } from "immutable";
+// 樣式
 import './index.less';
 
 // 查看發送數據 值
 export default class NumberSourcesMoth extends React.Component {
-
+  // 定義 屬性
   static propTypes = {
     data: PropTypes.array,
     title: PropTypes.string,
@@ -15,15 +20,19 @@ export default class NumberSourcesMoth extends React.Component {
     setModalVisible: PropTypes.func
   }
 
+  // 設置屬性默認值
   static defaultProps = {
+    // 數據列表
     data: [],
+    // 隱藏 顯示
     modalVisible: false,
     title: '數據'
   }
-
+  
   constructor(props) {
     super(props);
     this.state = {
+      // 搜索框值
       searchWords: ''
     }
   }

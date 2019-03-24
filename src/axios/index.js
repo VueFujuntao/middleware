@@ -15,6 +15,6 @@ Axios.interceptors.response.use(data => {
   return data;
 }, error => {
   return Promise.reject(error);
-})
+});
 
 export default Axios;

@@ -40,6 +40,7 @@ In the project directory, you can run:
 - Prop-types 版本: 15.7.2 属性检测 [https://www.npmjs.com/package/prop-types](https://www.npmjs.com/package/prop-types)
 - babel-plugin-transform-decorators-legacy 版本: 1.3.5 装饰性插件
 - less less-loader 版本: 3.9.0 CSS 预处理语言 [https://less.bootcss.com/#](https://less.bootcss.com/#)
+-react-highlight-words 版本: ^0.16.0 文字高亮
 
 ### 项目结构
 
@@ -49,15 +50,18 @@ In the project directory, you can run:
 - build: 生产包
 - computerFile: 开发文件
 - src: 开发源码包
-  - static: 项目静态资源文件
-    - image: 图片
-    - css: 样式
+  - axios: 網絡請求 全局配置
   - components: 项目组件文件
   - config: 配置文件
     - asyncComponent.jsx: 懒加载
   - redux：项目数据池所在
     - module: 数据文件存放
     - index.js：数据池对外入口
+  - static: 项目静态资源文件
+    - css: 样式
+    - img: 图片
+  - utils: 工具類函數
+    - deepCopy.js 深度拷貝函數
   - views：项目页面文件
   - App.js: 项目入口文件
   - index.js：项目全局引入文件

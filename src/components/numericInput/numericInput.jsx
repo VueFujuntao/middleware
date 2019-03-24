@@ -7,6 +7,12 @@ export default class NumericInput extends React.Component {
   static propTypes = {
     value : PropTypes.number
   }
+
+  static defaultProps = {
+    value: 0
+  }
+  
+  // 輸入匹配
   onChange = e => {
     const { value } = e.target;
     const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;

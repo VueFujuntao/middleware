@@ -120,23 +120,26 @@ class Control extends React.Component {
           <Button type="primary"
             // 开启弹框 查看实时数据
             onClick={() => this.setModalVisible(true)}
+            disabled={this.state.sourceId !== -1 ? false : true}
           >输出数据查看</Button>
         </div>
         <div>
-          <Button type="primary" onClick={this.OpenOrCloseDataSource}>
+          <Button disabled={this.state.sourceId !== -1 ? false : true} type="primary" onClick={this.OpenOrCloseDataSource}>
             {this.state.startStop}
           </Button>
         </div>
         <div>
-          <Button onClick={this.showDeleteConfirm} type="primary">
+          <Button disabled={this.state.sourceId !== -1 ? false : true} onClick={this.showDeleteConfirm} type="primary">
             删除
           </Button>
         </div>
         <div>
-          <Button type="primary">保存</Button>
+          <Button type="primary"
+            disabled={this.state.sourceId !== -1 ? false : true}
+          >保存</Button>
         </div>
         <div>
-          <Button type="primary" onClick={() => this.showDrawer()}>
+          <Button type="primary" disabled={this.state.sourceId !== -1 ? false : true} onClick={() => this.showDrawer()}>
             <Icon type="plus" />
             新增数据
           </Button>

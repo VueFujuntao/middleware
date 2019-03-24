@@ -11,10 +11,13 @@ const AsyncComponent = importComponent => {
       // 改变this 指向
       super(props);
       this.state = {
+        // 組件
         component: null
       };
     }
+    // 掛載後
     componentDidMount() {
+      // importComponent 參數  import()
       importComponent().then(cmp => {
         // 将组建 挂载在state上
         this.setState({ component: cmp.default });

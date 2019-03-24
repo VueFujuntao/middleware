@@ -10,7 +10,11 @@ const ADD_SINGLE_DATA = 'ADD_SINGLE_DATA';
 // 默认值
 const initState = {
   msg: '',
+  // 數據源列表
   allDataSources: [],
+  // 獲取到的總數據
+  properties: [],
+  // 展示的數據
   indexList: [{
     canshuzhi: "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
     changePropertyId: "2",
@@ -36,13 +40,14 @@ const initState = {
     status: "0",
     value: "0"
   }],
+  // 頁面展示條數
   pageSize: 10,
-  data: [ {
+  // 查看的數據
+  data: [{
     key: '8',
     name: 'Jim Red',
     age: 32,
   }]
-
 }
 
 export function one(state = initState, action) {
@@ -56,16 +61,6 @@ export function one(state = initState, action) {
         ...state,
         ...action.payload
       }
-      // case IO_OPEN:
-      //   return {
-      //     ...state,
-      //     ...action.payload
-      //   }
-      // case IO_CLOSE:
-      //   return {
-      //     ...state,
-      //     ...action.payload
-      //   }
     case ADD_SINGLE_DATA:
       return {
         ...state,
@@ -76,6 +71,7 @@ export function one(state = initState, action) {
   }
 }
 
+// 成功調用
 function registerSuccess(data) {
   return {
     type: REGISTER_SUCCESS,
@@ -83,6 +79,7 @@ function registerSuccess(data) {
   }
 }
 
+// 失敗調用
 function errorMsg(msg) {
   return {
     msg,
@@ -90,66 +87,12 @@ function errorMsg(msg) {
   }
 }
 
-// // webSocket启动失败
-// function IoOpen(data) {
-//   return {
-//     type: IO_OPEN,
-//     payload: data
-//   }
-// }
-
-// // webSocket启动成功
-// function IoClose(data) {
-//   return {
-//     type: IO_CLOSE,
-//     payload: data
-//   }
-// }
-
-// // 启动webSocket
-// export function startUpIo(obj) {
-//   if (initState.io) {
-//     io.send(obj);
-//   } else {
-//     return dispatch => {
-//       io = new WebSocket('ws://localhost:12460/webs');
-//       io.onopen = function () {
-//         // Web Socket 已连接上，使用 send() 方法发送数据
-//         io.send('打开');
-//         dispatch(IoOpen({
-//           io: true
-//         }))
-//       };
-
-//       io.onmessage = function (evt) {
-//         let received_msg = evt.data;
-//         console.log(evt);
-//         console.log(received_msg);
-//       };
-
-//       io.onclose = function () {
-//         // 关闭 websocket
-//         console.log('关闭');
-//       };
-//     }
-//   }
-// }
-
-// // 关闭webSocket
-// export function closeIo() {
-//   return dispatch => {
-//     io.close();
-//     dispatch(IoClose({
-//       io: false
-//     }))
-//   }
-// }
 
 export function indexListPage(data) {
 
 }
 
-// 获取分页数据 和 数据源数据
+// 獲取数据源数据 數據第一次切割
 export function getDataUp(data = {
   id: 1
 }, pageSize = 0) {
@@ -209,22 +152,24 @@ export function setSourceData(data) {
   }
 }
 
+// 當前輸入的數據
 export function setSourceDataInput(data) {
   return dispatch => {
     dispatch(registerSuccess(data));
   }
 }
+
 // 添加单个数据
 export function addSingleData(data, properties) {
   return dispatch => {
     Axios.post('/dataSource/addData', data).then(response => {
       if (response.data.code === 200) {
         if (properties.length < 10) {
-          let newProperties = properties.concat([]);
-          newProperties.push(data);
-          dispatch(registerSuccess({
-            properties: newProperties
-          }));
+          // let newProperties = properties.concat([]);
+          // newProperties.push(data);
+          // dispatch(registerSuccess({
+          //   properties: newProperties
+          // }));
         }
       }
     }, error => {

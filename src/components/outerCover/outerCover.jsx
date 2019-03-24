@@ -96,29 +96,6 @@ class OuterCover extends React.Component {
   // 组件将要卸载时调用，一些事件监听和定时器需要在此时清除。
   componentWillUnmount() { }
 
-  goee = () => {
-    this.setState({
-      number: this.state.number + 1
-    });
-    this.props.addSingleData(
-      {
-        canshuzhi:
-          "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
-        changePropertyId: "2",
-        changeTime: 5000,
-        dataSourceId: 1,
-        detailsDes: "嗷嗷嗷",
-        id: this.state.number,
-        isChangeStatus: "0",
-        methodId: 1,
-        simpleDes: "无",
-        status: "0",
-        value: "0"
-      },
-      this.props.properties
-    );
-  };
-
   // react最重要的步骤，创建虚拟dom，进行diff算法，更新dom树都在此进行。此时就不能更改state了。
   render() {
     /*
@@ -290,7 +267,7 @@ class OuterCover extends React.Component {
                     <td>
                       <Select
                         labelInValue
-                        defaultValue={{ key: "no" }}
+                        defaultValue={{ key: 'no'}}
                         style={{ width: 140 }}
                         onChange={this.handleChangeSelectFunction}
                       >
@@ -488,6 +465,7 @@ class OuterCover extends React.Component {
       default:
         return;
     }
+    
   };
 
   // 切换 页码 

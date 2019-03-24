@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { fromJS } from "immutable";
 import './index.less';
 
-
 // 查看發送數據 值
 export default class NumberSourcesMoth extends React.Component {
 
@@ -18,14 +17,14 @@ export default class NumberSourcesMoth extends React.Component {
 
   static defaultProps = {
     data: [],
+    modalVisible: false,
     title: '數據'
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      // 隱藏關閉
-      // modalVisible: true
+      searchWords: ''
     }
   }
 

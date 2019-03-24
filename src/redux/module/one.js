@@ -36,7 +36,6 @@ const initState = {
     status: "0",
     value: "0"
   }],
-  io: false,
   pageSize: 10,
   data: [ {
     key: '8',
@@ -195,7 +194,7 @@ export function getFirstData() {
   }
 }
 
-// 启动  关闭 数据源
+// 开始  关闭 数据源
 export function setSourceData(data) {
   return dispatch => {
     console.log(data);

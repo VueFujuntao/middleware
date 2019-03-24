@@ -1,81 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input, Button, Badge, Modal, Select, message, Icon, Tooltip } from "antd";
+import { Button, Badge, Modal, Select, message, Icon } from "antd";
 import { fromJS } from "immutable";
 import NumberSourcesMoth from '../NumberSourcesMoth/numberSourcesMoth.jsx';
+import NumericInput from '../numericInput/numericInput.jsx';
+import AddOrModifyNewData from '../addOrModifyNewData/addOrModifyNewData.jsx';
 import "./index.less";
 
 const Option = Select.Option;
 const confirm = Modal.confirm;
-
-// 输入框 控件
-class NumericInput extends React.Component {
-  onChange = e => {
-    const { value } = e.target;
-    const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
-    if (
-      (!Number.isNaN(value) && reg.test(value)) ||
-      value === "" ||
-      value === "-"
-    ) {
-      this.props.onChange(value);
-    }
-  };
-
-  // '.' at the end or only '-' in the input box.
-  onBlur = () => {
-    const { value, onBlur, onChange } = this.props;
-    if (value.toString().charAt(value.toString().length - 1) === "." || value === "-") {
-      onChange(value.toString().slice(0, -1));
-    }
-    if (onBlur) {
-      onBlur();
-    }
-  };
-
-  formatNumber(value) {
-    value += "";
-    const list = value.split(".");
-    const prefix = list[0].charAt(0) === "-" ? "-" : "";
-    let num = prefix ? list[0].slice(1) : list[0];
-    let result = "";
-    while (num.length > 3) {
-      result = `,${num.slice(-3)}${result}`;
-      num = num.slice(0, num.length - 3);
-    }
-    if (num) {
-      result = num + result;
-    }
-    return `${prefix}${result}${list[1] ? `.${list[1]}` : ""}`;
-  }
-
-  render() {
-    const { value } = this.props;
-    const title = value ? (
-      <span className="numeric-input-title">
-        {value !== "-" ? this.formatNumber(value) : "-"}
-      </span>
-    ) : (
-        "Input a number"
-      );
-    return (
-      <Tooltip
-        trigger={["focus"]}
-        title={title}
-        placement="topLeft"
-        overlayClassName="numeric-input"
-      >
-        <Input
-          {...this.props}
-          onChange={this.onChange}
-          onBlur={this.onBlur}
-          placeholder="Input a number"
-          maxLength={25}
-        />
-      </Tooltip>
-    );
-  }
-}
+const START = '开始';
+const STOP = '暂停';
 
 // 头部控件
 class Control extends React.Component {
@@ -84,8 +19,10 @@ class Control extends React.Component {
     this.state = {
       // 数据源 ID
       sourceId: -1,
-      startStop: '开始',
-      modalVisible: false
+      startStop: START,
+      modalVisible: false,
+      // 薪增数据 修改数据
+      addOrModifyNewDataVisible: false
     };
   }
 
@@ -116,6 +53,16 @@ class Control extends React.Component {
   };
 
   componentDidMount() {
+    const { status } = this.props;
+    if (status === 1) {
+      this.setState({
+        startStop: START
+      })
+    } else if (status === 0) {
+      this.setState({
+        startStop: STOP
+      })
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -130,12 +77,20 @@ class Control extends React.Component {
 
     return (
       <div className="control-context">
-        <NumberSourcesMoth data={this.props.data} setModalVisible={this.setModalVisible} modalVisible={this.state.modalVisible} />
+        <NumberSourcesMoth
+          data={this.props.data}
+          setModalVisible={this.setModalVisible}
+          modalVisible={this.state.modalVisible}
+        />
+        <AddOrModifyNewData
+          addOrModifyNewDataVisible={this.state.addOrModifyNewDataVisible}
+          onClose={this.onClose}
+        />
         <div>
           <Select
             style={{ width: 100 }}
             onChange={this.handleChangeSelect}
-            placeholder="Select a person"
+            placeholder="Select a data"
           >
             {allDataSources.map(item => {
               return (
@@ -162,7 +117,10 @@ class Control extends React.Component {
           />
         </div>
         <div>
-          <Button type="primary" onClick={() => this.setModalVisible(true)}>输出数据查看</Button>
+          <Button type="primary"
+            // 开启弹框 查看实时数据
+            onClick={() => this.setModalVisible(true)}
+          >输出数据查看</Button>
         </div>
         <div>
           <Button type="primary" onClick={this.OpenOrCloseDataSource}>
@@ -178,7 +136,10 @@ class Control extends React.Component {
           <Button type="primary">保存</Button>
         </div>
         <div>
-          <Button type="primary">新增数据</Button>
+          <Button type="primary" onClick={() => this.showDrawer()}>
+            <Icon type="plus" />
+            新增数据
+          </Button>
         </div>
         <div style={{ float: "right", marginRight: "20px" }}>
           <Icon
@@ -193,6 +154,7 @@ class Control extends React.Component {
 
   // 關閉 輸出數據源 彈框
   setModalVisible = (modalVisible) => {
+    if (this.state.sourceId === -1 && modalVisible) return message.error('暂无数据源可查');
     this.setState({ modalVisible });
   }
 
@@ -208,7 +170,7 @@ class Control extends React.Component {
 
   // 删除数据源
   showDeleteConfirm = () => {
-    if (this.state.sourceId === -1) return message.error("选中数据源");
+    if (this.state.sourceId === -1) return message.error("先选择数据源");
     let that = this;
     confirm({
       title: "您确定要删除此数据源吗?",
@@ -237,16 +199,34 @@ class Control extends React.Component {
 
   // 打开 或 关闭 数据源
   OpenOrCloseDataSource = () => {
-    if (this.state.startStop === '开始') {
+    if (this.state.sourceId === -1) return message.error("先选择数据源");
+    if (this.state.startStop === START) {
       this.setState({
-        startStop: '暂停'
+        startStop: STOP
       })
-    } else if (this.state.startStop === '暂停') {
+    } else if (this.state.startStop === STOP) {
       this.setState({
-        startStop: '开始'
+        startStop: START
       })
     }
     this.props.setSourceData(this.state.sourceId);
+  };
+
+  showDrawer = () => {
+    console.log(this)
+    this.setState({
+      addOrModifyNewDataVisible: true,
+    });
+  };
+
+  onClose = (v) => {
+    if (v !== false) {
+      let data = v.getFieldsValue();
+    } else {
+      this.setState({
+        addOrModifyNewDataVisible: false,
+      });
+    }
   };
 }
 

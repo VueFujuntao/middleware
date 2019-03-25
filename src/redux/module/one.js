@@ -1,12 +1,12 @@
 import Axios from '../../axios/index.js';
+import deepCopy from '../../utils/deepCopy.js';
+import {
+  message
+} from 'antd';
+
 const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
-
 const ERROR_MSG = 'ERROR_MSG';
-// const IO_OPEN = 'IO_OPEN';
-// const IO_CLOSE = 'IO_CLOSE';
-const ADD_SINGLE_DATA = 'ADD_SINGLE_DATA';
 
-// let io = null;
 // 默认值
 const initState = {
   msg: '',
@@ -15,39 +15,11 @@ const initState = {
   // 獲取到的總數據
   properties: [],
   // 展示的數據
-  indexList: [{
-    canshuzhi: "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
-    changePropertyId: "2",
-    changeTime: 5000,
-    dataSourceId: 1,
-    detailsDes: "嗷嗷嗷",
-    id: 1,
-    isChangeStatus: "0",
-    methodId: 1,
-    simpleDes: "无",
-    status: "0",
-    value: "0"
-  }, {
-    canshuzhi: "{'maxAlarmValue:50,'maxValue:100,'minAlarmValue:30,'minValue:0,'propertyId': '1}",
-    changePropertyId: "2",
-    changeTime: 5000,
-    dataSourceId: 1,
-    detailsDes: "嗷嗷嗷",
-    id: 2,
-    isChangeStatus: "0",
-    methodId: 1,
-    simpleDes: "无",
-    status: "0",
-    value: "0"
-  }],
+  indexList: [],
   // 頁面展示條數
   pageSize: 10,
-  // 查看的數據
-  data: [{
-    key: '8',
-    name: 'Jim Red',
-    age: 32,
-  }]
+  // 输出数据
+  message: ''
 }
 
 export function one(state = initState, action) {
@@ -57,11 +29,6 @@ export function one(state = initState, action) {
         ...state
       }
     case REGISTER_SUCCESS:
-      return {
-        ...state,
-        ...action.payload
-      }
-    case ADD_SINGLE_DATA:
       return {
         ...state,
         ...action.payload
@@ -102,6 +69,7 @@ export function getDataUp(data = {
     }).then(response => {
       if (response.status === 200 && response.data.code === 200) {
         let data = response.data.data;
+        console.log(data);
         data.indexList = response.data.data.properties.slice(0, pageSize);
         dispatch(registerSuccess(data));
       } else {
@@ -113,7 +81,7 @@ export function getDataUp(data = {
   }
 }
 
-// 切换 页码
+// 切换 页码截取数据
 export function switchPage(data) {
   return dispatch => {
     dispatch(registerSuccess({
@@ -130,6 +98,8 @@ export function getFirstData() {
         dispatch(registerSuccess({
           allDataSources: response.data.data
         }));
+      } else {
+        message.error(response.data.data);
       }
     }, err => {
       throw new Error(err);
@@ -138,21 +108,85 @@ export function getFirstData() {
 }
 
 // 开始  关闭 数据源
-export function setSourceData(data) {
+export function setSourceData(properties, sourceId, status, sendTime, name) {
   return dispatch => {
-    console.log(data);
-    // Axios.post('/dataSource/OpenOrCloseDataSource', {
-    //   dataSource: data
-    // }).then(response => {
-    //   console.log(response)
-    // }, error => {
-    //   throw new Error(error);
-    // })
-    // dispatch(registerSuccess(data));
+    Axios.put('/dataSource/OpenOrCloseDataSource', {
+      id: sourceId,
+      properties: properties,
+      status: status,
+      sendTime: sendTime,
+      name
+    }).then(response => {
+      console.log(response.data.code === 200);
+      if (response.data.code === 200) {
+        dispatch(registerSuccess({
+          status: status
+        }));
+      } else {
+        message.error(response.data.data);
+      }
+    }, error => {
+      throw new Error(error);
+    })
   }
 }
 
-// 當前輸入的數據
+// 打印输出数据
+export function printSendData(id) {
+  return dispatch => {
+    Axios.get('/dataSource/printSendData', {
+      params: {
+        id: id
+      }
+    }).then(response => {
+      if (response.data.code === 200) {
+        dispatch(registerSuccess({
+          message: response.data.data
+        }))
+      } else {
+        message.error(response.data.data);
+      }
+    })
+  }
+}
+
+// 启动 停用 数据
+export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
+  return dispatch => {
+    Axios.put('/dataSource/openOrCloseData', item).then(response => {
+      if (response.data.code === 200) {
+        let newIndexList = newProperties.slice(pageSize * (pageNum - 1), pageSize * (pageNum - 1) + pageSize);
+        dispatch(registerSuccess({
+          properties: newProperties,
+          indexList: newIndexList
+        }));
+        message.success(response.data.msg);
+      } else {
+        message.error(response.data.msg);
+      }
+    })
+  }
+}
+
+// 删除数据源
+export function deleteDataSource(id, allDataSources) {
+  return dispatch => {
+    Axios.delete(`/dataSource/deleteDataSource/${id}`).then(response => {
+      if (response.data.code === 200) {
+        let Properties = allDataSources.filter(item => {
+          return item.id !== id;
+        })
+        dispatch(registerSuccess({
+          allDataSources: Properties
+        }));
+      } else {
+        message.error(response.data.data);
+      }
+    })
+  }
+}
+
+// 當前輸入框的數據
 export function setSourceDataInput(data) {
   return dispatch => {
     dispatch(registerSuccess(data));
@@ -179,20 +213,21 @@ export function addSingleData(data, properties) {
 }
 
 // 删除单个数据
-export function deleteSingleData(dataCue, properties) {
+export function deleteSingleData(dataCue, properties, pageNum, pageSize) {
   return dispatch => {
-    Axios.delete('/dataSource/deleteData', {
-      data: {
-        id: dataCue.id
-      }
-    }).then(response => {
+    Axios.delete(`/dataSource/deleteData/${dataCue.id}`).then(response => {
       if (response.data.code === 200) {
         let Properties = properties.filter(item => {
           return item.id !== dataCue.id;
-        })
+        });
+        let newIndexList = Properties.slice(pageSize * (pageNum - 1), pageSize * (pageNum - 1) + pageSize);
         dispatch(registerSuccess({
-          properties: Properties
+          properties: Properties,
+          indexList: newIndexList
         }));
+        message.success("删除成功");
+      } else {
+        message.err('删除失败');
       }
     }, error => {
       throw new Error(error);

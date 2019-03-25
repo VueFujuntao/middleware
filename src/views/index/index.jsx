@@ -11,14 +11,16 @@ import Control from "../../components/control/control.jsx";
 // 蚂蚁 UI
 import {
   getFirstData,
-  // closeIo,
+  printSendData,
   deleteSingleData,
   getDataUp,
   addSingleData,
   setSourceDataInput,
   setSourceData,
   indexListPage,
-  switchPage
+  switchPage,
+  deleteDataSource,
+  openOrCloseUseData
 } from "../../redux/module/one.js";
 import "./index.less";
 
@@ -28,14 +30,16 @@ const { Header, Footer, Content } = Layout;
   state => state.one,
   {
     getFirstData,
-    // closeIo,
+    printSendData,
     getDataUp,
     deleteSingleData,
     addSingleData,
     setSourceDataInput,
     setSourceData,
     indexListPage,
-    switchPage
+    switchPage,
+    deleteDataSource,
+    openOrCloseUseData
   }
 )
 class Index extends Component {
@@ -51,6 +55,8 @@ class Index extends Component {
     sendTime: PropTypes.number,
     // 页面展示多少条数据
     pageSize: PropTypes.number,
+    // 输出数据
+    message: PropTypes.string,
     getFirstData: PropTypes.func,
     deleteSingleData: PropTypes.func,
     // closeIo: PropTypes.func,
@@ -73,7 +79,9 @@ class Index extends Component {
     // 发送 关闭状态码
     status: 1,
     // 发送时间
-    sendTime: 0
+    sendTime: 0,
+    // 输出数据
+    message: ""
   };
 
   constructor(props) {
@@ -81,10 +89,10 @@ class Index extends Component {
     this.state = {};
   }
 
-  componentWillMount() { }
+  componentWillMount() {}
 
   componentDidMount() {
-    // this.props.getFirstData();
+    this.props.getFirstData();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -123,11 +131,17 @@ class Index extends Component {
       pageSize,
       allDataSources,
       pageNum,
+      // 开始关闭状态
       status,
       sendTime,
+      name,
       indexList,
       switchPage,
-      data
+      data,
+      printSendData,
+      deleteDataSource,
+      message,
+      openOrCloseUseData
     } = this.props;
 
     return (
@@ -162,6 +176,16 @@ class Index extends Component {
               // 页面几条数据
               pageSize={pageSize}
               data={data}
+              // 数据总数
+              properties={properties}
+              //
+              name={name}
+              // 获取输出数据
+              printSendData={printSendData}
+              // 删除数据源
+              deleteDataSource={deleteDataSource}
+              // 输出数据查看
+              message={message}
             />
             {/* 表单组件 */}
             <OuterCover
@@ -176,6 +200,7 @@ class Index extends Component {
               indexList={indexList}
               // 切换页面 改变数据
               switchPage={switchPage}
+              openOrCloseUseData={openOrCloseUseData}
             />
           </div>
         </Content>

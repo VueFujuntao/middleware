@@ -2,15 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button, Badge, Modal, Select, message, Icon } from "antd";
 import { fromJS } from "immutable";
-import NumberSourcesMoth from '../NumberSourcesMoth/numberSourcesMoth.jsx';
-import NumericInput from '../numericInput/numericInput.jsx';
-import AddOrModifyNewData from '../addOrModifyNewData/addOrModifyNewData.jsx';
+import NumberSourcesMoth from "../NumberSourcesMoth/numberSourcesMoth.jsx";
+import NumericInput from "../numericInput/numericInput.jsx";
+import AddOrModifyNewData from "../addOrModifyNewData/addOrModifyNewData.jsx";
 import "./index.less";
 
 const Option = Select.Option;
 const confirm = Modal.confirm;
-const START = '开始';
-const STOP = '暂停';
+const START = "开始";
+const STOP = "暂停";
 
 // 头部控件
 class Control extends React.Component {
@@ -36,6 +36,8 @@ class Control extends React.Component {
     // 一页显示几条
     pageSize: PropTypes.number,
     data: PropTypes.array,
+    // 发送数据
+    message: PropTypes.string,
     getDataUp: PropTypes.func,
     // 修改发送时间 方法
     setSourceDataInput: PropTypes.func,
@@ -49,7 +51,9 @@ class Control extends React.Component {
     status: 1,
     // 发送时间
     sendTime: 0,
-    pageSize: 0
+    pageSize: 0,
+    // 发送数据
+    message: ""
   };
 
   componentDidMount() {
@@ -57,11 +61,11 @@ class Control extends React.Component {
     if (status === 1) {
       this.setState({
         startStop: START
-      })
+      });
     } else if (status === 0) {
       this.setState({
         startStop: STOP
-      })
+      });
     }
   }
 
@@ -73,12 +77,12 @@ class Control extends React.Component {
   }
 
   render() {
-    let { allDataSources, status, sendTime } = this.props;
-
+    let { allDataSources, status, sendTime, message } = this.props;
+    
     return (
       <div className="control-context">
         <NumberSourcesMoth
-          data={this.props.data}
+          data={message}
           setModalVisible={this.setModalVisible}
           modalVisible={this.state.modalVisible}
         />
@@ -88,9 +92,11 @@ class Control extends React.Component {
         />
         <div>
           <Select
+            ref="select"
             style={{ width: 100 }}
             onChange={this.handleChangeSelect}
             placeholder="Select a data"
+            key="1"
           >
             {allDataSources.map(item => {
               return (
@@ -105,8 +111,8 @@ class Control extends React.Component {
           {status === 1 ? (
             <Badge status="default" text="未启动" className="processing" />
           ) : (
-              <Badge status="processing" text="正在发送" className="processing" />
-            )}
+            <Badge status="processing" text="正在发送" className="processing" />
+          )}
         </div>
         <div>
           发送间隔:&nbsp;
@@ -117,29 +123,47 @@ class Control extends React.Component {
           />
         </div>
         <div>
-          <Button type="primary"
+          <Button
+            type="primary"
             // 开启弹框 查看实时数据
             onClick={() => this.setModalVisible(true)}
-            disabled={this.state.sourceId !== -1 ? false : true}
-          >输出数据查看</Button>
-        </div>
-        <div>
-          <Button disabled={this.state.sourceId !== -1 ? false : true} type="primary" onClick={this.OpenOrCloseDataSource}>
-            {this.state.startStop}
+            disabled={this.props.status === 1}
+          >
+            输出数据查看
           </Button>
         </div>
         <div>
-          <Button disabled={this.state.sourceId !== -1 ? false : true} onClick={this.showDeleteConfirm} type="primary">
+          <Button
+            disabled={this.state.sourceId !== -1 ? false : true}
+            type="primary"
+            onClick={this.OpenOrCloseDataSource}
+          >
+            {status === 1 ? "开启" : "关闭"}
+          </Button>
+        </div>
+        <div>
+          <Button
+            disabled={this.state.sourceId !== -1 ? false : true}
+            onClick={this.showDeleteConfirm}
+            type="primary"
+          >
             删除
           </Button>
         </div>
         <div>
-          <Button type="primary"
+          <Button
+            type="primary"
             disabled={this.state.sourceId !== -1 ? false : true}
-          >保存</Button>
+          >
+            保存
+          </Button>
         </div>
         <div>
-          <Button type="primary" disabled={this.state.sourceId !== -1 ? false : true} onClick={() => this.showDrawer()}>
+          <Button
+            type="primary"
+            disabled={this.state.sourceId !== -1 ? false : true}
+            onClick={() => this.showDrawer()}
+          >
             <Icon type="plus" />
             新增数据
           </Button>
@@ -156,19 +180,21 @@ class Control extends React.Component {
   }
 
   // 關閉 輸出數據源 彈框
-  setModalVisible = (modalVisible) => {
-    if (this.state.sourceId === -1 && modalVisible) return message.error('暂无数据源可查');
+  setModalVisible = modalVisible => {
+    if (this.state.sourceId === -1 && modalVisible)
+      return message.error("暂无数据源可查");
+    if (modalVisible) this.props.printSendData(this.state.sourceId);
     this.setState({ modalVisible });
-  }
+  };
 
   // 选中数据源
   handleChangeSelect = e => {
     // 当前数据源 ID
+    this.props.getDataUp({ id: e }, this.props.pageSize);
     this.setState({
       sourceId: e
     });
     // 获取数据源数据
-    this.props.getDataUp({ id: e }, this.props.pageSize);
   };
 
   // 删除数据源
@@ -181,8 +207,10 @@ class Control extends React.Component {
       okType: "danger",
       cancelText: "取消",
       onOk() {
-        console.log(that.state.sourceId);
-        console.log("OK");
+        that.props.deleteDataSource(
+          that.state.sourceId,
+          that.props.allDataSources
+        );
       },
       onCancel() {
         console.log("Cancel");
@@ -203,31 +231,38 @@ class Control extends React.Component {
   // 打开 或 关闭 数据源
   OpenOrCloseDataSource = () => {
     if (this.state.sourceId === -1) return message.error("先选择数据源");
-    if (this.state.startStop === START) {
-      this.setState({
-        startStop: STOP
-      })
-    } else if (this.state.startStop === STOP) {
-      this.setState({
-        startStop: START
-      })
+    if (this.props.status === 1) {
+      this.props.setSourceData(
+        this.props.properties,
+        this.state.sourceId,
+        0,
+        this.props.sendTime,
+        this.props.name
+      );
+    } else if (this.props.status === 0) {
+      this.props.setSourceData(
+        this.props.properties,
+        this.state.sourceId,
+        1,
+        this.props.sendTime,
+        this.props.name
+      );
     }
-    this.props.setSourceData(this.state.sourceId);
   };
 
   showDrawer = () => {
-    console.log(this)
+    console.log(this);
     this.setState({
-      addOrModifyNewDataVisible: true,
+      addOrModifyNewDataVisible: true
     });
   };
 
-  onClose = (v) => {
+  onClose = v => {
     if (v !== false) {
-      let data = v.getFieldsValue();
+      // let data = v.getFieldsValue();
     } else {
       this.setState({
-        addOrModifyNewDataVisible: false,
+        addOrModifyNewDataVisible: false
       });
     }
   };

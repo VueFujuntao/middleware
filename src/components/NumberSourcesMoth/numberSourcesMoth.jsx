@@ -14,7 +14,7 @@ import './index.less';
 export default class NumberSourcesMoth extends React.Component {
   // 定義 屬性
   static propTypes = {
-    data: PropTypes.array,
+    data: PropTypes.string,
     title: PropTypes.string,
     modalVisible: PropTypes.bool,
     setModalVisible: PropTypes.func
@@ -23,7 +23,7 @@ export default class NumberSourcesMoth extends React.Component {
   // 設置屬性默認值
   static defaultProps = {
     // 數據列表
-    data: [],
+    data: '',
     // 隱藏 顯示
     modalVisible: false,
     title: '數據'
@@ -47,18 +47,24 @@ export default class NumberSourcesMoth extends React.Component {
   render() {
     // 定義列表
     const columns = [{
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'KEY',
+      dataIndex: 'key',
+      key: 'key',
       width: '30%',
-      ...this.getColumnSearchProps('name'),
+      ...this.getColumnSearchProps('key'),
     }, {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Value',
+      dataIndex: 'value',
+      key: 'value',
       width: '70%'
     }];
+
+    let newData = [];
     const { title, data, modalVisible, setModalVisible } = this.props;
+    if (data !== '') {
+      newData = JSON.parse(data)[0].data;
+      console.log(newData)
+    }
     return (
       <Modal
         className="modal-table"
@@ -71,7 +77,7 @@ export default class NumberSourcesMoth extends React.Component {
         <Table
           scroll={{ y: 340 }}
           columns={columns}
-          dataSource={data} />
+          dataSource={newData} />
       </Modal>
     )
   }

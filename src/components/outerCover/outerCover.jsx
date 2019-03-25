@@ -16,8 +16,9 @@ import {
 } from "antd";
 // PropTypes props类型检查
 import PropTypes from "prop-types";
-import "./index.less";
+import deepCopy from '../../utils/deepCopy.js';
 
+import "./index.less";
 const Option = Select.Option;
 const InputGroup = Input.Group;
 
@@ -39,7 +40,8 @@ class OuterCover extends React.Component {
     // 添加单个数据
     addSingleData: PropTypes.func,
     // 切换页码
-    switchPage: PropTypes.func
+    switchPage: PropTypes.func,
+    openOrCloseUseData: PropTypes.func
   };
 
   // 设置默认 props 值
@@ -65,22 +67,31 @@ class OuterCover extends React.Component {
       PolylineCycle: false,
       VolatilityValue: false,
       RandomValue: false,
-      Sinusoidal: false
+      Sinusoidal: false,
+      pageNum: 1
     };
   }
 
   // 组件初始化时只调用，以后组件更新不调用，整个生命周期只调用一次，此时可以修改state。
-  componentWillMount() { }
+  componentWillMount() {}
 
   // 组件渲染之后调用，只调用一次。
-  componentDidMount() { }
+  componentDidMount() {}
 
   // 组件初始化时不调用，组件接受新的props时调用。
-  componentWillReceiveProps(nextProps) { }
+  componentWillReceiveProps(nextProps) {}
   /*
     react性能优化非常重要的一环。组件接受新的state或者props时调用，我们可以设置在此对比前后两个props和state是否相同，如果相同则返回false阻止更新，因为相同的属性状态一定会生成相同的dom树，这样就不需要创造新的dom树和旧的dom树进行diff算法对比，节省大量性能，尤其是在dom结构复杂的时候
   */
   shouldComponentUpdate(nextProps, nextState) {
+    console.log(this.props.properties);
+    console.log(nextProps);
+    console.log(
+      !(
+        fromJS(nextProps).equals(fromJS(this.props)) &&
+        fromJS(nextState).equals(fromJS(this.state))
+      )
+    );
     return !(
       fromJS(nextProps).equals(fromJS(this.props)) &&
       fromJS(nextState).equals(fromJS(this.state))
@@ -88,13 +99,13 @@ class OuterCover extends React.Component {
   }
 
   // 组件初始化时不调用，只有在组件将要更新时才调用，此时可以修改state
-  componentWillUpdate(nextProps, nextState) { }
+  componentWillUpdate(nextProps, nextState) {}
 
   // 组件初始化时不调用，组件更新完成后调用，此时可以获取dom节点。
-  componentDidUpdate() { }
+  componentDidUpdate() {}
 
   // 组件将要卸载时调用，一些事件监听和定时器需要在此时清除。
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
   // react最重要的步骤，创建虚拟dom，进行diff算法，更新dom树都在此进行。此时就不能更改state了。
   render() {
@@ -109,11 +120,11 @@ class OuterCover extends React.Component {
       indexList,
       // 启用数据
       sendIoItem,
-      pageNum,
       // 一页 几条数据
-      pageSize
+      pageSize,
+      openOrCloseUseData
     } = this.props;
-
+    console.log(this.props.properties);
     return (
       <div className="less-context">
         {/* PolylineCycle */}
@@ -257,100 +268,166 @@ class OuterCover extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {
-              indexList.map((item, index) => {
-                return (
-                  <tr key={item.id} className="table-tr">
-                    <th>{index + 1 + (pageNum - 1) * 10}</th>
-                    <td>{item.id}</td>
-                    <td>{item.attributeName}</td>
-                    <td>
-                      <Select
-                        labelInValue
-                        defaultValue={{ key: 'no'}}
-                        style={{ width: 140 }}
-                        onChange={this.handleChangeSelectFunction}
-                      >
-                        <Option value="no">无</Option>
-                        <Option value="PolylineCycle">折线周期函数</Option>
-                        <Option value="VolatilityValue">波动取值函数</Option>
-                        <Option value="RandomValue">随机取值函数</Option>
-                        <Option value="Sinusoidal">类正弦函数</Option>
-                      </Select>
-                    </td>
-                    <td />
-                    <td>
-                      <Select
-                        labelInValue
-                        defaultValue={{ key: "general" }}
-                        style={{ width: 120 }}
-                        onChange={this.handleChangeSelect}
-                      >
-                        <Option value="general">一般</Option>
-                        <Option value="Subdata">子数据</Option>
-                      </Select>
-                    </td>
-                    <td>
-                      <Select
-                        labelInValue
-                        defaultValue={{ key: "1" }}
-                        style={{ width: 90 }}
-                        onChange={this.handleChangeSelect}
-                      >
-                        <Option value="1">1秒</Option>
-                        <Option value="5">5秒</Option>
-                        <Option value="10">10秒</Option>
-                        <Option value="30">30秒</Option>
-                        <Option value="60">1分钟</Option>
-                        <Option value="300">5分钟</Option>
-                        <Option value="900">15分钟</Option>
-                        <Option value="1800">30分钟</Option>
-                        <Option value="3600">1小时</Option>
-                        <Option value="10800">3小时</Option>
-                        <Option value="32400">6小时</Option>
-                        <Option value="64800">12小时</Option>
-                        <Option value="129600">24小时</Option>
-                      </Select>
-                    </td>
-                    <td>
-                      <Button
-                        type="primary"
-                        onClick={() => sendIoItem(item)}
-                        size="small"
-                        style={{ marginRight: "10px" }}
-                      >
-                        启动
+            {indexList.map((item, index) => {
+              return (
+                <tr key={item.id} className="table-tr">
+                  <th>{index + 1 + (this.state.pageNum - 1) * 10}</th>
+                  <td>{item.id}</td>
+                  <td>{item.value}</td>
+                  <td>
+                    <Select
+                      labelInValue
+                      defaultValue={
+                        item.methodId === 1
+                          ? { key: "no" }
+                          : item.methodId === 2
+                          ? { key: "PolylineCycle" }
+                          : item.methodId === 3
+                          ? { key: "VolatilityValue" }
+                          : item.methodId === 4
+                          ? { key: "RandomValue" }
+                          : item.methodId === 5
+                          ? { key: "Sinusoidal" }
+                          : item.methodId === 6
+                          ? { key: "RandomProbability" }
+                          : { key: "no" }
+                      }
+                      style={{ width: 140 }}
+                      onChange={this.handleChangeSelectFunction}
+                    >
+                      <Option value="no">无</Option>
+                      <Option value="PolylineCycle">折线周期函数</Option>
+                      <Option value="VolatilityValue">波动取值函数</Option>
+                      <Option value="RandomValue">随机取值函数</Option>
+                      <Option value="Sinusoidal">类正弦函数</Option>
+                      <Option value="RandomProbability">随机概率函数</Option>
+                    </Select>
+                  </td>
+                  <td>{item.detailsDes}</td>
+                  <td>
+                    <Select
+                      labelInValue
+                      defaultValue={
+                        item.isParentData === 0
+                          ? { key: "general" }
+                          : item.isParentData === 1
+                          ? { key: "Subdata" }
+                          : { key: "general" }
+                      }
+                      style={{ width: 120 }}
+                      onChange={this.handleChangeSelect}
+                    >
+                      <Option value="general">一般</Option>
+                      <Option value="Subdata">子数据</Option>
+                    </Select>
+                  </td>
+                  <td>
+                    <Select
+                      labelInValue
+                      defaultValue={
+                        item.changeTime === 1000
+                          ? { key: "1" }
+                          : item.changeTime === 5000
+                          ? { key: "5" }
+                          : item.changeTime === 10000
+                          ? { key: "10" }
+                          : item.changeTime === 30000
+                          ? { key: "30" }
+                          : item.changeTime === 60000
+                          ? { key: "60" }
+                          : item.changeTime === 300000
+                          ? { key: "300" }
+                          : item.changeTime === 900000
+                          ? { key: "900" }
+                          : item.changeTime === 1800000
+                          ? { key: "1800" }
+                          : item.changeTime === 3600000
+                          ? { key: "3600" }
+                          : item.changeTime === 10800000
+                          ? { key: "10800" }
+                          : item.changeTime === 32400000
+                          ? { key: "32400" }
+                          : item.changeTime === 64800000
+                          ? { key: "64800" }
+                          : item.changeTime === 129600000
+                          ? { key: "129600" }
+                          : { key: "1" }
+                      }
+                      style={{ width: 90 }}
+                      onChange={this.handleChangeSelect}
+                    >
+                      <Option value="1">1秒</Option>
+                      <Option value="5">5秒</Option>
+                      <Option value="10">10秒</Option>
+                      <Option value="30">30秒</Option>
+                      <Option value="60">1分钟</Option>
+                      <Option value="300">5分钟</Option>
+                      <Option value="900">15分钟</Option>
+                      <Option value="1800">30分钟</Option>
+                      <Option value="3600">1小时</Option>
+                      <Option value="10800">3小时</Option>
+                      <Option value="32400">6小时</Option>
+                      <Option value="64800">12小时</Option>
+                      <Option value="129600">24小时</Option>
+                    </Select>
+                  </td>
+                  <td>
+                    <Button
+                      type="primary"
+                      onClick={() =>
+                        this.openOrCloseUseData(
+                          item,
+                          properties,
+                          this.state.pageNum,
+                          pageSize
+                        )
+                      }
+                      size="small"
+                      style={{ marginRight: "10px" }}
+                    >
+                      {item.isOn === 1 ? "停用" : "启用"}
                     </Button>
-                      <Popconfirm
-                        title="您确定要删除此数据吗?"
-                        onConfirm={() => this.handledeleteSingleData(item)}
-                        onCancel={this.cancel}
-                        okText="确定"
-                        cancelText="取消"
-                      >
-                        <Button type="danger" size="small">
-                          删除
+                    <Popconfirm
+                      title="您确定要删除此数据吗?"
+                      onConfirm={() => this.handledeleteSingleData(item)}
+                      onCancel={this.cancel}
+                      okText="确定"
+                      cancelText="取消"
+                    >
+                      <Button type="danger" size="small">
+                        删除
                       </Button>
-                      </Popconfirm>
-                    </td>
-                    <td>
-                      <Select
-                        labelInValue
-                        defaultValue={{ key: "wanting" }}
-                        style={{ width: 120 }}
-                        onChange={this.handleChangeSelect}
-                      >
-                        <Option value="wanting">无</Option>
-                        <Option value="Fire">火灾</Option>
-                        <Option value="LeakingWater">漏水</Option>
-                        <Option value="Intrusion">闯入</Option>
-                        <Option value="UPSTemperatureTooHigh">UPS温度过高</Option>
-                      </Select>
-                    </td>
-                  </tr>
-                );
-              })
-            }
+                    </Popconfirm>
+                  </td>
+                  <td>
+                    <Select
+                      labelInValue
+                      defaultValue={
+                        item.importantAlarmId === 1
+                          ? { key: "wanting" }
+                          : item.importantAlarmId === 2
+                          ? { key: "Fire" }
+                          : item.importantAlarmId === 3
+                          ? { key: "LeakingWater" }
+                          : item.importantAlarmId === 4
+                          ? { key: "Intrusion" }
+                          : item.importantAlarmId === 5
+                          ? { key: "UPSTemperatureTooHigh" }
+                          : { key: "wanting" }
+                      }
+                      style={{ width: 120 }}
+                      onChange={this.handleChangeSelect}
+                    >
+                      <Option value="wanting">无</Option>
+                      <Option value="Fire">火灾</Option>
+                      <Option value="LeakingWater">漏水</Option>
+                      <Option value="Intrusion">闯入</Option>
+                      <Option value="UPSTemperatureTooHigh">UPS温度过高</Option>
+                    </Select>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         {indexList.length === 0 ? <Empty style={{ marginTop: 20 }} /> : null}
@@ -368,13 +445,26 @@ class OuterCover extends React.Component {
 
   // 删除单条数据
   handledeleteSingleData = item => {
-    let { deleteSingleData, properties } = this.props;
+    let { deleteSingleData, properties, pageSize } = this.props;
     if (deleteSingleData === undefined) return;
     // 发送Delete请求 删除
-    deleteSingleData(item, properties);
-    message.success("删除成功");
+    deleteSingleData(item, properties, this.state.pageNum, pageSize);
   };
 
+  openOrCloseUseData(item, properties, pageNum, pageSize) {
+    let newProperties = deepCopy(properties);
+    for (let i = 0; i < newProperties.length; i++) {
+      if (item.id === newProperties[i].id) {
+        if (item.isOn === 0) {
+          newProperties[i].isOn = 1;
+          this.props.openOrCloseUseData(newProperties, newProperties[i], pageNum, pageSize);
+        } else if (item.isOn === 1) {
+          newProperties[i].isOn = 0;
+          this.props.openOrCloseUseData(newProperties, newProperties[i], pageNum, pageSize);
+        }
+      }
+    }
+  }
   cancel(e) {
     message.error("取消删除");
   }
@@ -465,20 +555,26 @@ class OuterCover extends React.Component {
       default:
         return;
     }
-    
   };
 
-  // 切换 页码 
+  // 切换 页码
   pagination = e => {
     // 获取 一页几条数据
     let { pageSize, switchPage } = this.props;
     if (switchPage === undefined) return;
-    let data = this.props.properties.slice(pageSize * (e - 1), pageSize * (e - 1) + pageSize);
+    let data = this.props.properties.slice(
+      pageSize * (e - 1),
+      pageSize * (e - 1) + pageSize
+    );
+    // 修改当前页
+    this.setState({
+      pageNum: e
+    });
     // 改变数据
     this.props.switchPage(data);
   };
 
-  HandlerDeleteData() { }
+  HandlerDeleteData() {}
 
   HandleChange(value, id, index) {
     console.log(12);
@@ -487,8 +583,8 @@ class OuterCover extends React.Component {
   buttonMoth(title) {
     console.log(title);
   }
-  
-  onChange() { }
+
+  onChange() {}
 }
 
 // es6 模块导出

@@ -16,6 +16,7 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 * compose写深度嵌套的函数
 */ 
 import { createStore, applyMiddleware, compose } from "redux";
+// 解决异步事件
 import thunk from "redux-thunk";
 // Provider 用来保持与 store 的更新
 import { Provider } from "react-redux";

@@ -14,48 +14,62 @@ const STOP = "暂停";
 
 // 头部控件
 class Control extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // 数据源 ID
-      sourceId: -1,
-      startStop: START,
-      modalVisible: false,
-      // 薪增数据 修改数据
-      addOrModifyNewDataVisible: false
-    };
-  }
 
   static propTypes = {
     // 数据源数据列表
     allDataSources: PropTypes.array,
+    properties: PropTypes.array,
+    indexList: PropTypes.array,
     // 发送 关闭状态码
     status: PropTypes.number,
     // 发送时间
     sendTime: PropTypes.number,
     // 一页显示几条
     pageSize: PropTypes.number,
+    pageNum: PropTypes.number,
     data: PropTypes.array,
     // 发送数据
     message: PropTypes.string,
+    // 数据源名称
+    name: PropTypes.string,
     getDataUp: PropTypes.func,
     // 修改发送时间 方法
     setSourceDataInput: PropTypes.func,
-    setSourceData: PropTypes.func
+    setSourceData: PropTypes.func,
+    addSingleData: PropTypes.func
   };
 
   static defaultProps = {
     // 数据源数据列表
     allDataSources: [],
+    properties: [],
+    indexList: [],
     // 发送 关闭状态码
     status: 1,
     // 发送时间
     sendTime: 0,
+    // 一页显示几条
     pageSize: 0,
+    pageNum: 1,
     // 发送数据
-    message: ""
+    message: "",
+    // 数据源名称
+    name: ""
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      // 数据源 ID
+      sourceId: -1,
+      // 开始关闭数据源
+      startStop: START,
+      modalVisible: false,
+      // 薪增数据 修改数据
+      addOrModifyNewDataVisible: false
+    };
+  }
+  
   componentDidMount() {
     const { status } = this.props;
     if (status === 1) {
@@ -77,17 +91,28 @@ class Control extends React.Component {
   }
 
   render() {
-    let { allDataSources, status, sendTime, message } = this.props;
-    
+    let {
+      // 数据源数据列表
+      allDataSources,
+      // 发送 关闭状态码
+      status,
+      // 发送时间
+      sendTime,
+      // 发送数据
+      message
+    } = this.props;
+
+    let { modalVisible, addOrModifyNewDataVisible, sourceId } = this.state;
+
     return (
       <div className="control-context">
         <NumberSourcesMoth
           data={message}
           setModalVisible={this.setModalVisible}
-          modalVisible={this.state.modalVisible}
+          modalVisible={modalVisible}
         />
         <AddOrModifyNewData
-          addOrModifyNewDataVisible={this.state.addOrModifyNewDataVisible}
+          addOrModifyNewDataVisible={addOrModifyNewDataVisible}
           onClose={this.onClose}
         />
         <div>
@@ -127,14 +152,14 @@ class Control extends React.Component {
             type="primary"
             // 开启弹框 查看实时数据
             onClick={() => this.setModalVisible(true)}
-            disabled={this.props.status === 1}
+            disabled={status === 1}
           >
             输出数据查看
           </Button>
         </div>
         <div>
           <Button
-            disabled={this.state.sourceId !== -1 ? false : true}
+            disabled={sourceId !== -1 ? false : true}
             type="primary"
             onClick={this.OpenOrCloseDataSource}
           >
@@ -143,7 +168,7 @@ class Control extends React.Component {
         </div>
         <div>
           <Button
-            disabled={this.state.sourceId !== -1 ? false : true}
+            disabled={sourceId !== -1 ? false : true}
             onClick={this.showDeleteConfirm}
             type="primary"
           >
@@ -151,17 +176,14 @@ class Control extends React.Component {
           </Button>
         </div>
         <div>
-          <Button
-            type="primary"
-            disabled={this.state.sourceId !== -1 ? false : true}
-          >
+          <Button type="primary" disabled={sourceId !== -1 ? false : true}>
             保存
           </Button>
         </div>
         <div>
           <Button
             type="primary"
-            disabled={this.state.sourceId !== -1 ? false : true}
+            disabled={sourceId !== -1 ? false : true}
             onClick={() => this.showDrawer()}
           >
             <Icon type="plus" />
@@ -218,54 +240,130 @@ class Control extends React.Component {
     });
   };
 
+  // 修改input发送时间
   onChange = value => {
     this.props.setSourceDataInput({ sendTime: Number(value) });
   };
 
-  updata = () => {
-    this.setState({
-      sourcesName: this.props.allDataSources[0].name
-    });
-  };
-
   // 打开 或 关闭 数据源
   OpenOrCloseDataSource = () => {
-    if (this.state.sourceId === -1) return message.error("先选择数据源");
-    if (this.props.status === 1) {
-      this.props.setSourceData(
-        this.props.properties,
-        this.state.sourceId,
-        0,
-        this.props.sendTime,
-        this.props.name
-      );
-    } else if (this.props.status === 0) {
-      this.props.setSourceData(
-        this.props.properties,
-        this.state.sourceId,
-        1,
-        this.props.sendTime,
-        this.props.name
-      );
+    let { name, sendTime, properties, status, setSourceData } = this.props;
+    let { sourceId } = this.state;
+    if (sourceId === -1) return message.error("先选择数据源");
+    if (status === 1) {
+      setSourceData(properties, sourceId, 0, sendTime, name);
+    } else if (status === 0) {
+      setSourceData(properties, sourceId, 1, sendTime, name);
     }
   };
 
+  // 新增数据 弹框打开
   showDrawer = () => {
-    console.log(this);
     this.setState({
       addOrModifyNewDataVisible: true
     });
   };
 
+  // 关闭弹框
   onClose = v => {
+    console.log(v);
     if (v !== false) {
-      // let data = v.getFieldsValue();
+      let data = v.getFieldsValue();
+      console.log(data);
+      let {
+        methodId,
+        changeTime,
+        detailsDes,
+        importantAlarmId,
+        isParentData,
+        maxAlarmValue,
+        maxValue,
+        minValue,
+        value,
+        minAlarmValue,
+        dValue,
+        subValue,
+        addValue
+      } = data;
+      if (methodId !== undefined) {
+        methodId = Number(methodId);
+      }
+      if (changeTime !== undefined) {
+        changeTime = Number(changeTime);
+      }
+      if (importantAlarmId !== undefined) {
+        importantAlarmId = Number(importantAlarmId);
+      }
+      if (isParentData !== undefined) {
+        isParentData = Number(isParentData);
+      }
+      if (maxAlarmValue !== undefined) {
+        maxAlarmValue = Number(maxAlarmValue);
+      }
+      if (minAlarmValue !== undefined) {
+        minAlarmValue = Number(minAlarmValue);
+      }
+      if (maxValue !== undefined) {
+        maxValue = Number(maxValue);
+      }
+      if (minValue !== undefined) {
+        minValue = Number(minValue);
+      }
+      if (value !== undefined) {
+        value = Number(value);
+      }
+      if (dValue !== undefined) {
+        dValue = Number(dValue);
+      }
+      if (subValue !== undefined) {
+        subValue = Number(subValue);
+      }
+      if (addValue !== undefined) {
+        addValue = Number(addValue);
+      }
+      let dataSourceId = this.state.sourceId;
+      let newData = {
+        canshuzhi: JSON.stringify({
+          maxAlarmValue,
+          maxValue,
+          minAlarmValue,
+          minValue,
+          dValue,
+          subValue,
+          addValue
+        }),
+        value,
+        methodId,
+        detailsDes,
+        dataSourceId,
+        changeTime,
+        importantAlarmId,
+        isParentData
+      };
+
+      // 结构参数
+      let {
+        properties,
+        indexList,
+        pageSize,
+        pageNum,
+        addSingleData
+      } = this.props;
+      // 增加单个数据
+      addSingleData(newData, properties, indexList, pageSize, pageNum);
+      // 关闭弹框
+      this.setState({
+        addOrModifyNewDataVisible: false
+      });
     } else {
       this.setState({
         addOrModifyNewDataVisible: false
       });
     }
+    // 清空表单
+    v.resetFields();
   };
+
 }
 
 export default Control;

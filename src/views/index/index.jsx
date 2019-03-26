@@ -10,17 +10,20 @@ import OuterCover from "../../components/outerCover/outerCover.jsx";
 import Control from "../../components/control/control.jsx";
 // 蚂蚁 UI
 import {
+  // 获取数据列表
   getFirstData,
   printSendData,
   deleteSingleData,
   getDataUp,
   addSingleData,
   setSourceDataInput,
+  // 开始  关闭 数据源
   setSourceData,
   indexListPage,
   switchPage,
   deleteDataSource,
-  openOrCloseUseData
+  openOrCloseUseData,
+  switchPageNum
 } from "../../redux/module/one.js";
 import "./index.less";
 
@@ -29,17 +32,20 @@ const { Header, Footer, Content } = Layout;
 @connect(
   state => state.one,
   {
+    // 获取数据列表
     getFirstData,
     printSendData,
     getDataUp,
     deleteSingleData,
     addSingleData,
     setSourceDataInput,
+    // 开始  关闭 数据源
     setSourceData,
     indexListPage,
     switchPage,
     deleteDataSource,
-    openOrCloseUseData
+    openOrCloseUseData,
+    switchPageNum
   }
 )
 class Index extends Component {
@@ -48,23 +54,25 @@ class Index extends Component {
     // 数据源数据总数
     properties: PropTypes.array,
     indexList: PropTypes.array,
-    pageNum: PropTypes.number,
     // 发送 关闭状态码
     status: PropTypes.number,
     // 发送时间
     sendTime: PropTypes.number,
     // 页面展示多少条数据
     pageSize: PropTypes.number,
+    pageNum: PropTypes.number,
     // 输出数据
     message: PropTypes.string,
+    // 获取数据列表
     getFirstData: PropTypes.func,
     deleteSingleData: PropTypes.func,
-    // closeIo: PropTypes.func,
     getDataUp: PropTypes.func,
     addSingleData: PropTypes.func,
     setSourceDataInput: PropTypes.func,
+    // 开始  关闭 数据源
     setSourceData: PropTypes.func,
-    switchPage: PropTypes.func
+    switchPage: PropTypes.func,
+    switchPageNum: PropTypes.func
   };
   // 设置默认 props 值
   static defaultProps = {
@@ -92,6 +100,7 @@ class Index extends Component {
   componentWillMount() {}
 
   componentDidMount() {
+    // 获取数据列表
     this.props.getFirstData();
   }
 
@@ -127,13 +136,15 @@ class Index extends Component {
       properties,
       deleteSingleData,
       setSourceDataInput,
+      // 开始  关闭 数据源
       setSourceData,
+      // 页面大小
       pageSize,
       allDataSources,
-      pageNum,
       // 开始关闭状态
       status,
       sendTime,
+      // 数据源名称
       name,
       indexList,
       switchPage,
@@ -141,7 +152,9 @@ class Index extends Component {
       printSendData,
       deleteDataSource,
       message,
-      openOrCloseUseData
+      openOrCloseUseData,
+      pageNum,
+      switchPageNum
     } = this.props;
 
     return (
@@ -171,14 +184,16 @@ class Index extends Component {
               status={status}
               // 数据源发送时间
               sendTime={sendTime}
+              // 修改发送时间 方法
               setSourceDataInput={setSourceDataInput}
+              // 开始  关闭 数据源
               setSourceData={setSourceData}
               // 页面几条数据
               pageSize={pageSize}
               data={data}
               // 数据总数
               properties={properties}
-              //
+              // 数据源名称
               name={name}
               // 获取输出数据
               printSendData={printSendData}
@@ -186,21 +201,31 @@ class Index extends Component {
               deleteDataSource={deleteDataSource}
               // 输出数据查看
               message={message}
+              // 添加单个数据
+              addSingleData={addSingleData}
+              // 当前页的数据
+              indexList={indexList}
+              // 当前页码
+              pageNum={pageNum}
             />
             {/* 表单组件 */}
             <OuterCover
-              sendIoItem={this.sendIoItem}
-              stopIoItem={this.stopIoItem}
-              // 页面几条数据
+              // 页面几条数据 -- 数字
               pageSize={pageSize}
+              // 删除单个数据
               deleteSingleData={deleteSingleData}
-              addSingleData={addSingleData}
+              // 总数据 -- 数组
               properties={properties}
-              pageNum={pageNum}
+              // 当前页的数据 -- 数组
               indexList={indexList}
-              // 切换页面 改变数据
+              // 切换页面 改变数据 -- 方法
               switchPage={switchPage}
+              // 开启 关闭数据 -- 方法
               openOrCloseUseData={openOrCloseUseData}
+              // 当前页码 -- 数字
+              pageNum={pageNum}
+              // 切换页码 -- 方法
+              switchPageNum={switchPageNum}
             />
           </div>
         </Content>

@@ -5,7 +5,8 @@ import PropTypes from "prop-types";
 // 输入框 控件
 export default class NumericInput extends React.Component {
   static propTypes = {
-    value : PropTypes.number
+    value : PropTypes.number,
+    onChange: PropTypes.func
   }
 
   static defaultProps = {

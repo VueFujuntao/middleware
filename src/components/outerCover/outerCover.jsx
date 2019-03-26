@@ -16,7 +16,7 @@ import {
 } from "antd";
 // PropTypes props类型检查
 import PropTypes from "prop-types";
-import deepCopy from '../../utils/deepCopy.js';
+import deepCopy from "../../utils/deepCopy.js";
 
 import "./index.less";
 const Option = Select.Option;
@@ -31,17 +31,18 @@ class OuterCover extends React.Component {
     indexList: PropTypes.array,
     // 页面数据几条
     pageSize: PropTypes.number,
+    // 当前页码
     pageNum: PropTypes.number,
-    stopIoItem: PropTypes.func,
-    // 启用数据
-    sendIoItem: PropTypes.func,
     // 删除单个数据
     deleteSingleData: PropTypes.func,
     // 添加单个数据
     addSingleData: PropTypes.func,
     // 切换页码
     switchPage: PropTypes.func,
-    openOrCloseUseData: PropTypes.func
+    // 开启 关闭数据
+    openOrCloseUseData: PropTypes.func,
+    // 切换当前页码
+    switchPageNum: PropTypes.func
   };
 
   // 设置默认 props 值
@@ -50,7 +51,9 @@ class OuterCover extends React.Component {
     properties: [],
     // 当前页的数据
     indexList: [],
+    // 一页 几条数据
     pageSize: 0,
+    // 当前页码
     pageNum: 1
   };
   /*
@@ -67,8 +70,7 @@ class OuterCover extends React.Component {
       PolylineCycle: false,
       VolatilityValue: false,
       RandomValue: false,
-      Sinusoidal: false,
-      pageNum: 1
+      Sinusoidal: false
     };
   }
 
@@ -84,14 +86,6 @@ class OuterCover extends React.Component {
     react性能优化非常重要的一环。组件接受新的state或者props时调用，我们可以设置在此对比前后两个props和state是否相同，如果相同则返回false阻止更新，因为相同的属性状态一定会生成相同的dom树，这样就不需要创造新的dom树和旧的dom树进行diff算法对比，节省大量性能，尤其是在dom结构复杂的时候
   */
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(this.props.properties);
-    console.log(nextProps);
-    console.log(
-      !(
-        fromJS(nextProps).equals(fromJS(this.props)) &&
-        fromJS(nextState).equals(fromJS(this.state))
-      )
-    );
     return !(
       fromJS(nextProps).equals(fromJS(this.props)) &&
       fromJS(nextState).equals(fromJS(this.state))
@@ -118,13 +112,12 @@ class OuterCover extends React.Component {
       properties,
       // 当前页的数据
       indexList,
-      // 启用数据
-      sendIoItem,
       // 一页 几条数据
       pageSize,
-      openOrCloseUseData
+      // 当前页码
+      pageNum
     } = this.props;
-    console.log(this.props.properties);
+
     return (
       <div className="less-context">
         {/* PolylineCycle */}
@@ -271,7 +264,7 @@ class OuterCover extends React.Component {
             {indexList.map((item, index) => {
               return (
                 <tr key={item.id} className="table-tr">
-                  <th>{index + 1 + (this.state.pageNum - 1) * 10}</th>
+                  <th>{index + 1 + (pageNum - 1) * 10}</th>
                   <td>{item.id}</td>
                   <td>{item.value}</td>
                   <td>
@@ -288,8 +281,6 @@ class OuterCover extends React.Component {
                           ? { key: "RandomValue" }
                           : item.methodId === 5
                           ? { key: "Sinusoidal" }
-                          : item.methodId === 6
-                          ? { key: "RandomProbability" }
                           : { key: "no" }
                       }
                       style={{ width: 140 }}
@@ -300,7 +291,6 @@ class OuterCover extends React.Component {
                       <Option value="VolatilityValue">波动取值函数</Option>
                       <Option value="RandomValue">随机取值函数</Option>
                       <Option value="Sinusoidal">类正弦函数</Option>
-                      <Option value="RandomProbability">随机概率函数</Option>
                     </Select>
                   </td>
                   <td>{item.detailsDes}</td>
@@ -378,7 +368,7 @@ class OuterCover extends React.Component {
                         this.openOrCloseUseData(
                           item,
                           properties,
-                          this.state.pageNum,
+                          pageNum,
                           pageSize
                         )
                       }
@@ -445,22 +435,35 @@ class OuterCover extends React.Component {
 
   // 删除单条数据
   handledeleteSingleData = item => {
-    let { deleteSingleData, properties, pageSize } = this.props;
+    let { deleteSingleData, properties, pageSize, pageNum } = this.props;
     if (deleteSingleData === undefined) return;
     // 发送Delete请求 删除
-    deleteSingleData(item, properties, this.state.pageNum, pageSize);
+    deleteSingleData(item, properties, pageNum, pageSize);
   };
 
+  // 启动关闭数据
   openOrCloseUseData(item, properties, pageNum, pageSize) {
+    console.log(item);
+    // 数组对象深度克隆
     let newProperties = deepCopy(properties);
     for (let i = 0; i < newProperties.length; i++) {
       if (item.id === newProperties[i].id) {
         if (item.isOn === 0) {
           newProperties[i].isOn = 1;
-          this.props.openOrCloseUseData(newProperties, newProperties[i], pageNum, pageSize);
+          this.props.openOrCloseUseData(
+            newProperties,
+            newProperties[i],
+            pageNum,
+            pageSize
+          );
         } else if (item.isOn === 1) {
           newProperties[i].isOn = 0;
-          this.props.openOrCloseUseData(newProperties, newProperties[i], pageNum, pageSize);
+          this.props.openOrCloseUseData(
+            newProperties,
+            newProperties[i],
+            pageNum,
+            pageSize
+          );
         }
       }
     }
@@ -566,10 +569,8 @@ class OuterCover extends React.Component {
       pageSize * (e - 1),
       pageSize * (e - 1) + pageSize
     );
-    // 修改当前页
-    this.setState({
-      pageNum: e
-    });
+    // 修改当前页码
+    this.props.switchPageNum(e);
     // 改变数据
     this.props.switchPage(data);
   };

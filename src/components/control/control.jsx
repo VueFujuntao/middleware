@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Badge, Modal, Select, message, Icon } from "antd";
+import { Button, Badge, Modal, Select, Icon } from "antd";
 import { fromJS } from "immutable";
 import NumberSourcesMoth from "../NumberSourcesMoth/numberSourcesMoth.jsx";
 import NumericInput from "../numericInput/numericInput.jsx";
@@ -18,7 +18,9 @@ class Control extends React.Component {
   static propTypes = {
     // 数据源数据列表
     allDataSources: PropTypes.array,
+    // 所以数据
     properties: PropTypes.array,
+    // 展示页面数据
     indexList: PropTypes.array,
     // 发送 关闭状态码
     status: PropTypes.number,
@@ -26,23 +28,30 @@ class Control extends React.Component {
     sendTime: PropTypes.number,
     // 一页显示几条
     pageSize: PropTypes.number,
+    // 当前页码
     pageNum: PropTypes.number,
-    data: PropTypes.array,
     // 发送数据
     message: PropTypes.string,
     // 数据源名称
     name: PropTypes.string,
+    // 切换 数据源
     getDataUp: PropTypes.func,
     // 修改发送时间 方法
     setSourceDataInput: PropTypes.func,
+    // 开始  关闭 数据源
     setSourceData: PropTypes.func,
-    addSingleData: PropTypes.func
+    // 添加单个数据
+    addSingleData: PropTypes.func,
+    // 获取输出数据
+    printSendData: PropTypes.func
   };
 
   static defaultProps = {
     // 数据源数据列表
     allDataSources: [],
+    // 所以数据
     properties: [],
+    // 页面展示数据
     indexList: [],
     // 发送 关闭状态码
     status: 1,
@@ -50,6 +59,7 @@ class Control extends React.Component {
     sendTime: 0,
     // 一页显示几条
     pageSize: 0,
+    // 当前页码
     pageNum: 1,
     // 发送数据
     message: "",
@@ -64,13 +74,15 @@ class Control extends React.Component {
       sourceId: -1,
       // 开始关闭数据源
       startStop: START,
+      // 显示数字版块
       modalVisible: false,
       // 薪增数据 修改数据
       addOrModifyNewDataVisible: false
     };
   }
-  
+
   componentDidMount() {
+    // 初始化 开启关闭状态
     const { status } = this.props;
     if (status === 1) {
       this.setState({
@@ -133,11 +145,7 @@ class Control extends React.Component {
           </Select>
         </div>
         <div>
-          {status === 1 ? (
-            <Badge status="default" text="未启动" className="processing" />
-          ) : (
-            <Badge status="processing" text="正在发送" className="processing" />
-          )}
+          <Badge status={status === 1 ? 'default' : 'processing'} text={status === 1 ? '未启动' : '正在发送'} className="processing" />
         </div>
         <div>
           发送间隔:&nbsp;
@@ -203,16 +211,15 @@ class Control extends React.Component {
 
   // 關閉 輸出數據源 彈框
   setModalVisible = modalVisible => {
-    if (this.state.sourceId === -1 && modalVisible)
-      return message.error("暂无数据源可查");
     if (modalVisible) this.props.printSendData(this.state.sourceId);
     this.setState({ modalVisible });
   };
 
   // 选中数据源
   handleChangeSelect = e => {
+    let { getDataUp, pageSize } = this.props;
     // 当前数据源 ID
-    this.props.getDataUp({ id: e }, this.props.pageSize);
+    getDataUp({ id: e }, pageSize);
     this.setState({
       sourceId: e
     });
@@ -221,17 +228,17 @@ class Control extends React.Component {
 
   // 删除数据源
   showDeleteConfirm = () => {
-    if (this.state.sourceId === -1) return message.error("先选择数据源");
-    let that = this;
+    let { deleteDataSource, allDataSources } = this.props;
+    let { sourceId } = this.state;
     confirm({
       title: "您确定要删除此数据源吗?",
       okText: "确认",
       okType: "danger",
       cancelText: "取消",
       onOk() {
-        that.props.deleteDataSource(
-          that.state.sourceId,
-          that.props.allDataSources
+        deleteDataSource(
+          sourceId,
+          allDataSources
         );
       },
       onCancel() {
@@ -249,7 +256,6 @@ class Control extends React.Component {
   OpenOrCloseDataSource = () => {
     let { name, sendTime, properties, status, setSourceData } = this.props;
     let { sourceId } = this.state;
-    if (sourceId === -1) return message.error("先选择数据源");
     if (status === 1) {
       setSourceData(properties, sourceId, 0, sendTime, name);
     } else if (status === 0) {
@@ -265,11 +271,9 @@ class Control extends React.Component {
   };
 
   // 关闭弹框
-  onClose = v => {
-    console.log(v);
-    if (v !== false) {
-      let data = v.getFieldsValue();
-      console.log(data);
+  onClose = result => {
+    if (result !== false) {
+      let data = result.getFieldsValue();
       let {
         methodId,
         changeTime,
@@ -285,6 +289,12 @@ class Control extends React.Component {
         subValue,
         addValue
       } = data;
+      // 修改 方案
+      // for (let item in data) {
+      //   if (item !== undefined && item !== detailsDes) {
+
+      //   }
+      // }
       if (methodId !== undefined) {
         methodId = Number(methodId);
       }
@@ -361,7 +371,7 @@ class Control extends React.Component {
       });
     }
     // 清空表单
-    v.resetFields();
+    result.resetFields();
   };
 
 }

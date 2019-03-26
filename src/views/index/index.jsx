@@ -12,17 +12,25 @@ import Control from "../../components/control/control.jsx";
 import {
   // 获取数据列表
   getFirstData,
+  // 获取输出数据
   printSendData,
+  // 删除单个数据
   deleteSingleData,
+  // 切换 数据源
   getDataUp,
+  // 添加单个数据
   addSingleData,
+   // 修改发送时间 
   setSourceDataInput,
   // 开始  关闭 数据源
   setSourceData,
-  indexListPage,
+  // 切换页面 改变数据
   switchPage,
+  // 删除数据源
   deleteDataSource,
+  // 开启 关闭数据
   openOrCloseUseData,
+  // 切换页码
   switchPageNum
 } from "../../redux/module/one.js";
 import "./index.less";
@@ -34,17 +42,25 @@ const { Header, Footer, Content } = Layout;
   {
     // 获取数据列表
     getFirstData,
+    // 获取输出数据
     printSendData,
+    // 切换 数据源
     getDataUp,
+    // 删除单个数据
     deleteSingleData,
+    // 添加单个数据
     addSingleData,
+    // 修改发送时间 
     setSourceDataInput,
     // 开始  关闭 数据源
     setSourceData,
-    indexListPage,
+    // 切换页面 改变数据
     switchPage,
+    // 删除数据源
     deleteDataSource,
+    // 开启 关闭数据
     openOrCloseUseData,
+    // 切换页码
     switchPageNum
   }
 )
@@ -53,6 +69,7 @@ class Index extends Component {
     allDataSources: PropTypes.array,
     // 数据源数据总数
     properties: PropTypes.array,
+    // 页面展示数据
     indexList: PropTypes.array,
     // 发送 关闭状态码
     status: PropTypes.number,
@@ -60,29 +77,45 @@ class Index extends Component {
     sendTime: PropTypes.number,
     // 页面展示多少条数据
     pageSize: PropTypes.number,
+    // 当前页码
     pageNum: PropTypes.number,
     // 输出数据
     message: PropTypes.string,
     // 获取数据列表
     getFirstData: PropTypes.func,
+    // 删除单个数据
     deleteSingleData: PropTypes.func,
+    // 切换 数据源
     getDataUp: PropTypes.func,
+    // 添加单个数据
     addSingleData: PropTypes.func,
+    // 修改发送时间
     setSourceDataInput: PropTypes.func,
     // 开始  关闭 数据源
     setSourceData: PropTypes.func,
+    // 切换页面 改变数据 
     switchPage: PropTypes.func,
-    switchPageNum: PropTypes.func
+    // 切换页码
+    switchPageNum: PropTypes.func,
+    // 获取输出数据
+    printSendData: PropTypes.func,
+    // 删除数据源
+    deleteDataSource: PropTypes.func,
+    // 开启 关闭数据
+    openOrCloseUseData: PropTypes.func
   };
+
   // 设置默认 props 值
   static defaultProps = {
     // 数据源数据总数
     properties: [],
+    // 当前页面数据
     indexList: [],
     // 页面展示多少条数据
     pageSize: 0,
     // 数据源数据列表
     allDataSources: [],
+    // 当前页码
     pageNum: 1,
     // 发送 关闭状态码
     status: 1,
@@ -97,7 +130,7 @@ class Index extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
+  componentWillMount() { }
 
   componentDidMount() {
     // 获取数据列表
@@ -114,47 +147,47 @@ class Index extends Component {
   /* 
     Menthods
   */
-  // 启动数据发送
-  sendIoItem = item => {
-    console.log(item);
-  };
-
-  // 暂停数据发送
-  stopIoItem = item => {
-    console.log(item);
-  };
-
-  // 删除单个数据
-  // deleteSingleData = (item, data) => {
-  //   this.props.deleteSingleData(item, data);
-  // };
 
   render() {
     const {
+      // 添加单个数据 -- 方法
       addSingleData,
+      // 切换 数据源 -- 方法
       getDataUp,
-      properties,
+      // 删除单个数据 -- 方法
       deleteSingleData,
+      // 修改发送时间 -- 方法
       setSourceDataInput,
-      // 开始  关闭 数据源
+      // 开始  关闭 数据源 -- 方法
       setSourceData,
-      // 页面大小
-      pageSize,
-      allDataSources,
-      // 开始关闭状态
-      status,
-      sendTime,
-      // 数据源名称
-      name,
-      indexList,
+      // 切换页面 改变数据 -- 方法
       switchPage,
-      data,
+      // 获取输出数据 -- 方法
       printSendData,
+      // 删除数据源 -- 方法
       deleteDataSource,
-      message,
+      // 开启 关闭数据 -- 方法
       openOrCloseUseData,
+      // 切换页码 -- 方法
+      switchPageNum,
+      // 当前页码 -- 数字
       pageNum,
-      switchPageNum
+      // 数据源发送时间 -- 数字
+      sendTime,
+      // 页面大小 -- 数字
+      pageSize,
+      // 开始关闭状态 -- 数字
+      status,
+      // 数据列表 -- 数组
+      allDataSources,
+      // 数据总数 --数组
+      properties,
+      // 当前页的数据 -- 数组
+      indexList,
+      // 数据源名称 -- 字符串
+      name,
+      // 输出数据查看 -- 字符串
+      message
     } = this.props;
 
     return (
@@ -176,43 +209,42 @@ class Index extends Component {
           >
             {/* 头部组件 */}
             <Control
-              // 数据列表
+              // 数据列表 -- 数组
               allDataSources={allDataSources}
-              // 切换 数据源
+              // 切换 数据源 -- 方法
               getDataUp={getDataUp}
               // 是否开启 状态值
               status={status}
-              // 数据源发送时间
+              // 数据源发送时间 -- 数字
               sendTime={sendTime}
-              // 修改发送时间 方法
+              // 修改发送时间 -- 方法
               setSourceDataInput={setSourceDataInput}
-              // 开始  关闭 数据源
+              // 开始  关闭 数据源 -- 方法
               setSourceData={setSourceData}
               // 页面几条数据
               pageSize={pageSize}
-              data={data}
-              // 数据总数
+              // 数据总数 --数组
               properties={properties}
-              // 数据源名称
+              // 数据源名称 -- 字符串
               name={name}
-              // 获取输出数据
+              // 获取输出数据 -- 方法
               printSendData={printSendData}
-              // 删除数据源
+              // 删除数据源 -- 方法
               deleteDataSource={deleteDataSource}
-              // 输出数据查看
+              // 输出数据查看 -- 字符窜
               message={message}
-              // 添加单个数据
+              // 添加单个数据 -- 方法
               addSingleData={addSingleData}
-              // 当前页的数据
+              // 当前页的数据 -- 数组
               indexList={indexList}
-              // 当前页码
+              // 当前页码 -- 数字
               pageNum={pageNum}
             />
             {/* 表单组件 */}
             <OuterCover
               // 页面几条数据 -- 数字
               pageSize={pageSize}
-              // 删除单个数据
+              // 删除单个数据 -- 方法
               deleteSingleData={deleteSingleData}
               // 总数据 -- 数组
               properties={properties}

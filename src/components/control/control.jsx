@@ -5,6 +5,7 @@ import { fromJS } from "immutable";
 import NumberSourcesMoth from "../NumberSourcesMoth/numberSourcesMoth.jsx";
 import NumericInput from "../numericInput/numericInput.jsx";
 import AddOrModifyNewData from "../addOrModifyNewData/addOrModifyNewData.jsx";
+import AddDataSource from "../addDataSource/addDataSource.jsx";
 import "./index.less";
 
 const Option = Select.Option;
@@ -14,7 +15,6 @@ const STOP = "暂停";
 
 // 头部控件
 class Control extends React.Component {
-
   static propTypes = {
     // 数据源数据列表
     allDataSources: PropTypes.array,
@@ -22,6 +22,8 @@ class Control extends React.Component {
     properties: PropTypes.array,
     // 展示页面数据
     indexList: PropTypes.array,
+    // 关联数据
+    parentData: PropTypes.array,
     // 发送 关闭状态码
     status: PropTypes.number,
     // 发送时间
@@ -43,7 +45,11 @@ class Control extends React.Component {
     // 添加单个数据
     addSingleData: PropTypes.func,
     // 获取输出数据
-    printSendData: PropTypes.func
+    printSendData: PropTypes.func,
+    // 绑定关联数据
+    bindParentData: PropTypes.func,
+    // 添加数据源
+    addDataSource: PropTypes.func
   };
 
   static defaultProps = {
@@ -64,7 +70,9 @@ class Control extends React.Component {
     // 发送数据
     message: "",
     // 数据源名称
-    name: ""
+    name: "",
+    // 关联父数据
+    parentData: []
   };
 
   constructor(props) {
@@ -77,7 +85,9 @@ class Control extends React.Component {
       // 显示数字版块
       modalVisible: false,
       // 薪增数据 修改数据
-      addOrModifyNewDataVisible: false
+      addOrModifyNewDataVisible: false,
+      addDataSourceVisible: false,
+      selectedItems: []
     };
   }
 
@@ -94,7 +104,9 @@ class Control extends React.Component {
       });
     }
   }
-
+  handleChange = selectedItems => {
+    this.setState({ selectedItems });
+  };
   shouldComponentUpdate(nextProps, nextState) {
     return !(
       fromJS(nextProps).equals(fromJS(this.props)) &&
@@ -111,10 +123,20 @@ class Control extends React.Component {
       // 发送时间
       sendTime,
       // 发送数据
-      message
+      message,
+      // 绑定关联数据
+      bindParentData,
+      // 关联父数据
+      parentData
     } = this.props;
 
-    let { modalVisible, addOrModifyNewDataVisible, sourceId } = this.state;
+    let {
+      modalVisible,
+      addOrModifyNewDataVisible,
+      addDataSourceVisible,
+      sourceId,
+      selectedItems
+    } = this.state;
 
     return (
       <div className="control-context">
@@ -125,7 +147,16 @@ class Control extends React.Component {
         />
         <AddOrModifyNewData
           addOrModifyNewDataVisible={addOrModifyNewDataVisible}
+          bindParentData={bindParentData}
+          parentData={parentData}
+          selectedItems={selectedItems}
           onClose={this.onClose}
+          handleChange={this.handleChange}
+          sourceId={sourceId}
+        />
+        <AddDataSource
+          addDataSourceVisible={addDataSourceVisible}
+          addDataSourceClose={this.addDataSourceClose}
         />
         <div>
           <Select
@@ -145,7 +176,11 @@ class Control extends React.Component {
           </Select>
         </div>
         <div>
-          <Badge status={status === 1 ? 'default' : 'processing'} text={status === 1 ? '未启动' : '正在发送'} className="processing" />
+          <Badge
+            status={status === 1 ? "default" : "processing"}
+            text={status === 1 ? "未启动" : "正在发送"}
+            className="processing"
+          />
         </div>
         <div>
           发送间隔:&nbsp;
@@ -203,6 +238,7 @@ class Control extends React.Component {
             type="plus-circle"
             theme="twoTone"
             style={{ fontSize: "30px", lineHeight: "50px", cursor: "pointer" }}
+            onClick={this.showDrawerDataOurce}
           />
         </div>
       </div>
@@ -236,10 +272,7 @@ class Control extends React.Component {
       okType: "danger",
       cancelText: "取消",
       onOk() {
-        deleteDataSource(
-          sourceId,
-          allDataSources
-        );
+        deleteDataSource(sourceId, allDataSources);
       },
       onCancel() {
         console.log("Cancel");
@@ -271,8 +304,8 @@ class Control extends React.Component {
   };
 
   // 关闭弹框
-  onClose = result => {
-    if (result !== false) {
+  onClose = (bool, result) => {
+    if (bool !== false) {
       let data = result.getFieldsValue();
       let {
         methodId,
@@ -287,7 +320,9 @@ class Control extends React.Component {
         minAlarmValue,
         dValue,
         subValue,
-        addValue
+        addValue,
+        parentId,
+        isChangeStatus
       } = data;
       // 修改 方案
       // for (let item in data) {
@@ -295,8 +330,16 @@ class Control extends React.Component {
 
       //   }
       // }
+      if (this.state.selectedItems.length > 0) {
+        console.log(this.state.selectedItems);
+        parentId = this.state.selectedItems[0];
+        console.log(parentId);
+      }
       if (methodId !== undefined) {
         methodId = Number(methodId);
+      }
+      if (isChangeStatus !== undefined) {
+        isChangeStatus = Number(isChangeStatus);
       }
       if (changeTime !== undefined) {
         changeTime = Number(changeTime);
@@ -348,7 +391,9 @@ class Control extends React.Component {
         dataSourceId,
         changeTime,
         importantAlarmId,
-        isParentData
+        isParentData,
+        parentId,
+        isChangeStatus
       };
 
       // 结构参数
@@ -374,6 +419,28 @@ class Control extends React.Component {
     result.resetFields();
   };
 
+  // 显示 弹框 添加 数据源
+  showDrawerDataOurce = () => {
+    this.setState({
+      addDataSourceVisible: true
+    });
+  };
+
+  // 关闭 添加数据源
+  addDataSourceClose = (bool, result) => {
+    if (bool === true) {
+      let data = result.getFieldsValue();
+      data.sendTime = Number(data.sendTime);
+      const { addDataSource, allDataSources } = this.props;
+      addDataSource(data, allDataSources);
+    }
+
+    // 清空表单
+    result.resetFields();
+    this.setState({
+      addDataSourceVisible: false
+    });
+  };
 }
 
 export default Control;

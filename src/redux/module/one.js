@@ -2,7 +2,6 @@ import Axios from '../../axios/index.js';
 import {
   message
 } from 'antd';
-import deepCopy from '../../utils/deepCopy.js';
 
 const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 const ERROR_MSG = 'ERROR_MSG';
@@ -21,7 +20,9 @@ const initState = {
   // 当前页面
   pageNum: 1,
   // 输出数据
-  message: ''
+  message: '',
+  // 关联的父数据
+  parentData: []
 }
 
 export function one(state = initState, action) {
@@ -91,14 +92,19 @@ export function getDataUp(data = {
   id: 1
 }, pageSize = 0) {
   return dispatch => {
-    Axios.get('/dataSource/getDatas', {
+    Axios.get('/getDatas', {
       params: data
     }).then(response => {
       if (response.status === 200 && response.data.code === 200) {
         let data = response.data.data;
-        data.indexList = response.data.data.properties.slice(0, pageSize);
-        dispatch(registerSuccess(data));
+        if (response.data.data.properties !== undefined) {
+          data.indexList = response.data.data.properties.slice(0, pageSize);
+          dispatch(registerSuccess(data));
+        } else {
+          message.error('數據有問題');
+        }
       } else {
+        message.error(response.data.msg);
         dispatch(errorMsg(response.data.msg));
       }
     }, err => {
@@ -110,8 +116,8 @@ export function getDataUp(data = {
 // 单次获取数据 数据列表
 export function getFirstData() {
   return dispatch => {
-    Axios.get('/dataSource/getAllDataSources').then(response => {
-      if (response.data.code === 200 && response.data.data.length > 0) {
+    Axios.get('/getAllDataSources').then(response => {
+      if (response.data.code === 200) {
         dispatch(registerSuccess({
           allDataSources: response.data.data
         }));
@@ -128,7 +134,7 @@ export function getFirstData() {
 // 开始  关闭 数据源
 export function setSourceData(properties, sourceId, status, sendTime, name) {
   return dispatch => {
-    Axios.put('/dataSource/OpenOrCloseDataSource', {
+    Axios.put('/OpenOrCloseDataSource', {
       id: sourceId,
       properties: properties,
       status: status,
@@ -152,7 +158,7 @@ export function setSourceData(properties, sourceId, status, sendTime, name) {
 // 打印输出数据
 export function printSendData(id) {
   return dispatch => {
-    Axios.get('/dataSource/printSendData', {
+    Axios.get('/printSendData', {
       params: {
         id: id
       }
@@ -174,7 +180,7 @@ export function printSendData(id) {
 // 启动 停用 数据
 export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
   return dispatch => {
-    Axios.put('/dataSource/openOrCloseData', item).then(response => {
+    Axios.put('/openOrCloseData', item).then(response => {
       if (response.data.code === 200) {
         let newIndexList = newProperties.slice(pageSize * (pageNum - 1), pageSize * (pageNum - 1) + pageSize);
         dispatch(registerSuccess({
@@ -192,16 +198,18 @@ export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
   }
 }
 
-// 删除数据源
+// 删除一條数据源
 export function deleteDataSource(id, allDataSources) {
   return dispatch => {
-    Axios.delete(`/dataSource/deleteDataSource/${id}`).then(response => {
+    Axios.delete(`/deleteDataSource/${id}`).then(response => {
       if (response.data.code === 200) {
-        let Properties = allDataSources.filter(item => {
+        let newAllDataSources = allDataSources.filter(item => {
           return item.id !== id;
         })
         dispatch(registerSuccess({
-          allDataSources: Properties
+          allDataSources: newAllDataSources,
+          properties: [],
+          indexList: []
         }));
       } else {
         message.error(response.data.data);
@@ -216,7 +224,7 @@ export function deleteDataSource(id, allDataSources) {
 // 添加单个数据
 export function addSingleData(data, properties, indexList, pageSize, pageNum) {
   return dispatch => {
-    Axios.post('/dataSource/addData', data).then(response => {
+    Axios.post('/addData', data).then(response => {
       if (response.data.code === 200) {
         message.success(response.data.msg);
         if (indexList.length < 10) {
@@ -245,7 +253,7 @@ export function addSingleData(data, properties, indexList, pageSize, pageNum) {
 // 删除单个数据
 export function deleteSingleData(dataCue, properties, pageNum, pageSize) {
   return dispatch => {
-    Axios.delete(`/dataSource/deleteData/${dataCue.id}`).then(response => {
+    Axios.delete(`/deleteData/${dataCue.id}`).then(response => {
       if (response.data.code === 200) {
         let newProperties = properties.filter(item => {
           return item.id !== dataCue.id;
@@ -257,7 +265,46 @@ export function deleteSingleData(dataCue, properties, pageNum, pageSize) {
         }));
         message.success("删除成功");
       } else {
-        message.err('删除失败');
+        message.error('删除失败');
+      }
+    }, error => {
+      message.error('Request failed');
+      throw new Error(error);
+    })
+  }
+}
+
+// 绑定关联数据
+export function bindParentData(id) {
+  return dispatch => {
+    Axios.get(`/bindParentData?id=${id}`).then(response => {
+      if (response.data.code === 200) {
+        message.success('成功');
+        dispatch(registerSuccess({
+          parentData: response.data.data
+        }));
+      } else {
+        message.error('失败');
+      }
+    }, error => {
+      message.error('Request failed');
+      throw new Error(error);
+    })
+  }
+}
+
+// 创建一條数据源
+export function addDataSource(data, allDataSources) {
+  return dispatch => {
+    Axios.post('/addDataSource', data).then(response => {
+      if (response.data.code === 200) {
+        let newAllDataSources = allDataSources.concat(response.data.data);
+        dispatch(registerSuccess({
+          allDataSources: newAllDataSources
+        }));
+        message.success(response.data.msg);
+      } else {
+        message.error(response.data.msg);
       }
     }, error => {
       message.error('Request failed');

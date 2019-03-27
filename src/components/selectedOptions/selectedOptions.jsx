@@ -1,31 +1,33 @@
 import React from "react";
 import { Select } from "antd";
 
-const OPTIONS = ["Apples", "Nails", "Bananas", "Helicopters"];
-
 class SelectWithHiddenSelectedOptions extends React.Component {
-  state = {
-    selectedItems: []
-  };
-
-  handleChange = selectedItems => {
-    this.setState({ selectedItems });
-  };
+  static defaultProps = {
+    parentData: []
+  }
+  constructor(props) {
+    super(props);
+    this.state = {
+      // selectedItems: []
+    };
+  }
 
   render() {
-    const { selectedItems } = this.state;
-    const filteredOptions = OPTIONS.filter(o => !selectedItems.includes(o));
+    const { selectedItems, handleChange } = this.props;
+    const filteredOptions = this.props.parentData.filter(
+      o => !selectedItems.includes(o)
+    );
     return (
       <Select
         mode="multiple"
         placeholder="Inserted are removed"
         value={selectedItems}
-        onChange={this.handleChange}
+        onChange={handleChange}
         style={{ width: "100%" }}
       >
         {filteredOptions.map(item => (
-          <Select.Option key={item} value={item}>
-            {item}
+          <Select.Option key={item.id} value={item.id}>
+            {item.id} <span>|</span> {item.detailsDes}
           </Select.Option>
         ))}
       </Select>

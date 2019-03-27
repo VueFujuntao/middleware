@@ -9,19 +9,22 @@ class DrawerForm extends React.Component {
   static propTypes = {
     // 薪增数据 修改数据
     addOrModifyNewDataVisible: PropTypes.bool,
+    parentData: PropTypes.array,
     // 关闭弹框
     onClose: PropTypes.func
   };
 
   static defaultProps = {
     // 薪增数据 修改数据
-    addOrModifyNewDataVisible: false
+    addOrModifyNewDataVisible: false,
+    parentData: []
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      functionVis: 1
+      functionVis: 1,
+      v: false
     };
   }
   // shouldComponentUpdate(nextProps, nextState) {
@@ -30,12 +33,17 @@ class DrawerForm extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { onClose, addOrModifyNewDataVisible } = this.props;
+    const {
+      onClose,
+      addOrModifyNewDataVisible,
+      parentData,
+      selectedItems
+    } = this.props;
     return (
       <Drawer
         title="创建新数据"
         width={720}
-        onClose={onClose}
+        onClose={() => onClose(false, this.props.form)}
         visible={addOrModifyNewDataVisible}
         style={{
           overflow: "auto",
@@ -82,29 +90,33 @@ class DrawerForm extends React.Component {
                   rules: [{ required: true, message: "Please select an owner" }]
                 })(
                   <Select placeholder="Please select an owner">
-                    <Option value="1">1秒</Option>
-                    <Option value="5">5秒</Option>
-                    <Option value="10">10秒</Option>
-                    <Option value="30">30秒</Option>
-                    <Option value="60">1分钟</Option>
-                    <Option value="300">5分钟</Option>
-                    <Option value="900">15分钟</Option>
-                    <Option value="1800">30分钟</Option>
-                    <Option value="3600">1小时</Option>
-                    <Option value="10800">3小时</Option>
-                    <Option value="32400">6小时</Option>
-                    <Option value="64800">12小时</Option>
-                    <Option value="129600">24小时</Option>
+                    <Option value="1000">1秒</Option>
+                    <Option value="5000">5秒</Option>
+                    <Option value="10000">10秒</Option>
+                    <Option value="30000">30秒</Option>
+                    <Option value="60000">1分钟</Option>
+                    <Option value="300000">5分钟</Option>
+                    <Option value="900000">15分钟</Option>
+                    <Option value="1800000">30分钟</Option>
+                    <Option value="3600000">1小时</Option>
+                    <Option value="10800000">3小时</Option>
+                    <Option value="32400000">6小时</Option>
+                    <Option value="64800000">12小时</Option>
+                    <Option value="129600000">24小时</Option>
                   </Select>
                 )}
               </Form.Item>
             </Col>
+
             <Col span={12}>
               <Form.Item label="类型">
                 {getFieldDecorator("isParentData", {
                   rules: [{ required: true, message: "Please choose the type" }]
                 })(
-                  <Select placeholder="Please choose the type">
+                  <Select
+                    placeholder="Please choose the type"
+                    onChange={this.bindParentDataInput}
+                  >
                     <Option value="0">一般</Option>
                     <Option value="1">子数据</Option>
                   </Select>
@@ -134,7 +146,43 @@ class DrawerForm extends React.Component {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <SelectWithHiddenSelectedOptions />
+              {this.state.v ? (
+                <Form.Item label="关联">
+                  {getFieldDecorator("parentId", {
+                    rules: [
+                      {
+                        required: true,
+                        messsage: "plese"
+                      }
+                    ]
+                  })(
+                    <SelectWithHiddenSelectedOptions
+                      selectedItems={selectedItems}
+                      parentData={parentData}
+                      handleChange={this.props.handleChange}
+                    />
+                  )}
+                </Form.Item>
+              ) : null}
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={4}>
+              <Form.Item label="是否影响报警">
+                {getFieldDecorator("isChangeStatus", {
+                  rules: [
+                    {
+                      required: true,
+                      message: "Please choose the isChangeStatus"
+                    }
+                  ]
+                })(
+                  <Select placeholder="Please choose the isChangeStatus">
+                    <Option value="1">否</Option>
+                    <Option value="0">是</Option>
+                  </Select>
+                )}
+              </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
@@ -278,10 +326,10 @@ class DrawerForm extends React.Component {
             textAlign: "right"
           }}
         >
-          <Button onClick={() => onClose(false)} style={{ marginRight: 8 }}>
+          <Button onClick={() => onClose(false, this.props.form)} style={{ marginRight: 8 }}>
             Cancel
           </Button>
-          <Button onClick={() => onClose(this.props.form)} type="primary">
+          <Button onClick={() => onClose(true ,this.props.form)} type="primary">
             Submit
           </Button>
         </div>
@@ -294,6 +342,21 @@ class DrawerForm extends React.Component {
       functionVis: Number(e)
     });
   };
+
+  // 打开 关闭 关联 父数据 input 框
+  bindParentDataInput = e => {
+    if (e === "1") {
+      this.setState({
+        v: true
+      });
+      this.props.bindParentData(this.props.sourceId);
+    } else if (e === "0") {
+      this.setState({
+        v: false
+      });
+    }
+  };
+
 }
 
 const App = Form.create()(DrawerForm);

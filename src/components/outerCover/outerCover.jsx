@@ -250,8 +250,9 @@ class OuterCover extends React.Component {
           <thead>
             <tr>
               <th style={{ width: "50px" }}>序号</th>
-              <th>KEY</th>
-              <th>VALUE</th>
+              <th style={{width: '150px'}}>KEY</th>
+              <th style={{width: '150px'}}>VALUE</th>
+              <th style={{width: '150px'}}>是否影响报警</th>
               <th style={{ width: "150px" }}>变化函数</th>
               <th>描述</th>
               <th style={{ width: "100px" }}>类型</th>
@@ -266,7 +267,10 @@ class OuterCover extends React.Component {
                 <tr key={item.id} className="table-tr">
                   <th>{index + 1 + (pageNum - 1) * 10}</th>
                   <td>{item.id}</td>
-                  <td>{item.value}</td>
+                  <td>
+                    <input className="input-focus" type="text" value={item.value}/>
+                  </td>
+                  <th>{item.isChangeStatus === 0 ? '是' : '否'}</th>
                   <td>
                     <Select
                       labelInValue

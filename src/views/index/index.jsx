@@ -31,7 +31,11 @@ import {
   // 开启 关闭数据
   openOrCloseUseData,
   // 切换页码
-  switchPageNum
+  switchPageNum,
+  // 绑定关联数据
+  bindParentData,
+  // 添加数据源
+  addDataSource
 } from "../../redux/module/one.js";
 import "./index.less";
 
@@ -61,7 +65,11 @@ const { Header, Footer, Content } = Layout;
     // 开启 关闭数据
     openOrCloseUseData,
     // 切换页码
-    switchPageNum
+    switchPageNum,
+    // 绑定关联数据
+    bindParentData,
+    // 添加数据源
+    addDataSource
   }
 )
 class Index extends Component {
@@ -102,7 +110,11 @@ class Index extends Component {
     // 删除数据源
     deleteDataSource: PropTypes.func,
     // 开启 关闭数据
-    openOrCloseUseData: PropTypes.func
+    openOrCloseUseData: PropTypes.func,
+    // 绑定关联数据
+    bindParentData: PropTypes.func,
+    // 添加数据源
+    addDataSource: PropTypes.func
   };
 
   // 设置默认 props 值
@@ -170,6 +182,8 @@ class Index extends Component {
       openOrCloseUseData,
       // 切换页码 -- 方法
       switchPageNum,
+      // 绑定关联数据 -- 方法
+      bindParentData,
       // 当前页码 -- 数字
       pageNum,
       // 数据源发送时间 -- 数字
@@ -187,7 +201,11 @@ class Index extends Component {
       // 数据源名称 -- 字符串
       name,
       // 输出数据查看 -- 字符串
-      message
+      message,
+      // 关联数据
+      parentData,
+      // 添加数据源
+      addDataSource
     } = this.props;
 
     return (
@@ -239,6 +257,12 @@ class Index extends Component {
               indexList={indexList}
               // 当前页码 -- 数字
               pageNum={pageNum}
+              // 绑定关联事件 -- 方法
+              bindParentData={bindParentData}
+              // 关联数据 -- 数组
+              parentData={parentData}
+              // 添加数据源
+              addDataSource={addDataSource}
             />
             {/* 表单组件 */}
             <OuterCover

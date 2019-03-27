@@ -28,7 +28,7 @@ export default class NumberSourcesMoth extends React.Component {
     modalVisible: false,
     title: '數據'
   }
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -61,10 +61,7 @@ export default class NumberSourcesMoth extends React.Component {
 
     let newData = [];
     const { title, data, modalVisible, setModalVisible } = this.props;
-    if (data !== '') {
-      newData = JSON.parse(data)[0].data;
-      console.log(newData)
-    }
+    if (data !== '') newData = JSON.parse(data)[0].data;
     return (
       <Modal
         className="modal-table"
@@ -137,8 +134,8 @@ export default class NumberSourcesMoth extends React.Component {
     this.setState({ searchText: selectedKeys[0] });
   }
 
-  // 重置
-  handleReset = (clearFilters) => {
+  // 重置 清空
+  handleReset = clearFilters => {
     clearFilters();
     this.setState({ searchText: '' });
   }

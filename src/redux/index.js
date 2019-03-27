@@ -4,10 +4,10 @@ import {
 } from 'redux';
 // 状态
 import {
-    one
-} from './module/one.js';
+    dataSource
+} from './module/dataSource.js';
 
 
 export default combineReducers({
-    one
+    dataSource: dataSource
 });

@@ -36,14 +36,15 @@ import {
   bindParentData,
   // 添加数据源
   addDataSource,
+  // 改变单条数据
   changeData
-} from "../../redux/module/one.js";
+} from "../../redux/module/dataSource.js";
 import "./index.less";
 
 const { Header, Footer, Content } = Layout;
 
 @connect(
-  state => state.one,
+  state => state.dataSource,
   {
     // 获取数据列表
     getFirstData,

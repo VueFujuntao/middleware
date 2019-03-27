@@ -43,6 +43,7 @@ class OuterCover extends React.Component {
     openOrCloseUseData: PropTypes.func,
     // 切换当前页码
     switchPageNum: PropTypes.func,
+    // 修改单条数据
     changeData: PropTypes.func
   };
 
@@ -76,13 +77,13 @@ class OuterCover extends React.Component {
   }
 
   // 组件初始化时只调用，以后组件更新不调用，整个生命周期只调用一次，此时可以修改state。
-  componentWillMount() {}
+  componentWillMount() { }
 
   // 组件渲染之后调用，只调用一次。
-  componentDidMount() {}
+  componentDidMount() { }
 
   // 组件初始化时不调用，组件接受新的props时调用。
-  componentWillReceiveProps(nextProps) {}
+  componentWillReceiveProps(nextProps) { }
   /*
     react性能优化非常重要的一环。组件接受新的state或者props时调用，我们可以设置在此对比前后两个props和state是否相同，如果相同则返回false阻止更新，因为相同的属性状态一定会生成相同的dom树，这样就不需要创造新的dom树和旧的dom树进行diff算法对比，节省大量性能，尤其是在dom结构复杂的时候
   */
@@ -94,13 +95,13 @@ class OuterCover extends React.Component {
   }
 
   // 组件初始化时不调用，只有在组件将要更新时才调用，此时可以修改state
-  componentWillUpdate(nextProps, nextState) {}
+  componentWillUpdate(nextProps, nextState) { }
 
   // 组件初始化时不调用，组件更新完成后调用，此时可以获取dom节点。
-  componentDidUpdate() {}
+  componentDidUpdate() { }
 
   // 组件将要卸载时调用，一些事件监听和定时器需要在此时清除。
-  componentWillUnmount() {}
+  componentWillUnmount() { }
 
   // react最重要的步骤，创建虚拟dom，进行diff算法，更新dom树都在此进行。此时就不能更改state了。
   render() {
@@ -274,7 +275,7 @@ class OuterCover extends React.Component {
                       type="text"
                       value={item.value}
                       onChange={e =>
-                        this.handleChangeSelect(e, item, "value", true)
+                        this.handleChangeSelect({ e, item, field: "value", bool: true })
                       }
                     />
                   </td>
@@ -286,14 +287,14 @@ class OuterCover extends React.Component {
                         item.methodId === 1
                           ? { key: "no" }
                           : item.methodId === 2
-                          ? { key: "PolylineCycle" }
-                          : item.methodId === 3
-                          ? { key: "VolatilityValue" }
-                          : item.methodId === 4
-                          ? { key: "RandomValue" }
-                          : item.methodId === 5
-                          ? { key: "Sinusoidal" }
-                          : { key: "no" }
+                            ? { key: "PolylineCycle" }
+                            : item.methodId === 3
+                              ? { key: "VolatilityValue" }
+                              : item.methodId === 4
+                                ? { key: "RandomValue" }
+                                : item.methodId === 5
+                                  ? { key: "Sinusoidal" }
+                                  : { key: "no" }
                       }
                       style={{ width: 140 }}
                       onChange={this.handleChangeSelectFunction}
@@ -313,12 +314,12 @@ class OuterCover extends React.Component {
                         item.isParentData === 0
                           ? { key: "0" }
                           : item.isParentData === 1
-                          ? { key: "1" }
-                          : { key: "0" }
+                            ? { key: "1" }
+                            : { key: "0" }
                       }
                       style={{ width: 120 }}
                       onChange={e =>
-                        this.handleChangeSelect(e, item, "isParentData", false)
+                        this.handleChangeSelect({ e, item, field: "isParentData", bool: false })
                       }
                     >
                       <Option value="0">一般</Option>
@@ -332,34 +333,34 @@ class OuterCover extends React.Component {
                         item.changeTime === 1000
                           ? { key: "1000" }
                           : item.changeTime === 5000
-                          ? { key: "5000" }
-                          : item.changeTime === 10000
-                          ? { key: "10000" }
-                          : item.changeTime === 30000
-                          ? { key: "30000" }
-                          : item.changeTime === 60000
-                          ? { key: "60000" }
-                          : item.changeTime === 300000
-                          ? { key: "300000" }
-                          : item.changeTime === 900000
-                          ? { key: "900000" }
-                          : item.changeTime === 1800000
-                          ? { key: "1800000" }
-                          : item.changeTime === 3600000
-                          ? { key: "3600000" }
-                          : item.changeTime === 10800000
-                          ? { key: "10800000" }
-                          : item.changeTime === 32400000
-                          ? { key: "32400000" }
-                          : item.changeTime === 64800000
-                          ? { key: "64800000" }
-                          : item.changeTime === 129600000
-                          ? { key: "129600000" }
-                          : { key: "1000" }
+                            ? { key: "5000" }
+                            : item.changeTime === 10000
+                              ? { key: "10000" }
+                              : item.changeTime === 30000
+                                ? { key: "30000" }
+                                : item.changeTime === 60000
+                                  ? { key: "60000" }
+                                  : item.changeTime === 300000
+                                    ? { key: "300000" }
+                                    : item.changeTime === 900000
+                                      ? { key: "900000" }
+                                      : item.changeTime === 1800000
+                                        ? { key: "1800000" }
+                                        : item.changeTime === 3600000
+                                          ? { key: "3600000" }
+                                          : item.changeTime === 10800000
+                                            ? { key: "10800000" }
+                                            : item.changeTime === 32400000
+                                              ? { key: "32400000" }
+                                              : item.changeTime === 64800000
+                                                ? { key: "64800000" }
+                                                : item.changeTime === 129600000
+                                                  ? { key: "129600000" }
+                                                  : { key: "1000" }
                       }
                       style={{ width: 90 }}
                       onChange={e =>
-                        this.handleChangeSelect(e, item, "changeTime", false)
+                        this.handleChangeSelect({ e, item, field: "changeTime", bool: false })
                       }
                     >
                       <Option value="1000">1秒</Option>
@@ -412,24 +413,17 @@ class OuterCover extends React.Component {
                         item.importantAlarmId === 1
                           ? { key: "1" }
                           : item.importantAlarmId === 2
-                          ? { key: "2" }
-                          : item.importantAlarmId === 3
-                          ? { key: "3" }
-                          : item.importantAlarmId === 4
-                          ? { key: "4" }
-                          : item.importantAlarmId === 5
-                          ? { key: "5" }
-                          : { key: "wanting" }
+                            ? { key: "2" }
+                            : item.importantAlarmId === 3
+                              ? { key: "3" }
+                              : item.importantAlarmId === 4
+                                ? { key: "4" }
+                                : item.importantAlarmId === 5
+                                  ? { key: "5" }
+                                  : { key: "wanting" }
                       }
                       style={{ width: 120 }}
-                      onChange={e =>
-                        this.handleChangeSelect(
-                          e,
-                          item,
-                          "importantAlarmId",
-                          false
-                        )
-                      }
+                      onChange={e => this.handleChangeSelect({ e, item, field: "importantAlarmId", bool: false })}
                     >
                       <Option value="1">无</Option>
                       <Option value="2">火灾</Option>
@@ -461,19 +455,19 @@ class OuterCover extends React.Component {
     let { deleteSingleData, properties, pageSize, pageNum } = this.props;
     if (deleteSingleData === undefined) return;
     // 发送Delete请求 删除
-    deleteSingleData(item, properties, pageNum, pageSize);
+    deleteSingleData({ item, properties, pageNum, pageSize });
   };
 
   // 启动关闭数据
   openOrCloseUseData(item, properties, pageNum, pageSize) {
-    console.log(item);
+    const { openOrCloseUseData } = this.props;
     // 数组对象深度克隆
     let newProperties = deepCopy(properties);
     for (let i = 0; i < newProperties.length; i++) {
       if (item.id === newProperties[i].id) {
         if (item.isOn === 0) {
           newProperties[i].isOn = 1;
-          this.props.openOrCloseUseData(
+          openOrCloseUseData(
             newProperties,
             newProperties[i],
             pageNum,
@@ -481,7 +475,7 @@ class OuterCover extends React.Component {
           );
         } else if (item.isOn === 1) {
           newProperties[i].isOn = 0;
-          this.props.openOrCloseUseData(
+          openOrCloseUseData(
             newProperties,
             newProperties[i],
             pageNum,
@@ -491,6 +485,7 @@ class OuterCover extends React.Component {
       }
     }
   }
+
   cancel(e) {
     message.error("取消删除");
   }
@@ -582,83 +577,20 @@ class OuterCover extends React.Component {
   // 切换 页码
   pagination = e => {
     // 获取 一页几条数据
-    let { pageSize, switchPage } = this.props;
+    let { pageSize, switchPage, switchPageNum } = this.props;
     if (switchPage === undefined) return;
     let data = this.props.properties.slice(
       pageSize * (e - 1),
       pageSize * (e - 1) + pageSize
     );
     // 修改当前页码
-    this.props.switchPageNum(e);
+    switchPageNum(e);
     // 改变数据
-    this.props.switchPage(data);
+    switchPage(data);
   };
 
-  HandlerDeleteData() {}
-
-  HandleChange(value, id, index) {
-    console.log(12);
-  }
-
-  buttonMoth(title) {
-    console.log(title);
-  }
-
-  onChange() {}
-
-  // // 改變value
-  // inputChange = (e, item, field, bool) => {
-  //   let itemValue = item.value;
-  //   itemValue = e.target.value;
-  //   const { changeData, properties, pageSize, pageNum } = this.props;
-  //   changeData(itemValue, item.id, properties, pageSize, pageNum, "value");
-  // };
-
-  // // 改變類型
-  // handleChangeSelectType(e, item, field) {
-  //   let itemIsParentData = item.isParentData;
-  //   itemIsParentData = Number(e.key);
-  //   const { changeData, properties, pageSize, pageNum } = this.props;
-  //   changeData(
-  //     itemIsParentData,
-  //     item.id,
-  //     properties,
-  //     pageSize,
-  //     pageNum,
-  //     "isParentData"
-  //   );
-  // }
-
-  // // 修改變化時間
-  // handleChangeSelectTime(e, item, field) {
-  //   let itemChangeTime = item.changeTime;
-  //   itemChangeTime = Number(e.key);
-  //   const { changeData, properties, pageSize, pageNum } = this.props;
-  //   changeData(
-  //     itemChangeTime,
-  //     item.id,
-  //     properties,
-  //     pageSize,
-  //     pageNum,
-  //     "changeTime"
-  //   );
-  // }
-
-  // handleChangeImportantAlarmId(e, item, field) {
-  //   let itemImportantAlarmId = item.importantAlarmId;
-  //   itemImportantAlarmId = Number(e.key);
-  //   const { changeData, properties, pageSize, pageNum } = this.props;
-  //   changeData(
-  //     itemImportantAlarmId,
-  //     item.id,
-  //     properties,
-  //     pageSize,
-  //     pageNum,
-  //     "importantAlarmId"
-  //   );
-  // }
-
-  handleChangeSelect(e, item, field, bool) {
+  // 修改单条数据
+  handleChangeSelect({ e, item, field, bool }) {
     let itemValue = item[field];
     if (bool === true) {
       itemValue = e.target.value;
@@ -666,7 +598,7 @@ class OuterCover extends React.Component {
       itemValue = Number(e.key);
     }
     const { changeData, properties, pageSize, pageNum } = this.props;
-    changeData(itemValue, item.id, properties, pageSize, pageNum, field);
+    changeData({ itemValue, id: item.id, properties, pageSize, pageNum, field });
   }
 }
 

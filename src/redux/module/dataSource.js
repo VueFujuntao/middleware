@@ -26,7 +26,7 @@ const initState = {
   parentData: []
 }
 
-export function one(state = initState, action) {
+export function dataSource(state = initState, action) {
   switch (action.type) {
     case ERROR_MSG:
       return {
@@ -200,7 +200,7 @@ export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
 }
 
 // 删除一條数据源
-export function deleteDataSource(id, allDataSources) {
+export function deleteDataSource({ id, allDataSources }) {
   return dispatch => {
     Axios.delete(`/deleteDataSource/${id}`).then(response => {
       if (response.data.code === 200) {
@@ -223,7 +223,7 @@ export function deleteDataSource(id, allDataSources) {
 }
 
 // 添加单个数据
-export function addSingleData(data, properties, indexList, pageSize, pageNum) {
+export function addSingleData({ data, properties, indexList, pageSize, pageNum }) {
   return dispatch => {
     Axios.post('/addData', data).then(response => {
       if (response.data.code === 200) {
@@ -252,12 +252,12 @@ export function addSingleData(data, properties, indexList, pageSize, pageNum) {
 }
 
 // 删除单个数据
-export function deleteSingleData(dataCue, properties, pageNum, pageSize) {
+export function deleteSingleData({ item, properties, pageNum, pageSize }) {
   return dispatch => {
-    Axios.delete(`/deleteData/${dataCue.id}`).then(response => {
+    Axios.delete(`/deleteData/${item.id}`).then(response => {
       if (response.data.code === 200) {
-        let newProperties = properties.filter(item => {
-          return item.id !== dataCue.id;
+        let newProperties = properties.filter(newItem => {
+          return newItem.id !== item.id;
         });
         let newIndexList = newProperties.slice(pageSize * (pageNum - 1), pageSize * (pageNum - 1) + pageSize);
         dispatch(registerSuccess({
@@ -276,7 +276,7 @@ export function deleteSingleData(dataCue, properties, pageNum, pageSize) {
 }
 
 // 绑定关联数据
-export function bindParentData(id) {
+export function bindParentData({ id }) {
   return dispatch => {
     Axios.get(`/bindParentData?id=${id}`).then(response => {
       if (response.data.code === 200) {
@@ -295,7 +295,7 @@ export function bindParentData(id) {
 }
 
 // 创建一條数据源
-export function addDataSource(data, allDataSources) {
+export function addDataSource({ data, allDataSources }) {
   return dispatch => {
     Axios.post('/addDataSource', data).then(response => {
       if (response.data.code === 200) {
@@ -314,15 +314,14 @@ export function addDataSource(data, allDataSources) {
   }
 }
 
-// 改變 Value
-export function changeData(itemValue, id, properties, pageSize, pageNum, field) {
+// 改變 单条数据
+export function changeData({ itemValue, id, properties, pageSize, pageNum, field }) {
   return dispatch => {
     let newProperties = deepCopy(properties);
     for (let i = 0; i < newProperties.length; i++) {
       if (id === newProperties[i].id) {
         let item = newProperties[i];
         item[field] = itemValue;
-        console.log(item[field]);
       }
     }
     let newIndexList = newProperties.slice(pageSize * (pageNum - 1), pageSize * (pageNum - 1) + pageSize);

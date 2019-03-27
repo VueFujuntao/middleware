@@ -10,8 +10,6 @@ import "./index.less";
 
 const Option = Select.Option;
 const confirm = Modal.confirm;
-const START = "开始";
-const STOP = "暂停";
 
 // 头部控件
 class Control extends React.Component {
@@ -80,8 +78,8 @@ class Control extends React.Component {
     this.state = {
       // 数据源 ID
       sourceId: -1,
-      // 开始关闭数据源
-      startStop: START,
+      // // 开始关闭数据源
+      // startStop: START,
       // 显示数字版块
       modalVisible: false,
       // 薪增数据 修改数据
@@ -92,21 +90,19 @@ class Control extends React.Component {
   }
 
   componentDidMount() {
-    // 初始化 开启关闭状态
-    const { status } = this.props;
-    if (status === 1) {
-      this.setState({
-        startStop: START
-      });
-    } else if (status === 0) {
-      this.setState({
-        startStop: STOP
-      });
-    }
+    // // 初始化 开启关闭状态
+    // const { status } = this.props;
+    // if (status === 1) {
+    //   this.setState({
+    //     startStop: START
+    //   });
+    // } else if (status === 0) {
+    //   this.setState({
+    //     startStop: STOP
+    //   });
+    // }
   }
-  handleChange = selectedItems => {
-    this.setState({ selectedItems });
-  };
+
   shouldComponentUpdate(nextProps, nextState) {
     return !(
       fromJS(nextProps).equals(fromJS(this.props)) &&
@@ -140,11 +136,13 @@ class Control extends React.Component {
 
     return (
       <div className="control-context">
+        {/* // 查看發送數據 值 */}
         <NumberSourcesMoth
           data={message}
           setModalVisible={this.setModalVisible}
           modalVisible={modalVisible}
         />
+        {/* 增加数据 */}
         <AddOrModifyNewData
           addOrModifyNewDataVisible={addOrModifyNewDataVisible}
           bindParentData={bindParentData}
@@ -154,6 +152,7 @@ class Control extends React.Component {
           handleChange={this.handleChange}
           sourceId={sourceId}
         />
+        {/* 增加数据源 */}
         <AddDataSource
           addDataSourceVisible={addDataSourceVisible}
           addDataSourceClose={this.addDataSourceClose}
@@ -251,6 +250,10 @@ class Control extends React.Component {
     this.setState({ modalVisible });
   };
 
+  handleChange = selectedItems => {
+    this.setState({ selectedItems });
+  };
+
   // 选中数据源
   handleChangeSelect = e => {
     let { getDataUp, pageSize } = this.props;
@@ -272,7 +275,7 @@ class Control extends React.Component {
       okType: "danger",
       cancelText: "取消",
       onOk() {
-        deleteDataSource(sourceId, allDataSources);
+        deleteDataSource({ id: sourceId, allDataSources });
       },
       onCancel() {
         console.log("Cancel");
@@ -307,6 +310,11 @@ class Control extends React.Component {
   onClose = (bool, result) => {
     if (bool !== false) {
       let data = result.getFieldsValue();
+      for (let item in data) {
+        if (item !== 'detailsDes' && data[item] !== undefined) {
+          data[item] = Number(data[item])
+        }
+      }
       let {
         methodId,
         changeTime,
@@ -324,56 +332,7 @@ class Control extends React.Component {
         parentId,
         isChangeStatus
       } = data;
-      // 修改 方案
-      // for (let item in data) {
-      //   if (item !== undefined && item !== detailsDes) {
-
-      //   }
-      // }
-      if (this.state.selectedItems.length > 0) {
-        console.log(this.state.selectedItems);
-        parentId = this.state.selectedItems[0];
-        console.log(parentId);
-      }
-      if (methodId !== undefined) {
-        methodId = Number(methodId);
-      }
-      if (isChangeStatus !== undefined) {
-        isChangeStatus = Number(isChangeStatus);
-      }
-      if (changeTime !== undefined) {
-        changeTime = Number(changeTime);
-      }
-      if (importantAlarmId !== undefined) {
-        importantAlarmId = Number(importantAlarmId);
-      }
-      if (isParentData !== undefined) {
-        isParentData = Number(isParentData);
-      }
-      if (maxAlarmValue !== undefined) {
-        maxAlarmValue = Number(maxAlarmValue);
-      }
-      if (minAlarmValue !== undefined) {
-        minAlarmValue = Number(minAlarmValue);
-      }
-      if (maxValue !== undefined) {
-        maxValue = Number(maxValue);
-      }
-      if (minValue !== undefined) {
-        minValue = Number(minValue);
-      }
-      if (value !== undefined) {
-        value = Number(value);
-      }
-      if (dValue !== undefined) {
-        dValue = Number(dValue);
-      }
-      if (subValue !== undefined) {
-        subValue = Number(subValue);
-      }
-      if (addValue !== undefined) {
-        addValue = Number(addValue);
-      }
+      console.log(data);
       let dataSourceId = this.state.sourceId;
       let newData = {
         canshuzhi: JSON.stringify({
@@ -405,7 +364,7 @@ class Control extends React.Component {
         addSingleData
       } = this.props;
       // 增加单个数据
-      addSingleData(newData, properties, indexList, pageSize, pageNum);
+      addSingleData({ data: newData, properties, indexList, pageSize, pageNum });
       // 关闭弹框
       this.setState({
         addOrModifyNewDataVisible: false
@@ -432,7 +391,7 @@ class Control extends React.Component {
       let data = result.getFieldsValue();
       data.sendTime = Number(data.sendTime);
       const { addDataSource, allDataSources } = this.props;
-      addDataSource(data, allDataSources);
+      addDataSource({ data, allDataSources });
     }
 
     // 清空表单

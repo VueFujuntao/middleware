@@ -329,7 +329,7 @@ class DrawerForm extends React.Component {
           <Button onClick={() => onClose(false, this.props.form)} style={{ marginRight: 8 }}>
             Cancel
           </Button>
-          <Button onClick={() => onClose(true ,this.props.form)} type="primary">
+          <Button onClick={() => onClose(true, this.props.form)} type="primary">
             Submit
           </Button>
         </div>
@@ -349,7 +349,8 @@ class DrawerForm extends React.Component {
       this.setState({
         v: true
       });
-      this.props.bindParentData(this.props.sourceId);
+      const { bindParentData, sourceId } = this.props;
+      bindParentData({ id: sourceId });
     } else if (e === "0") {
       this.setState({
         v: false

@@ -2,6 +2,7 @@ import Axios from '../../axios/index.js';
 import {
   message
 } from 'antd';
+import deepCopy from '../../utils/deepCopy.js';
 
 const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 const ERROR_MSG = 'ERROR_MSG';
@@ -310,5 +311,21 @@ export function addDataSource(data, allDataSources) {
       message.error('Request failed');
       throw new Error(error);
     })
+  }
+}
+
+// 改變 Value
+export function changeData(itemValue, id, properties, pageSize, pageNum, field) {
+  return dispatch => {
+    let newProperties = deepCopy(properties);
+    for (let i = 0; i < newProperties.length; i++) {
+      if (id === newProperties[i].id) {
+        let item = newProperties[i];
+        item[field] = itemValue;
+        console.log(item[field]);
+      }
+    }
+    let newIndexList = newProperties.slice(pageSize * (pageNum - 1), pageSize * (pageNum - 1) + pageSize);
+    dispatch(registerSuccess({properties: newProperties, indexList: newIndexList}));
   }
 }

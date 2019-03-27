@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button, Badge, Modal, Select, Icon } from "antd";
 import { fromJS } from "immutable";
-import NumberSourcesMoth from "../NumberSourcesMoth/numberSourcesMoth.jsx";
-import NumericInput from "../numericInput/numericInput.jsx";
-import AddOrModifyNewData from "../addOrModifyNewData/addOrModifyNewData.jsx";
-import AddDataSource from "../addDataSource/addDataSource.jsx";
+import NumberSourcesMoth from "./NumberSourcesMoth/numberSourcesMoth.jsx";
+import NumericInput from "./numericInput/numericInput.jsx";
+import AddOrModifyNewData from "./addOrModifyNewData/addOrModifyNewData.jsx";
+import AddDataSource from "./addDataSource/addDataSource.jsx";
 import "./index.less";
 
 const Option = Select.Option;

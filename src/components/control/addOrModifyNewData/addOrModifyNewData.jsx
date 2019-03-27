@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Drawer, Form, Button, Col, Row, Input, Select } from "antd";
-import SelectWithHiddenSelectedOptions from "../selectedOptions/selectedOptions.jsx";
+import SelectWithHiddenSelectedOptions from "./selectedOptions/selectedOptions.jsx";
 
 const { Option } = Select;
 const InputGroup = Input.Group;

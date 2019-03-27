@@ -42,7 +42,8 @@ class OuterCover extends React.Component {
     // 开启 关闭数据
     openOrCloseUseData: PropTypes.func,
     // 切换当前页码
-    switchPageNum: PropTypes.func
+    switchPageNum: PropTypes.func,
+    changeData: PropTypes.func
   };
 
   // 设置默认 props 值
@@ -250,9 +251,9 @@ class OuterCover extends React.Component {
           <thead>
             <tr>
               <th style={{ width: "50px" }}>序号</th>
-              <th style={{width: '150px'}}>KEY</th>
-              <th style={{width: '150px'}}>VALUE</th>
-              <th style={{width: '150px'}}>是否影响报警</th>
+              <th style={{ width: "150px" }}>KEY</th>
+              <th style={{ width: "150px" }}>VALUE</th>
+              <th style={{ width: "150px" }}>是否影响报警</th>
               <th style={{ width: "150px" }}>变化函数</th>
               <th>描述</th>
               <th style={{ width: "100px" }}>类型</th>
@@ -268,9 +269,16 @@ class OuterCover extends React.Component {
                   <th>{index + 1 + (pageNum - 1) * 10}</th>
                   <td>{item.id}</td>
                   <td>
-                    <input className="input-focus" type="text" value={item.value}/>
+                    <input
+                      className="input-focus"
+                      type="text"
+                      value={item.value}
+                      onChange={e =>
+                        this.handleChangeSelect(e, item, "value", true)
+                      }
+                    />
                   </td>
-                  <th>{item.isChangeStatus === 0 ? '是' : '否'}</th>
+                  <th>{item.isChangeStatus === 0 ? "是" : "否"}</th>
                   <td>
                     <Select
                       labelInValue
@@ -303,16 +311,18 @@ class OuterCover extends React.Component {
                       labelInValue
                       defaultValue={
                         item.isParentData === 0
-                          ? { key: "general" }
+                          ? { key: "0" }
                           : item.isParentData === 1
-                          ? { key: "Subdata" }
-                          : { key: "general" }
+                          ? { key: "1" }
+                          : { key: "0" }
                       }
                       style={{ width: 120 }}
-                      onChange={this.handleChangeSelect}
+                      onChange={e =>
+                        this.handleChangeSelect(e, item, "isParentData", false)
+                      }
                     >
-                      <Option value="general">一般</Option>
-                      <Option value="Subdata">子数据</Option>
+                      <Option value="0">一般</Option>
+                      <Option value="1">子数据</Option>
                     </Select>
                   </td>
                   <td>
@@ -320,49 +330,51 @@ class OuterCover extends React.Component {
                       labelInValue
                       defaultValue={
                         item.changeTime === 1000
-                          ? { key: "1" }
+                          ? { key: "1000" }
                           : item.changeTime === 5000
-                          ? { key: "5" }
+                          ? { key: "5000" }
                           : item.changeTime === 10000
-                          ? { key: "10" }
+                          ? { key: "10000" }
                           : item.changeTime === 30000
-                          ? { key: "30" }
+                          ? { key: "30000" }
                           : item.changeTime === 60000
-                          ? { key: "60" }
+                          ? { key: "60000" }
                           : item.changeTime === 300000
-                          ? { key: "300" }
+                          ? { key: "300000" }
                           : item.changeTime === 900000
-                          ? { key: "900" }
+                          ? { key: "900000" }
                           : item.changeTime === 1800000
-                          ? { key: "1800" }
+                          ? { key: "1800000" }
                           : item.changeTime === 3600000
-                          ? { key: "3600" }
+                          ? { key: "3600000" }
                           : item.changeTime === 10800000
-                          ? { key: "10800" }
+                          ? { key: "10800000" }
                           : item.changeTime === 32400000
-                          ? { key: "32400" }
+                          ? { key: "32400000" }
                           : item.changeTime === 64800000
-                          ? { key: "64800" }
+                          ? { key: "64800000" }
                           : item.changeTime === 129600000
-                          ? { key: "129600" }
-                          : { key: "1" }
+                          ? { key: "129600000" }
+                          : { key: "1000" }
                       }
                       style={{ width: 90 }}
-                      onChange={this.handleChangeSelect}
+                      onChange={e =>
+                        this.handleChangeSelect(e, item, "changeTime", false)
+                      }
                     >
-                      <Option value="1">1秒</Option>
-                      <Option value="5">5秒</Option>
-                      <Option value="10">10秒</Option>
-                      <Option value="30">30秒</Option>
-                      <Option value="60">1分钟</Option>
-                      <Option value="300">5分钟</Option>
-                      <Option value="900">15分钟</Option>
-                      <Option value="1800">30分钟</Option>
-                      <Option value="3600">1小时</Option>
-                      <Option value="10800">3小时</Option>
-                      <Option value="32400">6小时</Option>
-                      <Option value="64800">12小时</Option>
-                      <Option value="129600">24小时</Option>
+                      <Option value="1000">1秒</Option>
+                      <Option value="5000">5秒</Option>
+                      <Option value="10000">10秒</Option>
+                      <Option value="30000">30秒</Option>
+                      <Option value="60000">1分钟</Option>
+                      <Option value="300000">5分钟</Option>
+                      <Option value="900000">15分钟</Option>
+                      <Option value="1800000">30分钟</Option>
+                      <Option value="3600000">1小时</Option>
+                      <Option value="10800000">3小时</Option>
+                      <Option value="32400000">6小时</Option>
+                      <Option value="64800000">12小时</Option>
+                      <Option value="129600000">24小时</Option>
                     </Select>
                   </td>
                   <td>
@@ -398,25 +410,32 @@ class OuterCover extends React.Component {
                       labelInValue
                       defaultValue={
                         item.importantAlarmId === 1
-                          ? { key: "wanting" }
+                          ? { key: "1" }
                           : item.importantAlarmId === 2
-                          ? { key: "Fire" }
+                          ? { key: "2" }
                           : item.importantAlarmId === 3
-                          ? { key: "LeakingWater" }
+                          ? { key: "3" }
                           : item.importantAlarmId === 4
-                          ? { key: "Intrusion" }
+                          ? { key: "4" }
                           : item.importantAlarmId === 5
-                          ? { key: "UPSTemperatureTooHigh" }
+                          ? { key: "5" }
                           : { key: "wanting" }
                       }
                       style={{ width: 120 }}
-                      onChange={this.handleChangeSelect}
+                      onChange={e =>
+                        this.handleChangeSelect(
+                          e,
+                          item,
+                          "importantAlarmId",
+                          false
+                        )
+                      }
                     >
-                      <Option value="wanting">无</Option>
-                      <Option value="Fire">火灾</Option>
-                      <Option value="LeakingWater">漏水</Option>
-                      <Option value="Intrusion">闯入</Option>
-                      <Option value="UPSTemperatureTooHigh">UPS温度过高</Option>
+                      <Option value="1">无</Option>
+                      <Option value="2">火灾</Option>
+                      <Option value="3">漏水</Option>
+                      <Option value="4">闯入</Option>
+                      <Option value="5">UPS温度过高</Option>
                     </Select>
                   </td>
                 </tr>
@@ -474,10 +493,6 @@ class OuterCover extends React.Component {
   }
   cancel(e) {
     message.error("取消删除");
-  }
-
-  handleChangeSelect(e) {
-    console.log(e);
   }
 
   // 函数弹出框
@@ -590,6 +605,69 @@ class OuterCover extends React.Component {
   }
 
   onChange() {}
+
+  // // 改變value
+  // inputChange = (e, item, field, bool) => {
+  //   let itemValue = item.value;
+  //   itemValue = e.target.value;
+  //   const { changeData, properties, pageSize, pageNum } = this.props;
+  //   changeData(itemValue, item.id, properties, pageSize, pageNum, "value");
+  // };
+
+  // // 改變類型
+  // handleChangeSelectType(e, item, field) {
+  //   let itemIsParentData = item.isParentData;
+  //   itemIsParentData = Number(e.key);
+  //   const { changeData, properties, pageSize, pageNum } = this.props;
+  //   changeData(
+  //     itemIsParentData,
+  //     item.id,
+  //     properties,
+  //     pageSize,
+  //     pageNum,
+  //     "isParentData"
+  //   );
+  // }
+
+  // // 修改變化時間
+  // handleChangeSelectTime(e, item, field) {
+  //   let itemChangeTime = item.changeTime;
+  //   itemChangeTime = Number(e.key);
+  //   const { changeData, properties, pageSize, pageNum } = this.props;
+  //   changeData(
+  //     itemChangeTime,
+  //     item.id,
+  //     properties,
+  //     pageSize,
+  //     pageNum,
+  //     "changeTime"
+  //   );
+  // }
+
+  // handleChangeImportantAlarmId(e, item, field) {
+  //   let itemImportantAlarmId = item.importantAlarmId;
+  //   itemImportantAlarmId = Number(e.key);
+  //   const { changeData, properties, pageSize, pageNum } = this.props;
+  //   changeData(
+  //     itemImportantAlarmId,
+  //     item.id,
+  //     properties,
+  //     pageSize,
+  //     pageNum,
+  //     "importantAlarmId"
+  //   );
+  // }
+
+  handleChangeSelect(e, item, field, bool) {
+    let itemValue = item[field];
+    if (bool === true) {
+      itemValue = e.target.value;
+    } else {
+      itemValue = Number(e.key);
+    }
+    const { changeData, properties, pageSize, pageNum } = this.props;
+    changeData(itemValue, item.id, properties, pageSize, pageNum, field);
+  }
 }
 
 // es6 模块导出

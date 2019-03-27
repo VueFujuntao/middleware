@@ -20,7 +20,7 @@ import {
   getDataUp,
   // 添加单个数据
   addSingleData,
-   // 修改发送时间 
+  // 修改发送时间
   setSourceDataInput,
   // 开始  关闭 数据源
   setSourceData,
@@ -35,7 +35,8 @@ import {
   // 绑定关联数据
   bindParentData,
   // 添加数据源
-  addDataSource
+  addDataSource,
+  changeData
 } from "../../redux/module/one.js";
 import "./index.less";
 
@@ -54,7 +55,7 @@ const { Header, Footer, Content } = Layout;
     deleteSingleData,
     // 添加单个数据
     addSingleData,
-    // 修改发送时间 
+    // 修改发送时间
     setSourceDataInput,
     // 开始  关闭 数据源
     setSourceData,
@@ -69,7 +70,8 @@ const { Header, Footer, Content } = Layout;
     // 绑定关联数据
     bindParentData,
     // 添加数据源
-    addDataSource
+    addDataSource,
+    changeData
   }
 )
 class Index extends Component {
@@ -101,7 +103,7 @@ class Index extends Component {
     setSourceDataInput: PropTypes.func,
     // 开始  关闭 数据源
     setSourceData: PropTypes.func,
-    // 切换页面 改变数据 
+    // 切换页面 改变数据
     switchPage: PropTypes.func,
     // 切换页码
     switchPageNum: PropTypes.func,
@@ -114,7 +116,8 @@ class Index extends Component {
     // 绑定关联数据
     bindParentData: PropTypes.func,
     // 添加数据源
-    addDataSource: PropTypes.func
+    addDataSource: PropTypes.func,
+    changeData: PropTypes.func
   };
 
   // 设置默认 props 值
@@ -142,7 +145,7 @@ class Index extends Component {
     this.state = {};
   }
 
-  componentWillMount() { }
+  componentWillMount() {}
 
   componentDidMount() {
     // 获取数据列表
@@ -184,6 +187,7 @@ class Index extends Component {
       switchPageNum,
       // 绑定关联数据 -- 方法
       bindParentData,
+      changeData,
       // 当前页码 -- 数字
       pageNum,
       // 数据源发送时间 -- 数字
@@ -282,6 +286,8 @@ class Index extends Component {
               pageNum={pageNum}
               // 切换页码 -- 方法
               switchPageNum={switchPageNum}
+              //
+              changeData={changeData}
             />
           </div>
         </Content>

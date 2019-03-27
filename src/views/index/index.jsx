@@ -160,10 +160,6 @@ class Index extends Component {
     );
   }
 
-  /* 
-    Menthods
-  */
-
   render() {
     const {
       // 添加单个数据 -- 方法
@@ -287,7 +283,7 @@ class Index extends Component {
               pageNum={pageNum}
               // 切换页码 -- 方法
               switchPageNum={switchPageNum}
-              //
+              // 改变单条数据 -- 方法
               changeData={changeData}
             />
           </div>

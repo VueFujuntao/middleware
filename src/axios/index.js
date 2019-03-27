@@ -1,4 +1,7 @@
 import Axios from 'axios';
+import {
+  message
+} from 'antd';
 // 请求时间
 Axios.defaults.timeout = 500;
 Axios.defaults.baseURL = 'http://172.20.10.2:12460/dataSource';
@@ -7,7 +10,6 @@ Axios.defaults.baseURL = 'http://172.20.10.2:12460/dataSource';
 
 // 请求过滤
 Axios.interceptors.request.use(config => {
-  console.log(config)
   return config;
 }, error => {
   return Promise.reject(error);
@@ -15,7 +17,11 @@ Axios.interceptors.request.use(config => {
 
 // 响应过滤
 Axios.interceptors.response.use(data => {
-  return data;
+  if (data.data.code === 200) {
+    return data;
+  } else {
+    message.error(data.data.msg);
+  }
 }, error => {
   return Promise.reject(error);
 });

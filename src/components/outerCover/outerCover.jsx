@@ -17,6 +17,7 @@ import {
 // PropTypes props类型检查
 import PropTypes from "prop-types";
 import deepCopy from "../../utils/deepCopy.js";
+import Delivery from '../../utils/delivery.js';
 
 import "./index.less";
 const Option = Select.Option;
@@ -579,10 +580,7 @@ class OuterCover extends React.Component {
     // 获取 一页几条数据
     let { pageSize, switchPage, switchPageNum } = this.props;
     if (switchPage === undefined) return;
-    let data = this.props.properties.slice(
-      pageSize * (e - 1),
-      pageSize * (e - 1) + pageSize
-    );
+    let data = Delivery({ array: this.props.properties, pageNum: e, pageSize});
     // 修改当前页码
     switchPageNum(e);
     // 改变数据

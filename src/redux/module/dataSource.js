@@ -60,10 +60,6 @@ function errorMsg(msg) {
   }
 }
 
-export function indexListPage(data) {
-
-}
-
 // 當前輸入框的數據
 export function setSourceDataInput(data) {
   return dispatch => {
@@ -119,12 +115,13 @@ export function getDataUp(data = {
 export function getFirstData() {
   return dispatch => {
     Axios.get('/getAllDataSources').then(response => {
-      if (response.data.code === 200) {
+      let data = response.data;
+      if (data.code === 200) {
         dispatch(registerSuccess({
-          allDataSources: response.data.data
+          allDataSources: data.data
         }));
       } else {
-        message.error(response.data.data);
+        message.error(data.data);
       }
     }, err => {
       message.error('Request failed');
@@ -143,12 +140,13 @@ export function setSourceData(properties, sourceId, status, sendTime, name) {
       sendTime: sendTime,
       name
     }).then(response => {
-      if (response.data.code === 200) {
+      let data = response.data;
+      if (data.code === 200) {
         dispatch(registerSuccess({
           status: status
         }));
       } else {
-        message.error(response.data.data);
+        message.error(data.data);
       }
     }, error => {
       message.error('Request failed');
@@ -165,12 +163,13 @@ export function printSendData(id) {
         id: id
       }
     }).then(response => {
-      if (response.data.code === 200) {
+      let data = response.data;
+      if (data.code === 200) {
         dispatch(registerSuccess({
-          message: response.data.data
+          message: data.data
         }))
       } else {
-        message.error(response.data.data);
+        message.error(data.data);
       }
     }, error => {
       message.error('Request failed');
@@ -183,7 +182,8 @@ export function printSendData(id) {
 export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
   return dispatch => {
     Axios.put('/openOrCloseData', item).then(response => {
-      if (response.data.code === 200) {
+      let data = response.data;
+      if (data.code === 200) {
         let newIndexList = Delivery({
           array: newProperties,
           pageNum,
@@ -193,9 +193,9 @@ export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
           properties: newProperties,
           indexList: newIndexList
         }));
-        message.success(response.data.msg);
+        message.success(data.msg);
       } else {
-        message.error(response.data.msg);
+        message.error(data.msg);
       }
     }, error => {
       message.error('Request failed');
@@ -240,10 +240,11 @@ export function addSingleData({
 }) {
   return dispatch => {
     Axios.post('/addData', data).then(response => {
-      if (response.data.code === 200) {
-        message.success(response.data.msg);
+      let data = response.data;
+      if (data.code === 200) {
+        message.success(data.msg);
         if (indexList.length < 10) {
-          let newProperties = properties.concat(response.data.data);
+          let newProperties = properties.concat(data.data);
           let newIndexList = Delivery({
             array: newProperties,
             pageNum,
@@ -254,13 +255,13 @@ export function addSingleData({
             indexList: newIndexList
           }));
         } else {
-          let newProperties = properties.concat(response.data.data);
+          let newProperties = properties.concat(data.data);
           dispatch(registerSuccess({
             properties: newProperties
           }));
         }
       } else {
-        message.error(response.data.msg);
+        message.error(data.msg);
       }
     }, error => {
       message.error('Request failed');
@@ -308,10 +309,11 @@ export function bindParentData({
 }) {
   return dispatch => {
     Axios.get(`/bindParentData?id=${id}`).then(response => {
-      if (response.data.code === 200) {
+      let data = response.data;
+      if (data.code === 200) {
         message.success('成功');
         dispatch(registerSuccess({
-          parentData: response.data.data
+          parentData: data.data
         }));
       } else {
         message.error('失败');
@@ -418,29 +420,31 @@ export function importantAlarm({
     Axios.get(`/importantAlarm?id=${id}&importantAlarmId=${importantAlarmId}`).then(response => {
       if (response.data.code === 200) {
         message.success(response.data.msg);
-        if (response.data.data.properties.length < 10) {
+        let properties = response.data.data.properties;
+        if (properties.length < 10) {
           dispatch(registerSuccess({
-            properties: response.data.data.properties,
-            indexList: response.data.data.properties
+            properties: properties,
+            indexList: properties
           }))
         } else {
           let newIndexList = Delivery({
-            array: response.data.data.properties,
+            array: properties,
             pageNum,
             pageSize
           });
           dispatch(registerSuccess({
-            properties: response.data.data.properties,
+            properties: properties,
             indexList: newIndexList
           }))
         }
       } else {
-        message.error(response.data.msg)
+        message.error(response.data.msg);
       }
     })
   }
 }
 
+// 切换页面 改变ID
 export function changeSurceId({
   id
 }) {

@@ -223,11 +223,9 @@ class Index extends Component {
 
     return (
       <Layout className="Highly-filled">
-        <Header style={{ background: "#fff", padding: 0 }}>
+        <Header className="header">
           <h1 className="text-h1">数据源管理</h1>
-          <ButtonGroup
-            style={{ position: "absolute", top: "0px", right: "40px" }}
-          >
+          <ButtonGroup className="button-group">
             <Button
               disabled={sourceId === -1 || status === 1}
               onClick={() => this.changeClick(2)}
@@ -235,36 +233,28 @@ class Index extends Component {
               火灾
             </Button>
             <Button
-              disabled={sourceId === -1 ||  status === 1}
+              disabled={sourceId === -1 || status === 1}
               onClick={() => this.changeClick(3)}
             >
               漏水
             </Button>
             <Button
-              disabled={sourceId === -1 ||  status === 1}
+              disabled={sourceId === -1 || status === 1}
               onClick={() => this.changeClick(4)}
             >
               闯入
             </Button>
             <Button
-              disabled={sourceId === -1 ||  status === 1}
+              disabled={sourceId === -1 || status === 1}
               onClick={() => this.changeClick(5)}
             >
               UPS
             </Button>
           </ButtonGroup>
         </Header>
-        <Content
-          style={{
-            margin: "24px 16px 0",
-            overflow: "initial",
-            height: "80%",
-            minHeight: "600px"
-          }}
-        >
+        <Content className="content">
           <div
-            style={{ padding: 24, background: "#fff", textAlign: "center" }}
-            className="Highly-filled"
+            className="Highly-filled-div"
           >
             {/* 头部组件 */}
             <Control
@@ -339,11 +329,12 @@ class Index extends Component {
   }
 
   changeClick = e => {
-    this.props.importantAlarm({
-      id: this.props.sourceId,
+    let { importantAlarm, sourceId, pageNum, pageSize } = this.props;
+    importantAlarm({
+      id: sourceId,
       importantAlarmId: e,
-      pageNum: this.props.pageNum,
-      pageSize: this.props.pageSize
+      pageNum: pageNum,
+      pageSize: pageSize
     });
   };
 }

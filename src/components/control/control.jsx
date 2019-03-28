@@ -237,11 +237,11 @@ class Control extends React.Component {
             新增数据
           </Button>
         </div>
-        <div style={{ float: "right", marginRight: "20px" }}>
+        <div className="div-icon">
           <Icon
             type="plus-circle"
             theme="twoTone"
-            style={{ fontSize: "30px", lineHeight: "50px", cursor: "pointer" }}
+            className="icon"
             onClick={this.showDrawerDataOurce}
           />
         </div>

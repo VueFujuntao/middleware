@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Drawer, Form, Button, Col, Row, Input, Select } from "antd";
 import SelectWithHiddenSelectedOptions from "./selectedOptions/selectedOptions.jsx";
+import "./index.less";
 
 const { Option } = Select;
 const InputGroup = Input.Group;
@@ -43,11 +44,7 @@ class DrawerForm extends React.Component {
         width={720}
         onClose={() => onClose(false, this.props.form)}
         visible={addOrModifyNewDataVisible}
-        style={{
-          overflow: "auto",
-          height: "calc(100% - 108px)",
-          paddingBottom: "108px"
-        }}
+        className="drawer-add"
       >
         <Form layout="vertical" hideRequiredMark>
           <Row gutter={16}>
@@ -201,7 +198,7 @@ class DrawerForm extends React.Component {
             <Col span={4}>
               <Form.Item label="是否影响报警">
                 {getFieldDecorator("isChangeStatus", {
-                  initialValue: '1',
+                  initialValue: "1",
                   rules: [
                     {
                       required: true,
@@ -312,11 +309,7 @@ class DrawerForm extends React.Component {
                         initialValue: "0"
                       })(
                         <Input
-                          style={{
-                            width: 100,
-                            textAlign: "center",
-                            borderLeft: 0
-                          }}
+                          className="input-center-border"
                           placeholder="Maximum"
                         />
                       )}
@@ -361,7 +354,7 @@ class DrawerForm extends React.Component {
                           initialValue: "0"
                         })(
                           <Input
-                            style={{ width: 100, textAlign: "center" }}
+                            className="input-center"
                             placeholder="Minimum"
                           />
                         )}
@@ -381,11 +374,7 @@ class DrawerForm extends React.Component {
                           initialValue: "0"
                         })(
                           <Input
-                            style={{
-                              width: 100,
-                              textAlign: "center",
-                              borderLeft: 0
-                            }}
+                            className="input-center-border"
                             placeholder="Maximum"
                           />
                         )}
@@ -397,18 +386,7 @@ class DrawerForm extends React.Component {
             </div>
           ) : null}
         </Form>
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            bottom: 0,
-            width: "100%",
-            borderTop: "1px solid #e9e9e9",
-            padding: "10px 16px",
-            background: "#fff",
-            textAlign: "right"
-          }}
-        >
+        <div className="add-div-data">
           <Button
             onClick={() => onClose(false, this.props.form)}
             style={{ marginRight: 8 }}

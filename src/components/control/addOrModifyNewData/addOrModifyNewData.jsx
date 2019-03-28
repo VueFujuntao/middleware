@@ -63,52 +63,6 @@ class DrawerForm extends React.Component {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="变化函数">
-                {getFieldDecorator("methodId", {
-                  rules: [
-                    { required: true, message: "Please choose the approver" }
-                  ]
-                })(
-                  <Select
-                    placeholder="Please choose the type"
-                    onChange={this.handleChangeSelectFunction}
-                  >
-                    <Option value="1">无</Option>
-                    <Option value="2">折线周期函数</Option>
-                    <Option value="3">波动取值函数</Option>
-                    <Option value="4">随机取值函数</Option>
-                    <Option value="5">类正弦函数</Option>
-                  </Select>
-                )}
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="变化时间">
-                {getFieldDecorator("changeTime", {
-                  rules: [{ required: true, message: "Please select an owner" }]
-                })(
-                  <Select placeholder="Please select an owner">
-                    <Option value="1000">1秒</Option>
-                    <Option value="5000">5秒</Option>
-                    <Option value="10000">10秒</Option>
-                    <Option value="30000">30秒</Option>
-                    <Option value="60000">1分钟</Option>
-                    <Option value="300000">5分钟</Option>
-                    <Option value="900000">15分钟</Option>
-                    <Option value="1800000">30分钟</Option>
-                    <Option value="3600000">1小时</Option>
-                    <Option value="10800000">3小时</Option>
-                    <Option value="32400000">6小时</Option>
-                    <Option value="64800000">12小时</Option>
-                    <Option value="129600000">24小时</Option>
-                  </Select>
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
               <Form.Item label="类型">
                 {getFieldDecorator("isParentData", {
                   rules: [{ required: true, message: "Please choose the type" }]
@@ -122,6 +76,72 @@ class DrawerForm extends React.Component {
                   </Select>
                 )}
               </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              {this.state.v === false ? (
+                <Form.Item label="变化时间">
+                  {getFieldDecorator("changeTime", {
+                    rules: [
+                      { required: true, message: "Please select an owner" }
+                    ]
+                  })(
+                    <Select placeholder="Please select an owner">
+                      <Option value="1000">1秒</Option>
+                      <Option value="5000">5秒</Option>
+                      <Option value="10000">10秒</Option>
+                      <Option value="30000">30秒</Option>
+                      <Option value="60000">1分钟</Option>
+                      <Option value="300000">5分钟</Option>
+                      <Option value="900000">15分钟</Option>
+                      <Option value="1800000">30分钟</Option>
+                      <Option value="3600000">1小时</Option>
+                      <Option value="10800000">3小时</Option>
+                      <Option value="32400000">6小时</Option>
+                      <Option value="64800000">12小时</Option>
+                      <Option value="129600000">24小时</Option>
+                    </Select>
+                  )}
+                </Form.Item>
+              ) : null}
+            </Col>
+            <Col span={12}>
+              {this.state.v === false ? (
+                <Form.Item label="变化函数">
+                  {getFieldDecorator("methodId", {
+                    rules: [
+                      { required: true, message: "Please choose the approver" }
+                    ]
+                  })(
+                    <Select
+                      placeholder="Please choose the type"
+                      onChange={this.handleChangeSelectFunction}
+                    >
+                      <Option value="1">无</Option>
+                      <Option value="2">折线周期函数</Option>
+                      <Option value="3">波动取值函数</Option>
+                      <Option value="4">随机取值函数</Option>
+                      <Option value="5">类正弦函数</Option>
+                    </Select>
+                  )}
+                </Form.Item>
+              ) : (
+                <Form.Item label="变化函数">
+                  {getFieldDecorator("methodId", {
+                    rules: [
+                      { required: true, message: "Please choose the approver" }
+                    ]
+                  })(
+                    <Select
+                      placeholder="Please choose the type"
+                      onChange={this.handleChangeSelectFunction}
+                    >
+                      <Option value="1">无</Option>
+                    </Select>
+                  )}
+                </Form.Item>
+              )}
             </Col>
           </Row>
           <Row gutter={16}>
@@ -147,7 +167,7 @@ class DrawerForm extends React.Component {
             </Col>
             <Col span={12}>
               {this.state.v ? (
-                <Form.Item label="关联">
+                <Form.Item label="关联一般">
                   {getFieldDecorator("parentId", {
                     rules: [
                       {
@@ -259,7 +279,8 @@ class DrawerForm extends React.Component {
                     </Form.Item>
                   </InputGroup>
                 </Col>
-                {this.state.functionVis === 5 ? (
+                {this.state.functionVis === 5 ||
+                this.state.functionVis === 2 ? (
                   <Col span={12}>
                     <Form.Item label="波动差值">
                       {getFieldDecorator("dValue", {
@@ -326,7 +347,10 @@ class DrawerForm extends React.Component {
             textAlign: "right"
           }}
         >
-          <Button onClick={() => onClose(false, this.props.form)} style={{ marginRight: 8 }}>
+          <Button
+            onClick={() => onClose(false, this.props.form)}
+            style={{ marginRight: 8 }}
+          >
             Cancel
           </Button>
           <Button onClick={() => onClose(true, this.props.form)} type="primary">
@@ -357,7 +381,6 @@ class DrawerForm extends React.Component {
       });
     }
   };
-
 }
 
 const App = Form.create()(DrawerForm);

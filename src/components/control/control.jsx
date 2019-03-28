@@ -47,7 +47,8 @@ class Control extends React.Component {
     // 绑定关联数据
     bindParentData: PropTypes.func,
     // 添加数据源
-    addDataSource: PropTypes.func
+    addDataSource: PropTypes.func,
+    changeSurceId: PropTypes.func
   };
 
   static defaultProps = {
@@ -70,14 +71,16 @@ class Control extends React.Component {
     // 数据源名称
     name: "",
     // 关联父数据
-    parentData: []
+    parentData: [],
+    // 数据源 ID
+    sourceId: -1
   };
 
   constructor(props) {
     super(props);
     this.state = {
       // 数据源 ID
-      sourceId: -1,
+      // sourceId: -1,
       // // 开始关闭数据源
       // startStop: START,
       // 显示数字版块
@@ -123,16 +126,18 @@ class Control extends React.Component {
       // 绑定关联数据
       bindParentData,
       // 关联父数据
-      parentData
+      parentData,
+      sourceId
     } = this.props;
 
     let {
       modalVisible,
       addOrModifyNewDataVisible,
       addDataSourceVisible,
-      sourceId,
       selectedItems
     } = this.state;
+
+    // const {sourceId} = this.props;
 
     return (
       <div className="control-context">
@@ -246,7 +251,7 @@ class Control extends React.Component {
 
   // 關閉 輸出數據源 彈框
   setModalVisible = modalVisible => {
-    if (modalVisible) this.props.printSendData(this.state.sourceId);
+    if (modalVisible) this.props.printSendData(this.props.sourceId);
     this.setState({ modalVisible });
   };
 
@@ -256,19 +261,16 @@ class Control extends React.Component {
 
   // 选中数据源
   handleChangeSelect = e => {
-    let { getDataUp, pageSize } = this.props;
+    let { getDataUp, pageSize, changeSurceId } = this.props;
     // 当前数据源 ID
     getDataUp({ id: e }, pageSize);
-    this.setState({
-      sourceId: e
-    });
+    changeSurceId({id: e})
     // 获取数据源数据
   };
 
   // 删除数据源
   showDeleteConfirm = () => {
-    let { deleteDataSource, allDataSources } = this.props;
-    let { sourceId } = this.state;
+    let { deleteDataSource, allDataSources, sourceId } = this.props;
     confirm({
       title: "您确定要删除此数据源吗?",
       okText: "确认",
@@ -290,8 +292,7 @@ class Control extends React.Component {
 
   // 打开 或 关闭 数据源
   OpenOrCloseDataSource = () => {
-    let { name, sendTime, properties, status, setSourceData } = this.props;
-    let { sourceId } = this.state;
+    let { name, sendTime, properties, status, setSourceData, sourceId } = this.props;
     if (status === 1) {
       setSourceData(properties, sourceId, 0, sendTime, name);
     } else if (status === 0) {
@@ -333,7 +334,7 @@ class Control extends React.Component {
         isChangeStatus
       } = data;
       console.log(data);
-      let dataSourceId = this.state.sourceId;
+      let dataSourceId = this.props.sourceId;
       let newData = {
         canshuzhi: JSON.stringify({
           maxAlarmValue,

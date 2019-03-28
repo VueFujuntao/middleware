@@ -10,6 +10,7 @@ const ERROR_MSG = 'ERROR_MSG';
 
 // 默认值
 const initState = {
+  sourceId: -1,
   msg: '',
   // 數據源列表
   allDataSources: [],
@@ -58,7 +59,6 @@ function errorMsg(msg) {
     type: ERROR_MSG
   }
 }
-
 
 export function indexListPage(data) {
 
@@ -244,7 +244,11 @@ export function addSingleData({
         message.success(response.data.msg);
         if (indexList.length < 10) {
           let newProperties = properties.concat(response.data.data);
-          let newIndexList = Delivery({ array: newProperties, pageNum, pageSize })
+          let newIndexList = Delivery({
+            array: newProperties,
+            pageNum,
+            pageSize
+          })
           dispatch(registerSuccess({
             properties: newProperties,
             indexList: newIndexList
@@ -278,7 +282,11 @@ export function deleteSingleData({
         let newProperties = properties.filter(newItem => {
           return newItem.id !== item.id;
         });
-        let newIndexList = Delivery({ array: newProperties, pageNum, pageSize});
+        let newIndexList = Delivery({
+          array: newProperties,
+          pageNum,
+          pageSize
+        });
         dispatch(registerSuccess({
           properties: newProperties,
           indexList: newIndexList
@@ -355,10 +363,90 @@ export function changeData({
         item[field] = itemValue;
       }
     }
-    let newIndexList = Delivery({ array: newProperties, pageNum, pageSize });
+    let newIndexList = Delivery({
+      array: newProperties,
+      pageNum,
+      pageSize
+    });
     dispatch(registerSuccess({
       properties: newProperties,
       indexList: newIndexList
     }));
+  }
+}
+
+// 改變 单条数据
+export function changeDataFun({
+  itemValueOne,
+  itemValueTwo,
+  id,
+  properties,
+  pageSize,
+  pageNum,
+  fieldOne,
+  fieldTwo
+}) {
+  return dispatch => {
+    let newProperties = deepCopy(properties);
+    for (let i = 0; i < newProperties.length; i++) {
+      if (id === newProperties[i].id) {
+        let item = newProperties[i];
+        item[fieldOne] = itemValueOne;
+        item[fieldTwo] = itemValueTwo;
+      }
+    }
+    let newIndexList = Delivery({
+      array: newProperties,
+      pageNum,
+      pageSize
+    });
+    dispatch(registerSuccess({
+      properties: newProperties,
+      indexList: newIndexList
+    }));
+  }
+}
+
+// 启用 关闭 事件 状态
+export function importantAlarm({
+  id,
+  importantAlarmId,
+  pageNum,
+  pageSize
+}) {
+  return dispatch => {
+    Axios.get(`/importantAlarm?id=${id}&importantAlarmId=${importantAlarmId}`).then(response => {
+      if (response.data.code === 200) {
+        message.success(response.data.msg);
+        if (response.data.data.properties.length < 10) {
+          dispatch(registerSuccess({
+            properties: response.data.data.properties,
+            indexList: response.data.data.properties
+          }))
+        } else {
+          let newIndexList = Delivery({
+            array: response.data.data.properties,
+            pageNum,
+            pageSize
+          });
+          dispatch(registerSuccess({
+            properties: response.data.data.properties,
+            indexList: newIndexList
+          }))
+        }
+      } else {
+        message.error(response.data.msg)
+      }
+    })
+  }
+}
+
+export function changeSurceId({
+  id
+}) {
+  return dispatch => {
+    dispatch(registerSuccess({
+      sourceId: id
+    }))
   }
 }

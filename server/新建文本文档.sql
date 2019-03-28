@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50723
 File Encoding         : 65001
 
-Date: 2019-03-26 17:14:11
+Date: 2019-03-28 13:25:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,14 +25,12 @@ CREATE TABLE `data_source` (
   `send_time` int(11) DEFAULT NULL,
   `status` int(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of data_source
 -- ----------------------------
-INSERT INTO `data_source` VALUES ('1', 'AA', '20000', '1');
-INSERT INTO `data_source` VALUES ('2', 'BB', '10000', '1');
-INSERT INTO `data_source` VALUES ('3', 'CC', '30000', '1');
+INSERT INTO `data_source` VALUES ('12', 'hello', '123456', '1');
 
 -- ----------------------------
 -- Table structure for important_alarm
@@ -97,22 +95,5 @@ CREATE TABLE `property` (
 -- ----------------------------
 -- Records of property
 -- ----------------------------
-INSERT INTO `property` VALUES ('1', '{\n\"maxAlarmValue\":50,\n\"maxValue\":100,\n\"minAlarmValue\":30,\n\"minValue\":0,\n\"propertyId\":\"1\"\n}', '5000', '1', '嗷嗷嗷', '1', '0', '0', '1', '1', '0', '', null);
-INSERT INTO `property` VALUES ('10', '{\"maxAlarmValue\":50,\"maxValue\":100,\"minAlarmValue\":30,\"minValue\":0,\"propertyId\":\"1\"}', '5000', '1', 'aaa', '2', '0', '0', '0', '2', '1', '1', null);
-INSERT INTO `property` VALUES ('11', '{\"maxAlarmValue\":50,\"maxValue\":100,\"minAlarmValue\":30,\"minValue\":0,\"propertyId\":\"1\"}', '5000', '1', 'aaa', '2', '0', '0', '0', '2', '1', '1', null);
-INSERT INTO `property` VALUES ('12', '{\"maxAlarmValue\":50,\"maxValue\":100,\"minAlarmValue\":30,\"minValue\":0,\"propertyId\":\"1\"}', '5000', '1', 'aaa', '2', '0', '0', '0', '2', '1', '1', null);
-INSERT INTO `property` VALUES ('14', '{\"maxAlarmValue\":50,\"maxValue\":100,\"minAlarmValue\":30,\"minValue\":0,\"propertyId\":\"1\"}', '5000', '1', 'aaa', '2', '0', '0', '0', '2', '1', '1', null);
-INSERT INTO `property` VALUES ('15', '{\"maxAlarmValue\":50,\"maxValue\":100,\"minAlarmValue\":30,\"minValue\":0,\"propertyId\":\"1\"}', '5000', '1', 'aaa', '2', '0', '0', '1', '2', '1', '1', null);
-INSERT INTO `property` VALUES ('1553587046185', '{\"maxAlarmValue\":1,\"maxValue\":12,\"minAlarmValue\":1,\"minValue\":1,\"subValue\":1,\"addValue\":12}', '900', '2', '1', '3', '12321321', '0', '1', '3', '1', '1', null);
-INSERT INTO `property` VALUES ('1553590072296', '{}', '900', '2', '122', '1', '12', null, '0', '1', '0', null, null);
-INSERT INTO `property` VALUES ('1553590235549', '{}', '900', '2', '12321', '1', '21312', null, '0', '1', '0', null, null);
-INSERT INTO `property` VALUES ('1553590282853', '{}', '30', '2', '12', '1', '12', null, '0', '4', '0', null, null);
-INSERT INTO `property` VALUES ('1553590414601', '{}', '1800', '2', '12', '1', '12', null, '0', '1', '0', null, null);
-INSERT INTO `property` VALUES ('1553590556795', '{}', '900', '2', '12', '1', '12', null, '0', '4', '0', null, null);
-INSERT INTO `property` VALUES ('1553590610866', '{}', '5', '2', '2121', '1', '12', null, '0', '1', '0', null, null);
-INSERT INTO `property` VALUES ('1553590633349', '{}', '900', '1', '12fdfsdgdsgsdgsdgsdg', '1', '12', null, '0', '2', '0', null, null);
-INSERT INTO `property` VALUES ('2', '{\n\"maxAlarmValue\":50,\n\"maxValue\":100,\n\"minAlarmValue\":30,\n\"minValue\":0,\n\"propertyId\":\"1\"\n}', '5000', '1', '嗷嗷嗷', '1', '0', '0', '1', '1', '0', '', null);
-INSERT INTO `property` VALUES ('3', '{\"maxAlarmValue\":50,\"maxValue\":100,\"minAlarmValue\":30,\"minValue\":0,\"propertyId\":\"1\"}', '10000', '1', 'aaa', '4', '0', '0', '0', '4', '1', '1', null);
-INSERT INTO `property` VALUES ('4', '{\n\"maxAlarmValue\":50,\n\"maxValue\":100,\n\"minAlarmValue\":30,\n\"minValue\":0,\n\"propertyId\":\"1\"\n}', '5000', '1', '嗷嗷嗷', '1', '0', '0', '0', '1', '0', '', null);
-INSERT INTO `property` VALUES ('5', '{\"maxAlarmValue\":50,\"maxValue\":100,\"minAlarmValue\":30,\"minValue\":0,\"propertyId\":\"1\"}', '5000', '1', 'aaa', '1', '0', '0', '1', '1', '0', '', null);
-INSERT INTO `property` VALUES ('6', '{\"maxAlarmValue\":50,\"maxValue\":100,\"minAlarmValue\":30,\"minValue\":0,\"propertyId\":\"1\"}', '5000', '1', 'aaa', '1', '0', '0', '0', '1', '1', '1', null);
+INSERT INTO `property` VALUES ('1553742680229', '{}', '1800000', '12', 'fewer', '1', '12', null, '1', '2', '0', null, '0');
+INSERT INTO `property` VALUES ('1553743814434', '{}', null, '12', 'werewolf', '1', '32143214', null, '0', '5', '1', null, '1');

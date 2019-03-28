@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { fromJS } from "immutable";
 import { connect } from "react-redux";
-import { Layout } from "antd";
+import { Layout, Button } from "antd";
 // 表单组件
 import OuterCover from "../../components/outerCover/outerCover.jsx";
 // 头部组件
@@ -37,11 +37,15 @@ import {
   // 添加数据源
   addDataSource,
   // 改变单条数据
-  changeData
+  changeData,
+  changeSurceId,
+  importantAlarm,
+  changeDataFun
 } from "../../redux/module/dataSource.js";
 import "./index.less";
 
 const { Header, Footer, Content } = Layout;
+const ButtonGroup = Button.Group;
 
 @connect(
   state => state.dataSource,
@@ -72,7 +76,10 @@ const { Header, Footer, Content } = Layout;
     bindParentData,
     // 添加数据源
     addDataSource,
-    changeData
+    changeData,
+    changeSurceId,
+    importantAlarm,
+    changeDataFun
   }
 )
 class Index extends Component {
@@ -118,7 +125,9 @@ class Index extends Component {
     bindParentData: PropTypes.func,
     // 添加数据源
     addDataSource: PropTypes.func,
-    changeData: PropTypes.func
+    changeData: PropTypes.func,
+    changeSurceId: PropTypes.func,
+    changeDataFun: PropTypes.func
   };
 
   // 设置默认 props 值
@@ -206,13 +215,44 @@ class Index extends Component {
       // 关联数据
       parentData,
       // 添加数据源
-      addDataSource
+      addDataSource,
+      sourceId,
+      changeSurceId,
+      changeDataFun
     } = this.props;
 
     return (
       <Layout className="Highly-filled">
         <Header style={{ background: "#fff", padding: 0 }}>
           <h1 className="text-h1">数据源管理</h1>
+          <ButtonGroup
+            style={{ position: "absolute", top: "0px", right: "40px" }}
+          >
+            <Button
+              disabled={sourceId === -1 || status === 1}
+              onClick={() => this.changeClick(2)}
+            >
+              火灾
+            </Button>
+            <Button
+              disabled={sourceId === -1 ||  status === 1}
+              onClick={() => this.changeClick(3)}
+            >
+              漏水
+            </Button>
+            <Button
+              disabled={sourceId === -1 ||  status === 1}
+              onClick={() => this.changeClick(4)}
+            >
+              闯入
+            </Button>
+            <Button
+              disabled={sourceId === -1 ||  status === 1}
+              onClick={() => this.changeClick(5)}
+            >
+              UPS
+            </Button>
+          </ButtonGroup>
         </Header>
         <Content
           style={{
@@ -264,6 +304,8 @@ class Index extends Component {
               parentData={parentData}
               // 添加数据源
               addDataSource={addDataSource}
+              sourceId={sourceId}
+              changeSurceId={changeSurceId}
             />
             {/* 表单组件 */}
             <OuterCover
@@ -285,6 +327,7 @@ class Index extends Component {
               switchPageNum={switchPageNum}
               // 改变单条数据 -- 方法
               changeData={changeData}
+              changeDataFun={changeDataFun}
             />
           </div>
         </Content>
@@ -294,6 +337,15 @@ class Index extends Component {
       </Layout>
     );
   }
+
+  changeClick = e => {
+    this.props.importantAlarm({
+      id: this.props.sourceId,
+      importantAlarmId: e,
+      pageNum: this.props.pageNum,
+      pageSize: this.props.pageSize
+    });
+  };
 }
 
 export default Index;

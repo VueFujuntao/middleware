@@ -2,26 +2,14 @@ import React from "react";
 // 性能提升库
 import { fromJS } from "immutable";
 // 蚂蚁 UI
-import {
-  Button,
-  Pagination,
-  Popconfirm,
-  message,
-  Select,
-  Empty,
-  Modal,
-  Input,
-  Row,
-  Col
-} from "antd";
+import { Button, Pagination, Popconfirm, message, Select, Empty } from "antd";
 // PropTypes props类型检查
 import PropTypes from "prop-types";
 import deepCopy from "../../utils/deepCopy.js";
-import Delivery from '../../utils/delivery.js';
-
+import Delivery from "../../utils/delivery.js";
+import FunctionFunc from "./functionFunc/functionFunc.jsx";
 import "./index.less";
 const Option = Select.Option;
-const InputGroup = Input.Group;
 
 class OuterCover extends React.Component {
   // 以随意为每一个属性指定类型。这对于我们检查和处理属性的意外赋值非常有用。
@@ -70,21 +58,20 @@ class OuterCover extends React.Component {
     修改数据,例子： this.setstate({date: 1})
     */
     this.state = {
-      PolylineCycle: false,
-      VolatilityValue: false,
-      RandomValue: false,
-      Sinusoidal: false
+      functionVis: false,
+      functionNum: 1,
+      itemId: -1
     };
   }
 
   // 组件初始化时只调用，以后组件更新不调用，整个生命周期只调用一次，此时可以修改state。
-  componentWillMount() { }
+  componentWillMount() {}
 
   // 组件渲染之后调用，只调用一次。
-  componentDidMount() { }
+  componentDidMount() {}
 
   // 组件初始化时不调用，组件接受新的props时调用。
-  componentWillReceiveProps(nextProps) { }
+  componentWillReceiveProps(nextProps) {}
   /*
     react性能优化非常重要的一环。组件接受新的state或者props时调用，我们可以设置在此对比前后两个props和state是否相同，如果相同则返回false阻止更新，因为相同的属性状态一定会生成相同的dom树，这样就不需要创造新的dom树和旧的dom树进行diff算法对比，节省大量性能，尤其是在dom结构复杂的时候
   */
@@ -96,13 +83,13 @@ class OuterCover extends React.Component {
   }
 
   // 组件初始化时不调用，只有在组件将要更新时才调用，此时可以修改state
-  componentWillUpdate(nextProps, nextState) { }
+  componentWillUpdate(nextProps, nextState) {}
 
   // 组件初始化时不调用，组件更新完成后调用，此时可以获取dom节点。
-  componentDidUpdate() { }
+  componentDidUpdate() {}
 
   // 组件将要卸载时调用，一些事件监听和定时器需要在此时清除。
-  componentWillUnmount() { }
+  componentWillUnmount() {}
 
   // react最重要的步骤，创建虚拟dom，进行diff算法，更新dom树都在此进行。此时就不能更改state了。
   render() {
@@ -123,132 +110,69 @@ class OuterCover extends React.Component {
 
     return (
       <div className="less-context">
-        {/* PolylineCycle */}
-        <Modal
-          visible={this.state.PolylineCycle}
-          onOk={() => this.handleOk("PolylineCycle")}
-          onCancel={() => this.handleCancel("PolylineCycle")}
+        <FunctionFunc
+          functionVis={this.state.functionVis}
+          functionNum={this.state.functionNum}
+          handleOk={this.handleOk}
+          itemId={this.state.itemId}
+        />
+        {/* <Modal
+          visible={this.state.functionVis}
+          onOk={() => this.handleOk(true)}
+          onCancel={() => this.handleOk(false)}
         >
           <InputGroup size="small">
-            <Row gutter={4}>
-              <Col span={4}>最大值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={4}>最小值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={4}>预警阈值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={4}>波动差值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
+            {this.state.functionNum !== 1 ? (
+              <div>
+                {this.state.functionNum !== 1 ? (
+                  <div>
+                    <Row gutter={4}>
+                      <Col span={5}>最大值</Col>
+                      <Col span={8}>
+                        <Input defaultValue="0" />
+                      </Col>
+                    </Row>
+                    <Row gutter={4} style={{ marginTop: "10px" }}>
+                      <Col span={5}>最小值</Col>
+                      <Col span={8}>
+                        <Input defaultValue="0" />
+                      </Col>
+                    </Row>
+                    <Row gutter={4} style={{ marginTop: "10px" }}>
+                      <Col span={5}>预警阈值</Col>
+                      <Col span={8}>
+                        <Input defaultValue="0" />
+                      </Col>
+                      <Col span={8}>
+                        <Input defaultValue="0" />
+                      </Col>
+                    </Row>
+                  </div>
+                ) : null}
+                {this.state.functionNum === 3 ? (
+                  <Row gutter={4} style={{ marginTop: "10px" }}>
+                    <Col span={5}>波动差值范围</Col>
+                    <Col span={8}>
+                      <Input defaultValue="0" />
+                    </Col>
+                    <Col span={8}>
+                      <Input defaultValue="0" />
+                    </Col>
+                  </Row>
+                ) : null}
+                {this.state.functionNum === 2 ||
+                this.state.functionNum === 5 ? (
+                  <Row gutter={4} style={{ marginTop: "10px" }}>
+                    <Col span={4}>波动差值</Col>
+                    <Col span={8}>
+                      <Input defaultValue="0" />
+                    </Col>
+                  </Row>
+                ) : null}
+              </div>
+            ) : null}
           </InputGroup>
-        </Modal>
-        {/* VolatilityValue */}
-        <Modal
-          visible={this.state.VolatilityValue}
-          onOk={() => this.handleOk("VolatilityValue")}
-          onCancel={() => this.handleCancel("VolatilityValue")}
-        >
-          <InputGroup size="small">
-            <Row gutter={4}>
-              <Col span={5}>最大值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={5}>最小值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={5}>预警阈值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={5}>波动差值范围</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-          </InputGroup>
-        </Modal>
-        {/* RandomValue */}
-        <Modal
-          visible={this.state.RandomValue}
-          onOk={() => this.handleOk("RandomValue")}
-          onCancel={() => this.handleCancel("RandomValue")}
-        >
-          <InputGroup size="small">
-            <Row gutter={4}>
-              <Col span={5}>最大值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={5}>最小值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={5}>预警阈值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-          </InputGroup>
-        </Modal>
-        {/* Sinusoidal */}
-        <Modal
-          visible={this.state.Sinusoidal}
-          onOk={() => this.handleOk("Sinusoidal")}
-          onCancel={() => this.handleCancel("Sinusoidal")}
-        >
-          <InputGroup size="small">
-            <Row gutter={4}>
-              <Col span={4}>最大值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={4}>最小值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={4}>预警阈值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-            <Row gutter={4} style={{ marginTop: "10px" }}>
-              <Col span={4}>波动差值</Col>
-              <Col span={8}>
-                <Input defaultValue="0" />
-              </Col>
-            </Row>
-          </InputGroup>
-        </Modal>
+        </Modal> */}
         <table border="1" cellPadding="5" cellSpacing="5" className="table">
           <thead>
             <tr>
@@ -276,36 +200,69 @@ class OuterCover extends React.Component {
                       type="text"
                       value={item.value}
                       onChange={e =>
-                        this.handleChangeSelect({ e, item, field: "value", bool: true })
+                        this.handleChangeSelect({
+                          e,
+                          item,
+                          field: "value",
+                          bool: true
+                        })
                       }
                     />
                   </td>
                   <th>{item.isChangeStatus === 0 ? "是" : "否"}</th>
                   <td>
-                    <Select
-                      labelInValue
-                      defaultValue={
-                        item.methodId === 1
-                          ? { key: "no" }
-                          : item.methodId === 2
+                    {item.isParentData === 0 ? (
+                      <Select
+                        labelInValue
+                        defaultValue={
+                          item.methodId === 1
+                            ? { key: "no" }
+                            : item.methodId === 2
                             ? { key: "PolylineCycle" }
                             : item.methodId === 3
-                              ? { key: "VolatilityValue" }
-                              : item.methodId === 4
-                                ? { key: "RandomValue" }
-                                : item.methodId === 5
-                                  ? { key: "Sinusoidal" }
-                                  : { key: "no" }
-                      }
-                      style={{ width: 140 }}
-                      onChange={this.handleChangeSelectFunction}
-                    >
-                      <Option value="no">无</Option>
-                      <Option value="PolylineCycle">折线周期函数</Option>
-                      <Option value="VolatilityValue">波动取值函数</Option>
-                      <Option value="RandomValue">随机取值函数</Option>
-                      <Option value="Sinusoidal">类正弦函数</Option>
-                    </Select>
+                            ? { key: "VolatilityValue" }
+                            : item.methodId === 4
+                            ? { key: "RandomValue" }
+                            : item.methodId === 5
+                            ? { key: "Sinusoidal" }
+                            : { key: "no" }
+                        }
+                        style={{ width: 140 }}
+                      >
+                        <Option
+                          onClick={() => this.changeSelectFunction(1, item)}
+                          value="no"
+                        >
+                          无
+                        </Option>
+                        <Option
+                          onClick={() => this.changeSelectFunction(2, item)}
+                          value="PolylineCycle"
+                        >
+                          折线周期函数
+                        </Option>
+                        <Option
+                          onClick={() => this.changeSelectFunction(3, item)}
+                          value="VolatilityValue"
+                        >
+                          波动取值函数
+                        </Option>
+                        <Option
+                          onClick={() => this.changeSelectFunction(4, item)}
+                          value="RandomValue"
+                        >
+                          随机取值函数
+                        </Option>
+                        <Option
+                          onClick={() => this.changeSelectFunction(5, item)}
+                          value="Sinusoidal"
+                        >
+                          类正弦函数
+                        </Option>
+                      </Select>
+                    ) : (
+                      "无"
+                    )}
                   </td>
                   <td>{item.detailsDes}</td>
                   <td>
@@ -315,12 +272,17 @@ class OuterCover extends React.Component {
                         item.isParentData === 0
                           ? { key: "0" }
                           : item.isParentData === 1
-                            ? { key: "1" }
-                            : { key: "0" }
+                          ? { key: "1" }
+                          : { key: "0" }
                       }
                       style={{ width: 120 }}
                       onChange={e =>
-                        this.handleChangeSelect({ e, item, field: "isParentData", bool: false })
+                        this.handleChangeSelect({
+                          e,
+                          item,
+                          field: "isParentData",
+                          bool: false
+                        })
                       }
                     >
                       <Option value="0">一般</Option>
@@ -328,56 +290,66 @@ class OuterCover extends React.Component {
                     </Select>
                   </td>
                   <td>
-                    <Select
-                      labelInValue
-                      defaultValue={
-                        item.changeTime === 1000
-                          ? { key: "1000" }
-                          : item.changeTime === 5000
+                    {item.isParentData === 0 ? (
+                      <Select
+                        labelInValue
+                        defaultValue={
+                          item.changeTime === 1000
+                            ? { key: "1000" }
+                            : item.changeTime === 5000
                             ? { key: "5000" }
                             : item.changeTime === 10000
-                              ? { key: "10000" }
-                              : item.changeTime === 30000
-                                ? { key: "30000" }
-                                : item.changeTime === 60000
-                                  ? { key: "60000" }
-                                  : item.changeTime === 300000
-                                    ? { key: "300000" }
-                                    : item.changeTime === 900000
-                                      ? { key: "900000" }
-                                      : item.changeTime === 1800000
-                                        ? { key: "1800000" }
-                                        : item.changeTime === 3600000
-                                          ? { key: "3600000" }
-                                          : item.changeTime === 10800000
-                                            ? { key: "10800000" }
-                                            : item.changeTime === 32400000
-                                              ? { key: "32400000" }
-                                              : item.changeTime === 64800000
-                                                ? { key: "64800000" }
-                                                : item.changeTime === 129600000
-                                                  ? { key: "129600000" }
-                                                  : { key: "1000" }
-                      }
-                      style={{ width: 90 }}
-                      onChange={e =>
-                        this.handleChangeSelect({ e, item, field: "changeTime", bool: false })
-                      }
-                    >
-                      <Option value="1000">1秒</Option>
-                      <Option value="5000">5秒</Option>
-                      <Option value="10000">10秒</Option>
-                      <Option value="30000">30秒</Option>
-                      <Option value="60000">1分钟</Option>
-                      <Option value="300000">5分钟</Option>
-                      <Option value="900000">15分钟</Option>
-                      <Option value="1800000">30分钟</Option>
-                      <Option value="3600000">1小时</Option>
-                      <Option value="10800000">3小时</Option>
-                      <Option value="32400000">6小时</Option>
-                      <Option value="64800000">12小时</Option>
-                      <Option value="129600000">24小时</Option>
-                    </Select>
+                            ? { key: "10000" }
+                            : item.changeTime === 30000
+                            ? { key: "30000" }
+                            : item.changeTime === 60000
+                            ? { key: "60000" }
+                            : item.changeTime === 300000
+                            ? { key: "300000" }
+                            : item.changeTime === 900000
+                            ? { key: "900000" }
+                            : item.changeTime === 1800000
+                            ? { key: "1800000" }
+                            : item.changeTime === 3600000
+                            ? { key: "3600000" }
+                            : item.changeTime === 10800000
+                            ? { key: "10800000" }
+                            : item.changeTime === 32400000
+                            ? { key: "32400000" }
+                            : item.changeTime === 64800000
+                            ? { key: "64800000" }
+                            : item.changeTime === 129600000
+                            ? { key: "129600000" }
+                            : { key: "0" }
+                        }
+                        style={{ width: 90 }}
+                        onChange={e =>
+                          this.handleChangeSelect({
+                            e,
+                            item,
+                            field: "changeTime",
+                            bool: false
+                          })
+                        }
+                      >
+                        <Option value="0">无</Option>
+                        <Option value="1000">1秒</Option>
+                        <Option value="5000">5秒</Option>
+                        <Option value="10000">10秒</Option>
+                        <Option value="30000">30秒</Option>
+                        <Option value="60000">1分钟</Option>
+                        <Option value="300000">5分钟</Option>
+                        <Option value="900000">15分钟</Option>
+                        <Option value="1800000">30分钟</Option>
+                        <Option value="3600000">1小时</Option>
+                        <Option value="10800000">3小时</Option>
+                        <Option value="32400000">6小时</Option>
+                        <Option value="64800000">12小时</Option>
+                        <Option value="129600000">24小时</Option>
+                      </Select>
+                    ) : (
+                      "无"
+                    )}
                   </td>
                   <td>
                     <Button
@@ -414,17 +386,24 @@ class OuterCover extends React.Component {
                         item.importantAlarmId === 1
                           ? { key: "1" }
                           : item.importantAlarmId === 2
-                            ? { key: "2" }
-                            : item.importantAlarmId === 3
-                              ? { key: "3" }
-                              : item.importantAlarmId === 4
-                                ? { key: "4" }
-                                : item.importantAlarmId === 5
-                                  ? { key: "5" }
-                                  : { key: "wanting" }
+                          ? { key: "2" }
+                          : item.importantAlarmId === 3
+                          ? { key: "3" }
+                          : item.importantAlarmId === 4
+                          ? { key: "4" }
+                          : item.importantAlarmId === 5
+                          ? { key: "5" }
+                          : { key: "wanting" }
                       }
                       style={{ width: 120 }}
-                      onChange={e => this.handleChangeSelect({ e, item, field: "importantAlarmId", bool: false })}
+                      onChange={e =>
+                        this.handleChangeSelect({
+                          e,
+                          item,
+                          field: "importantAlarmId",
+                          bool: false
+                        })
+                      }
                     >
                       <Option value="1">无</Option>
                       <Option value="2">火灾</Option>
@@ -491,96 +470,61 @@ class OuterCover extends React.Component {
     message.error("取消删除");
   }
 
-  // 函数弹出框
-  handleChangeSelectFunction = e => {
-    switch (e.key) {
-      case "PolylineCycle":
-        this.setState({
-          PolylineCycle: true
-        });
-        break;
-      case "VolatilityValue":
-        this.setState({
-          VolatilityValue: true
-        });
-        break;
-      case "RandomValue":
-        this.setState({
-          RandomValue: true
-        });
-        break;
-      case "Sinusoidal":
-        this.setState({
-          Sinusoidal: true
-        });
-        break;
-      default:
-        return;
+  // 打开填写
+  changeSelectFunction = (e, item) => {
+    if (e !== 1) {
+      this.setState({
+        functionVis: true,
+        functionNum: e,
+        itemId: item.id
+      });
+    } else {
+      const { changeDataFun, properties, pageSize, pageNum } = this.props;
+      changeDataFun({
+        itemValueOne: "{}",
+        itemValueTwo: e,
+        id: item.id,
+        properties,
+        pageSize,
+        pageNum,
+        fieldOne: "canshuzhi",
+        fieldTwo: "methodId"
+      });
     }
   };
 
-  // 确认 关闭 变化函数弹板
-  handleOk = text => {
-    switch (text) {
-      case "PolylineCycle":
-        this.setState({
-          PolylineCycle: false
-        });
-        break;
-      case "VolatilityValue":
-        this.setState({
-          VolatilityValue: false
-        });
-        break;
-      case "RandomValue":
-        this.setState({
-          RandomValue: false
-        });
-        break;
-      case "Sinusoidal":
-        this.setState({
-          Sinusoidal: false
-        });
-        break;
-      default:
-        return;
+  // 确认 OK 关闭
+  handleOk = (bool, result, functionNum, itemId) => {
+    if (bool === true) {
+      let data = JSON.stringify(result.getFieldsValue());
+      const { changeDataFun, properties, pageSize, pageNum } = this.props;
+      changeDataFun({
+        itemValueOne: data,
+        itemValueTwo: functionNum,
+        id: itemId,
+        properties,
+        pageSize,
+        pageNum,
+        fieldOne: "canshuzhi",
+        fieldTwo: "methodId"
+      });
+    } else {
     }
-  };
-
-  // 取消 关闭 变化函数弹板
-  handleCancel = text => {
-    switch (text) {
-      case "PolylineCycle":
-        this.setState({
-          PolylineCycle: false
-        });
-        break;
-      case "VolatilityValue":
-        this.setState({
-          VolatilityValue: false
-        });
-        break;
-      case "RandomValue":
-        this.setState({
-          RandomValue: false
-        });
-        break;
-      case "Sinusoidal":
-        this.setState({
-          Sinusoidal: false
-        });
-        break;
-      default:
-        return;
-    }
+    // 清空表单
+    result.resetFields();
+    this.setState({
+      functionVis: false,
+      functionNum: 1,
+      itemId: -1
+    });
   };
 
   // 切换 页码
   pagination = e => {
     // 获取 一页几条数据
-    let { pageSize, switchPage, switchPageNum } = this.props;
+    let { pageSize, switchPage, switchPageNum, properties } = this.props;
     if (switchPage === undefined) return;
-    let data = Delivery({ array: this.props.properties, pageNum: e, pageSize});
+    let data = Delivery({ array: properties, pageNum: e, pageSize });
     // 修改当前页码
     switchPageNum(e);
     // 改变数据
@@ -596,7 +540,14 @@ class OuterCover extends React.Component {
       itemValue = Number(e.key);
     }
     const { changeData, properties, pageSize, pageNum } = this.props;
-    changeData({ itemValue, id: item.id, properties, pageSize, pageNum, field });
+    changeData({
+      itemValue,
+      id: item.id,
+      properties,
+      pageSize,
+      pageNum,
+      field
+    });
   }
 }
 

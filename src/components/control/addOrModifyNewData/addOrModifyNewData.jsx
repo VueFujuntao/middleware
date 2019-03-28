@@ -27,9 +27,6 @@ class DrawerForm extends React.Component {
       v: false
     };
   }
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return !fromJS(nextProps).equals(fromJS(this.props))
-  // }
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -39,6 +36,7 @@ class DrawerForm extends React.Component {
       parentData,
       selectedItems
     } = this.props;
+
     return (
       <Drawer
         title="创建新数据"
@@ -57,14 +55,23 @@ class DrawerForm extends React.Component {
               <Form.Item label="VALUE">
                 {getFieldDecorator("value", {
                   rules: [
-                    { required: true, message: "Please enter user value" }
-                  ]
+                    {
+                      required: true,
+                      pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                      message: "Please enter user value"
+                    }
+                  ],
+                  getValueFromEvent: event => {
+                    return event.target.value.replace(/\D/g, "");
+                  },
+                  initialValue: ""
                 })(<Input placeholder="Please enter user value" />)}
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item label="类型">
                 {getFieldDecorator("isParentData", {
+                  initialValue: "0",
                   rules: [{ required: true, message: "Please choose the type" }]
                 })(
                   <Select
@@ -83,6 +90,7 @@ class DrawerForm extends React.Component {
               {this.state.v === false ? (
                 <Form.Item label="变化时间">
                   {getFieldDecorator("changeTime", {
+                    initialValue: "1000",
                     rules: [
                       { required: true, message: "Please select an owner" }
                     ]
@@ -110,6 +118,7 @@ class DrawerForm extends React.Component {
               {this.state.v === false ? (
                 <Form.Item label="变化函数">
                   {getFieldDecorator("methodId", {
+                    initialValue: "1",
                     rules: [
                       { required: true, message: "Please choose the approver" }
                     ]
@@ -129,6 +138,7 @@ class DrawerForm extends React.Component {
               ) : (
                 <Form.Item label="变化函数">
                   {getFieldDecorator("methodId", {
+                    initialValue: "1",
                     rules: [
                       { required: true, message: "Please choose the approver" }
                     ]
@@ -148,6 +158,7 @@ class DrawerForm extends React.Component {
             <Col span={12}>
               <Form.Item label="关联事件">
                 {getFieldDecorator("importantAlarmId", {
+                  initialValue: "1",
                   rules: [
                     {
                       required: true,
@@ -190,6 +201,7 @@ class DrawerForm extends React.Component {
             <Col span={4}>
               <Form.Item label="是否影响报警">
                 {getFieldDecorator("isChangeStatus", {
+                  initialValue: '1',
                   rules: [
                     {
                       required: true,
@@ -231,8 +243,16 @@ class DrawerForm extends React.Component {
                   <Form.Item label="最大值">
                     {getFieldDecorator("maxValue", {
                       rules: [
-                        { required: true, message: "Please choose the type" }
-                      ]
+                        {
+                          required: true,
+                          pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                          message: "Please choose the type"
+                        }
+                      ],
+                      getValueFromEvent: event => {
+                        return event.target.value.replace(/\D/g, "");
+                      },
+                      initialValue: "0"
                     })(<Input placeholder="Please enter user value" />)}
                   </Form.Item>
                 </Col>
@@ -240,8 +260,16 @@ class DrawerForm extends React.Component {
                   <Form.Item label="最小值">
                     {getFieldDecorator("minValue", {
                       rules: [
-                        { required: true, message: "Please choose the type" }
-                      ]
+                        {
+                          required: true,
+                          pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                          message: "Please choose the type"
+                        }
+                      ],
+                      getValueFromEvent: event => {
+                        return event.target.value.replace(/\D/g, "");
+                      },
+                      initialValue: "0"
                     })(<Input placeholder="Please enter user value" />)}
                   </Form.Item>
                 </Col>
@@ -249,11 +277,19 @@ class DrawerForm extends React.Component {
               <Row gutter={16}>
                 <Col span={12}>
                   <InputGroup compact>
-                    <Form.Item label="预警阈值">
+                    <Form.Item label="预警阈值最小值">
                       {getFieldDecorator("minAlarmValue", {
                         rules: [
-                          { required: true, message: "Please choose the type" }
-                        ]
+                          {
+                            required: true,
+                            pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                            message: "Please choose the type"
+                          }
+                        ],
+                        getValueFromEvent: event => {
+                          return event.target.value.replace(/\D/g, "");
+                        },
+                        initialValue: "0"
                       })(
                         <Input
                           style={{ width: 100, textAlign: "center" }}
@@ -261,11 +297,19 @@ class DrawerForm extends React.Component {
                         />
                       )}
                     </Form.Item>
-                    <Form.Item label="预警阈值">
+                    <Form.Item label="预警阈值最大值">
                       {getFieldDecorator("maxAlarmValue", {
                         rules: [
-                          { required: true, message: "Please choose the type" }
-                        ]
+                          {
+                            required: true,
+                            pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                            message: "Please choose the type"
+                          }
+                        ],
+                        getValueFromEvent: event => {
+                          return event.target.value.replace(/\D/g, "");
+                        },
+                        initialValue: "0"
                       })(
                         <Input
                           style={{
@@ -285,8 +329,16 @@ class DrawerForm extends React.Component {
                     <Form.Item label="波动差值">
                       {getFieldDecorator("dValue", {
                         rules: [
-                          { required: true, message: "Please choose the type" }
-                        ]
+                          {
+                            required: true,
+                            pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                            message: "Please choose the type"
+                          }
+                        ],
+                        getValueFromEvent: event => {
+                          return event.target.value.replace(/\D/g, "");
+                        },
+                        initialValue: "0"
                       })(<Input placeholder="Please enter user value" />)}
                     </Form.Item>
                   </Col>
@@ -294,14 +346,19 @@ class DrawerForm extends React.Component {
                 {this.state.functionVis === 3 ? (
                   <Col span={12}>
                     <InputGroup compact>
-                      <Form.Item label="波动差值">
+                      <Form.Item label="波动差值最小值">
                         {getFieldDecorator("subValue", {
                           rules: [
                             {
                               required: true,
+                              pattern: new RegExp(/^[1-9]\d*$/, "g"),
                               message: "Please choose the type"
                             }
-                          ]
+                          ],
+                          getValueFromEvent: event => {
+                            return event.target.value.replace(/\D/g, "");
+                          },
+                          initialValue: "0"
                         })(
                           <Input
                             style={{ width: 100, textAlign: "center" }}
@@ -309,14 +366,19 @@ class DrawerForm extends React.Component {
                           />
                         )}
                       </Form.Item>
-                      <Form.Item label="波动差值">
+                      <Form.Item label="波动差值最大值">
                         {getFieldDecorator("addValue", {
                           rules: [
                             {
                               required: true,
+                              pattern: new RegExp(/^[1-9]\d*$/, "g"),
                               message: "Please choose the type"
                             }
-                          ]
+                          ],
+                          getValueFromEvent: event => {
+                            return event.target.value.replace(/\D/g, "");
+                          },
+                          initialValue: "0"
                         })(
                           <Input
                             style={{

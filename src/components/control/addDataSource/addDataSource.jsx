@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Drawer,
-  Form,
-  Button,
-  Col,
-  Row,
-  Input,
-} from "antd";
-
+import { Drawer, Form, Button, Col, Row, Input } from "antd";
 
 class DrawerForm extends React.Component {
   constructor(props) {
@@ -46,13 +38,23 @@ class DrawerForm extends React.Component {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="发送间隔: ">
+                <Form.Item label="发送间隔: (ms)">
                   {getFieldDecorator("sendTime", {
-                    rules: [{ required: true, message: "Please enter url" }]
+                    rules: [
+                      {
+                        required: true,
+                        pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                        message: "Please enter Number"
+                      }
+                    ],
+                    getValueFromEvent: event => {
+                      return event.target.value.replace(/\D/g, "");
+                    },
+                    initialValue: "1"
                   })(
                     <Input
                       style={{ width: "100%" }}
-                      placeholder="Please enter url"
+                      placeholder="Please enter timeout"
                     />
                   )}
                 </Form.Item>
@@ -71,10 +73,16 @@ class DrawerForm extends React.Component {
               textAlign: "right"
             }}
           >
-            <Button onClick={() => addDataSourceClose(false, this.props.form)} style={{ marginRight: 8 }}>
+            <Button
+              onClick={() => addDataSourceClose(false, this.props.form)}
+              style={{ marginRight: 8 }}
+            >
               关闭
             </Button>
-            <Button onClick={() => addDataSourceClose(true, this.props.form)} type="primary">
+            <Button
+              onClick={() => addDataSourceClose(true, this.props.form)}
+              type="primary"
+            >
               提交
             </Button>
           </div>

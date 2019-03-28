@@ -5,13 +5,18 @@ import { Modal, Form, Col, Row, Input } from "antd";
 const InputGroup = Input.Group;
 class DrawerForm extends React.Component {
   static propTypes = {
+    // 弹出的对应方法
     functionNum: PropTypes.number,
+    // 弹板 展示 
     functionVis: PropTypes.bool,
+    // 关闭 确定 
     handleOk: PropTypes.func
   };
 
   static defaultProps = {
+    // 弹板 展示 
     functionVis: false,
+    // 弹出的对应方法
     functionNum: 1
   };
 

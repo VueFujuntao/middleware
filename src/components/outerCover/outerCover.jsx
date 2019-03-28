@@ -116,63 +116,6 @@ class OuterCover extends React.Component {
           handleOk={this.handleOk}
           itemId={this.state.itemId}
         />
-        {/* <Modal
-          visible={this.state.functionVis}
-          onOk={() => this.handleOk(true)}
-          onCancel={() => this.handleOk(false)}
-        >
-          <InputGroup size="small">
-            {this.state.functionNum !== 1 ? (
-              <div>
-                {this.state.functionNum !== 1 ? (
-                  <div>
-                    <Row gutter={4}>
-                      <Col span={5}>最大值</Col>
-                      <Col span={8}>
-                        <Input defaultValue="0" />
-                      </Col>
-                    </Row>
-                    <Row gutter={4} style={{ marginTop: "10px" }}>
-                      <Col span={5}>最小值</Col>
-                      <Col span={8}>
-                        <Input defaultValue="0" />
-                      </Col>
-                    </Row>
-                    <Row gutter={4} style={{ marginTop: "10px" }}>
-                      <Col span={5}>预警阈值</Col>
-                      <Col span={8}>
-                        <Input defaultValue="0" />
-                      </Col>
-                      <Col span={8}>
-                        <Input defaultValue="0" />
-                      </Col>
-                    </Row>
-                  </div>
-                ) : null}
-                {this.state.functionNum === 3 ? (
-                  <Row gutter={4} style={{ marginTop: "10px" }}>
-                    <Col span={5}>波动差值范围</Col>
-                    <Col span={8}>
-                      <Input defaultValue="0" />
-                    </Col>
-                    <Col span={8}>
-                      <Input defaultValue="0" />
-                    </Col>
-                  </Row>
-                ) : null}
-                {this.state.functionNum === 2 ||
-                this.state.functionNum === 5 ? (
-                  <Row gutter={4} style={{ marginTop: "10px" }}>
-                    <Col span={4}>波动差值</Col>
-                    <Col span={8}>
-                      <Input defaultValue="0" />
-                    </Col>
-                  </Row>
-                ) : null}
-              </div>
-            ) : null}
-          </InputGroup>
-        </Modal> */}
         <table border="1" cellPadding="5" cellSpacing="5" className="table">
           <thead>
             <tr>

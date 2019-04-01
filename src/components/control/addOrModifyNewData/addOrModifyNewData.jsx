@@ -6,10 +6,12 @@ import "./index.less";
 
 const { Option } = Select;
 const InputGroup = Input.Group;
+
 class DrawerForm extends React.Component {
   static propTypes = {
     // 薪增数据 修改数据
     addOrModifyNewDataVisible: PropTypes.bool,
+    v: PropTypes.bool,
     parentData: PropTypes.array,
     // 关闭弹框
     onClose: PropTypes.func
@@ -18,7 +20,8 @@ class DrawerForm extends React.Component {
   static defaultProps = {
     // 薪增数据 修改数据
     addOrModifyNewDataVisible: false,
-    parentData: []
+    parentData: [],
+    v: false
   };
 
   constructor(props) {
@@ -35,7 +38,8 @@ class DrawerForm extends React.Component {
       onClose,
       addOrModifyNewDataVisible,
       parentData,
-      selectedItems
+      selectedItems,
+      v
     } = this.props;
 
     return (
@@ -84,7 +88,7 @@ class DrawerForm extends React.Component {
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              {this.state.v === false ? (
+              {v === false ? (
                 <Form.Item label="变化时间">
                   {getFieldDecorator("changeTime", {
                     initialValue: "1000",
@@ -112,7 +116,7 @@ class DrawerForm extends React.Component {
               ) : null}
             </Col>
             <Col span={12}>
-              {this.state.v === false ? (
+              {v === false ? (
                 <Form.Item label="变化函数">
                   {getFieldDecorator("methodId", {
                     initialValue: "1",
@@ -174,7 +178,7 @@ class DrawerForm extends React.Component {
               </Form.Item>
             </Col>
             <Col span={12}>
-              {this.state.v ? (
+              {v ? (
                 <Form.Item label="关联一般">
                   {getFieldDecorator("parentId", {
                     rules: [
@@ -195,7 +199,7 @@ class DrawerForm extends React.Component {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={4}>
+            <Col span={12}>
               <Form.Item label="是否影响报警">
                 {getFieldDecorator("isChangeStatus", {
                   initialValue: "1",
@@ -211,6 +215,29 @@ class DrawerForm extends React.Component {
                     <Option value="0">是</Option>
                   </Select>
                 )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="设备前缀(ID)">
+                {getFieldDecorator("id", {
+                  rules: [
+                    {
+                      required: true,
+                      pattern: new RegExp(/^[1-9]\d*$/, "g"),
+                      message: "Please enter the ID",
+                      type: "number",
+                      transform(value) {
+                        if (value) {
+                          return Number(value);
+                        }
+                      }
+                    }
+                  ],
+                  getValueFromEvent: event => {
+                    if (event.target.value.length > 5) return;
+                    return event.target.value.replace(/\D/g, "");
+                  }
+                })(<Input />)}
               </Form.Item>
             </Col>
           </Row>
@@ -410,15 +437,11 @@ class DrawerForm extends React.Component {
   // 打开 关闭 关联 父数据 input 框
   bindParentDataInput = e => {
     if (e === "1") {
-      this.setState({
-        v: true
-      });
+      this.props.chnageV(true)
       const { bindParentData, sourceId } = this.props;
       bindParentData({ id: sourceId });
     } else if (e === "0") {
-      this.setState({
-        v: false
-      });
+      this.props.chnageV(false)
     }
   };
 }

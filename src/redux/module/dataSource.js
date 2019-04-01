@@ -44,6 +44,7 @@ export function dataSource(state = initState, action) {
   }
 }
 
+
 // 成功調用
 function registerSuccess(data) {
   return {
@@ -184,6 +185,7 @@ export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
     Axios.put('/openOrCloseData', item).then(response => {
       let data = response.data;
       if (data.code === 200) {
+        // 截取 一页数据
         let newIndexList = Delivery({
           array: newProperties,
           pageNum,

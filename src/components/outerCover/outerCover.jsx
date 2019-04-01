@@ -123,12 +123,13 @@ class OuterCover extends React.Component {
               <th style={{ width: "150px" }}>KEY</th>
               <th style={{ width: "150px" }}>VALUE</th>
               <th style={{ width: "150px" }}>是否影响报警</th>
-              <th style={{ width: "150px" }}>变化函数</th>
               <th>描述</th>
+              <th style={{ width: "150px" }}>变化函数</th>
               <th style={{ width: "100px" }}>类型</th>
               <th style={{ width: "120px" }}>变化时间</th>
               <th style={{ width: "138px" }}>操作</th>
               <th style={{ width: "100px" }}>关联事件</th>
+              {/* <th style={{ width: "100px" }}>关联设备报警数据(ID)</th> */}
             </tr>
           </thead>
           <tbody>
@@ -153,6 +154,8 @@ class OuterCover extends React.Component {
                     />
                   </td>
                   <th>{item.isChangeStatus === 0 ? "是" : "否"}</th>
+
+                  <td>{item.detailsDes}</td>
                   <td>
                     {item.isParentData === 0 ? (
                       <Select
@@ -207,7 +210,6 @@ class OuterCover extends React.Component {
                       "无"
                     )}
                   </td>
-                  <td>{item.detailsDes}</td>
                   <td>
                     <Select
                       labelInValue
@@ -232,6 +234,7 @@ class OuterCover extends React.Component {
                       <Option value="1">子数据</Option>
                     </Select>
                   </td>
+
                   <td>
                     {item.isParentData === 0 ? (
                       <Select
@@ -355,6 +358,9 @@ class OuterCover extends React.Component {
                       <Option value="5">UPS温度过高</Option>
                     </Select>
                   </td>
+                  {/* <td>
+                    {item.relationId}
+                  </td> */}
                 </tr>
               );
             })}

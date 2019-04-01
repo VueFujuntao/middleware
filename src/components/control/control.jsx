@@ -88,7 +88,8 @@ class Control extends React.Component {
       // 薪增数据 修改数据
       addOrModifyNewDataVisible: false,
       addDataSourceVisible: false,
-      selectedItems: []
+      selectedItems: [],
+      v: false
     };
   }
 
@@ -105,7 +106,11 @@ class Control extends React.Component {
     //   });
     // }
   }
-
+  chnageV = (e) => {
+    this.setState({
+      v: e
+    });
+  }
   shouldComponentUpdate(nextProps, nextState) {
     return !(
       fromJS(nextProps).equals(fromJS(this.props)) &&
@@ -134,7 +139,8 @@ class Control extends React.Component {
       modalVisible,
       addOrModifyNewDataVisible,
       addDataSourceVisible,
-      selectedItems
+      selectedItems,
+      v
     } = this.state;
 
     // const {sourceId} = this.props;
@@ -156,6 +162,8 @@ class Control extends React.Component {
           onClose={this.onClose}
           handleChange={this.handleChange}
           sourceId={sourceId}
+          v={v}
+          chnageV={this.chnageV}
         />
         {/* 增加数据源 */}
         <AddDataSource
@@ -309,6 +317,7 @@ class Control extends React.Component {
 
   // 关闭弹框
   onClose = (bool, result) => {
+    this.chnageV(false);
     if (bool !== false) {
       let data = result.getFieldsValue();
       for (let item in data) {
@@ -331,7 +340,8 @@ class Control extends React.Component {
         subValue,
         addValue,
         parentId,
-        isChangeStatus
+        isChangeStatus,
+        id
       } = data;
       console.log(data);
       let dataSourceId = this.props.sourceId;
@@ -353,7 +363,8 @@ class Control extends React.Component {
         importantAlarmId,
         isParentData,
         parentId,
-        isChangeStatus
+        isChangeStatus,
+        id
       };
 
       // 结构参数
@@ -394,7 +405,6 @@ class Control extends React.Component {
       const { addDataSource, allDataSources } = this.props;
       addDataSource({ data, allDataSources });
     }
-
     // 清空表单
     result.resetFields();
     this.setState({

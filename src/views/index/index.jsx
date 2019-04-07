@@ -153,6 +153,7 @@ class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.changeClick = this.changeClick.bind(this);
   }
 
   componentWillMount() {}
@@ -228,25 +229,25 @@ class Index extends Component {
           <ButtonGroup className="button-group">
             <Button
               disabled={sourceId === -1 || status === 1}
-              onClick={() => this.changeClick(2)}
+              onClick={this.changeClick(2)}
             >
               火灾
             </Button>
             <Button
               disabled={sourceId === -1 || status === 1}
-              onClick={() => this.changeClick(3)}
+              onClick={this.changeClick(3)}
             >
               漏水
             </Button>
             <Button
               disabled={sourceId === -1 || status === 1}
-              onClick={() => this.changeClick(4)}
+              onClick={this.changeClick(4)}
             >
               闯入
             </Button>
             <Button
               disabled={sourceId === -1 || status === 1}
-              onClick={() => this.changeClick(5)}
+              onClick={this.changeClick(5)}
             >
               UPS
             </Button>

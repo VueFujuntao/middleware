@@ -90,10 +90,11 @@ export function switchPageNum(e) {
 export function getDataUp(data = {
   id: 1
 }, pageSize = 0) {
-  return dispatch => {
-    Axios.get('/getDatas', {
-      params: data
-    }).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.get('/getDatas', {
+        params: data
+      });
       if (response.status === 200 && response.data.code === 200) {
         let data = response.data.data;
         if (response.data.data.properties !== undefined) {
@@ -106,16 +107,17 @@ export function getDataUp(data = {
         message.error(response.data.msg);
         dispatch(errorMsg(response.data.msg));
       }
-    }, err => {
+    } catch(err) {
       throw new Error(err);
-    })
+    }
   }
 }
 
 // 单次获取数据 数据列表
 export function getFirstData() {
-  return dispatch => {
-    Axios.get('/getAllDataSources').then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.get('/getAllDataSources');
       let data = response.data;
       if (data.code === 200) {
         dispatch(registerSuccess({
@@ -124,23 +126,23 @@ export function getFirstData() {
       } else {
         message.error(data.data);
       }
-    }, err => {
-      message.error('Request failed');
+    } catch(err) {
       throw new Error(err);
-    })
+    }
   }
 }
 
 // 开始  关闭 数据源
 export function setSourceData(properties, sourceId, status, sendTime, name) {
-  return dispatch => {
-    Axios.put('/OpenOrCloseDataSource', {
-      id: sourceId,
-      properties: properties,
-      status: status,
-      sendTime: sendTime,
-      name
-    }).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.put('/OpenOrCloseDataSource', {
+        id: sourceId,
+        properties: properties,
+        status: status,
+        sendTime: sendTime,
+        name
+      });
       let data = response.data;
       if (data.code === 200) {
         dispatch(registerSuccess({
@@ -149,21 +151,21 @@ export function setSourceData(properties, sourceId, status, sendTime, name) {
       } else {
         message.error(data.data);
       }
-    }, error => {
-      message.error('Request failed');
-      throw new Error(error);
-    })
+    } catch(err) {
+      throw new Error(err);
+    }
   }
 }
 
 // 打印输出数据
 export function printSendData(id) {
-  return dispatch => {
-    Axios.get('/printSendData', {
-      params: {
-        id: id
-      }
-    }).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.get('/printSendData', {
+        params: {
+          id: id
+        }
+      });
       let data = response.data;
       if (data.code === 200) {
         dispatch(registerSuccess({
@@ -172,17 +174,17 @@ export function printSendData(id) {
       } else {
         message.error(data.data);
       }
-    }, error => {
-      message.error('Request failed');
-      throw new Error(error);
-    })
+    } catch(err) {
+      throw new Error(err);
+    }
   }
 }
 
 // 启动 停用 数据
 export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
-  return dispatch => {
-    Axios.put('/openOrCloseData', item).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.put('/openOrCloseData', item);
       let data = response.data;
       if (data.code === 200) {
         // 截取 一页数据
@@ -199,10 +201,9 @@ export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
       } else {
         message.error(data.msg);
       }
-    }, error => {
-      message.error('Request failed');
-      throw new Error(error);
-    })
+    } catch(err) {
+      throw new Error(err);
+    }
   }
 }
 
@@ -211,8 +212,9 @@ export function deleteDataSource({
   id,
   allDataSources
 }) {
-  return dispatch => {
-    Axios.delete(`/deleteDataSource/${id}`).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.delete(`/deleteDataSource/${id}`);
       if (response.data.code === 200) {
         let newAllDataSources = allDataSources.filter(item => {
           return item.id !== id;
@@ -225,10 +227,9 @@ export function deleteDataSource({
       } else {
         message.error(response.data.data);
       }
-    }, error => {
-      message.error('Request failed');
-      throw new Error(error);
-    })
+    } catch(err) {
+      throw new Error(err);
+    }
   }
 }
 
@@ -240,8 +241,9 @@ export function addSingleData({
   pageSize,
   pageNum
 }) {
-  return dispatch => {
-    Axios.post('/addData', data).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.post('/addData', data);
       let data = response.data;
       if (data.code === 200) {
         message.success(data.msg);
@@ -265,10 +267,9 @@ export function addSingleData({
       } else {
         message.error(data.msg);
       }
-    }, error => {
-      message.error('Request failed');
-      throw new Error(error);
-    })
+    } catch(err) {
+      throw new Error(err);
+    }
   }
 }
 
@@ -279,8 +280,9 @@ export function deleteSingleData({
   pageNum,
   pageSize
 }) {
-  return dispatch => {
-    Axios.delete(`/deleteData/${item.id}`).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.delete(`/deleteData/${item.id}`);
       if (response.data.code === 200) {
         let newProperties = properties.filter(newItem => {
           return newItem.id !== item.id;
@@ -298,10 +300,9 @@ export function deleteSingleData({
       } else {
         message.error('删除失败');
       }
-    }, error => {
-      message.error('Request failed');
-      throw new Error(error);
-    })
+    } catch(err) {
+      throw new Error(err);
+    }
   }
 }
 
@@ -309,8 +310,9 @@ export function deleteSingleData({
 export function bindParentData({
   id
 }) {
-  return dispatch => {
-    Axios.get(`/bindParentData?id=${id}`).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.get(`/bindParentData?id=${id}`);
       let data = response.data;
       if (data.code === 200) {
         message.success('成功');
@@ -320,10 +322,9 @@ export function bindParentData({
       } else {
         message.error('失败');
       }
-    }, error => {
-      message.error('Request failed');
-      throw new Error(error);
-    })
+    } catch(err) {
+      throw new Error(err);
+    }
   }
 }
 
@@ -332,8 +333,9 @@ export function addDataSource({
   data,
   allDataSources
 }) {
-  return dispatch => {
-    Axios.post('/addDataSource', data).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.post('/addDataSource', data);
       if (response.data.code === 200) {
         let newAllDataSources = allDataSources.concat(response.data.data);
         dispatch(registerSuccess({
@@ -343,10 +345,9 @@ export function addDataSource({
       } else {
         message.error(response.data.msg);
       }
-    }, error => {
-      message.error('Request failed');
-      throw new Error(error);
-    })
+    } catch(err) {
+      throw new Error(err);
+    }
   }
 }
 
@@ -418,8 +419,9 @@ export function importantAlarm({
   pageNum,
   pageSize
 }) {
-  return dispatch => {
-    Axios.get(`/importantAlarm?id=${id}&importantAlarmId=${importantAlarmId}`).then(response => {
+  return async dispatch => {
+    try {
+      const response = await Axios.get(`/importantAlarm?id=${id}&importantAlarmId=${importantAlarmId}`);
       if (response.data.code === 200) {
         message.success(response.data.msg);
         let properties = response.data.data.properties;
@@ -442,7 +444,9 @@ export function importantAlarm({
       } else {
         message.error(response.data.msg);
       }
-    })
+    } catch(err) {
+      throw new Error(err);
+    }
   }
 }
 

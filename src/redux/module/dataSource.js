@@ -244,11 +244,11 @@ export function addSingleData({
   return async dispatch => {
     try {
       const response = await Axios.post('/addData', data);
-      let data = response.data;
-      if (data.code === 200) {
-        message.success(data.msg);
+      let newData = response.data;
+      if (newData.code === 200) {
+        message.success(newData.msg);
         if (indexList.length < 10) {
-          let newProperties = properties.concat(data.data);
+          let newProperties = properties.concat(newData.data);
           let newIndexList = Delivery({
             array: newProperties,
             pageNum,
@@ -259,13 +259,13 @@ export function addSingleData({
             indexList: newIndexList
           }));
         } else {
-          let newProperties = properties.concat(data.data);
+          let newProperties = properties.concat(newData.data);
           dispatch(registerSuccess({
             properties: newProperties
           }));
         }
       } else {
-        message.error(data.msg);
+        message.error(newData.msg);
       }
     } catch(err) {
       throw new Error(err);

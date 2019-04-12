@@ -223,20 +223,10 @@ class DrawerForm extends React.Component {
                   rules: [
                     {
                       required: true,
-                      pattern: new RegExp(/^[1-9]\d*$/, "g"),
-                      message: "Please enter the ID",
-                      type: "number",
-                      transform(value) {
-                        if (value) {
-                          return Number(value);
-                        }
-                      }
+                      pattern: new RegExp(/^[A-Za-z0-9]*$/, "g"),
+                      message: "Please enter the ID"
                     }
-                  ],
-                  getValueFromEvent: event => {
-                    if (event.target.value.length > 5) return;
-                    return event.target.value.replace(/\D/g, "");
-                  }
+                  ]
                 })(<Input />)}
               </Form.Item>
             </Col>

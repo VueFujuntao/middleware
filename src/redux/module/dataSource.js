@@ -107,7 +107,7 @@ export function getDataUp(data = {
         message.error(response.data.msg);
         dispatch(errorMsg(response.data.msg));
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -126,7 +126,7 @@ export function getFirstData() {
       } else {
         message.error(data.data);
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -151,7 +151,7 @@ export function setSourceData(properties, sourceId, status, sendTime, name) {
       } else {
         message.error(data.data);
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -174,7 +174,7 @@ export function printSendData(id) {
       } else {
         message.error(data.data);
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -201,7 +201,7 @@ export function openOrCloseUseData(newProperties, item, pageNum, pageSize) {
       } else {
         message.error(data.msg);
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -227,7 +227,7 @@ export function deleteDataSource({
       } else {
         message.error(response.data.data);
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -243,6 +243,12 @@ export function addSingleData({
 }) {
   return async dispatch => {
     try {
+      for (let item in data) {
+        if (item !== 'detailsDes' && item !== 'id' && item !== 'canshuzhi' && item !== undefined) {
+          data[item] = Number(data[item]);
+        }
+      }
+      console.log(data)
       const response = await Axios.post('/addData', data);
       let newData = response.data;
       if (newData.code === 200) {
@@ -267,7 +273,7 @@ export function addSingleData({
       } else {
         message.error(newData.msg);
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -300,7 +306,7 @@ export function deleteSingleData({
       } else {
         message.error('删除失败');
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -322,7 +328,7 @@ export function bindParentData({
       } else {
         message.error('失败');
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -345,7 +351,7 @@ export function addDataSource({
       } else {
         message.error(response.data.msg);
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }
@@ -444,7 +450,7 @@ export function importantAlarm({
       } else {
         message.error(response.data.msg);
       }
-    } catch(err) {
+    } catch (err) {
       throw new Error(err);
     }
   }

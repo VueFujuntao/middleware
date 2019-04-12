@@ -320,11 +320,6 @@ class Control extends React.Component {
     this.chnageV(false);
     if (bool !== false) {
       let data = result.getFieldsValue();
-      for (let item in data) {
-        if (item !== 'detailsDes' && data[item] !== undefined) {
-          data[item] = Number(data[item])
-        }
-      }
       let {
         methodId,
         changeTime,
@@ -343,7 +338,6 @@ class Control extends React.Component {
         isChangeStatus,
         id
       } = data;
-      console.log(data);
       let dataSourceId = this.props.sourceId;
       let newData = {
         canshuzhi: JSON.stringify({
@@ -366,7 +360,9 @@ class Control extends React.Component {
         isChangeStatus,
         id
       };
-
+      if (isNaN(newData.parentId)) {
+        delete newData.parentId;
+      }
       // 结构参数
       let {
         properties,
